@@ -87,20 +87,43 @@
 
   /* ---------- modal helpers ---------- */
   var openModal = null;
-  function show(el) { hideAll(); el.hidden = false; openModal = el; }
-  function hideAll() { $$('.modal,.chat').forEach(function (m) { m.hidden = true; }); openModal = null; }
+  function show(el) {
+    hideAll();
+    if (tOn) tourEnd();  /* the tour must not keep scrolling the page behind a popup */
+    el.hidden = false; openModal = el;
+    if (el.id === 'ask' || el.id === 'tt') lockPage();
+  }
+  /* freeze the page behind a fullscreen popup: no wheel, touch, keyboard or tour scrolling, and no layout shift */
+  var lockY = 0, locked = false;
+  function lockPage() {
+    if (locked) return; locked = true;
+    lockY = window.pageYOffset || root.scrollTop || 0;
+    var sbw = window.innerWidth - root.clientWidth;
+    document.body.style.top = (-lockY) + 'px';
+    if (sbw > 0) document.body.style.paddingRight = sbw + 'px';
+    root.classList.add('lock');
+  }
+  function unlockPage() {
+    if (!locked) return; locked = false;
+    root.classList.remove('lock');
+    document.body.style.top = ''; document.body.style.paddingRight = '';
+    root.style.scrollBehavior = 'auto'; window.scrollTo(0, lockY); root.style.scrollBehavior = '';
+  }
+  function hideAll() { $$('.modal,.chat').forEach(function (m) { m.hidden = true; }); openModal = null; unlockPage(); }
   $$('[data-close]').forEach(function (b) { b.addEventListener('click', hideAll); });
   $$('.modal').forEach(function (m) { m.addEventListener('mousedown', function (e) { if (e.target === m) hideAll(); }); });
 
   /* ---------- ask anything (answers about Robin) ---------- */
-  var ask = $('#ask'), askIn = $('#ask-in'), askQ = $('#ask-q'), askLog = $('#ask-log'), step = 0, who = '';
+  var ask = $('#ask'), askIn = $('#ask-in'), askQ = $('#ask-q'), askLog = $('#ask-log'), askForm = $('#ask-form'), chipBox = $('#ask-chips'), busy = false;
   var MAIL = '<a href="mailto:binnfrancisco@gmail.com">binnfrancisco@gmail.com</a>';
+  /* Tagalog question -> Tagalog answer, English question -> English answer */
+  function isTL(t) { return /\b(sino|asawa|misis|mo|ka|ko|ba|ang|ng|nasaan|saan|ano|anak|pamilya|kasal|jowa|po|naman|siya|niya|mga|may|meron|magkano|kumusta|kamusta|mahal|mag-?asawa|kayo|natin|namin|iyo|inyo|nyo|niyo)\b/.test(t); }
   var KB = [
-    [/^(hi|hello|hey|yo|hola|kumusta|kamusta)\b/, function () { return 'Hey ' + who + '! Ask me about my work, skills, education, services or how to reach me.'; }],
-    [/thank|salamat|\bty\b/, function () { return 'You\'re welcome, ' + who + '! Anything else you\'d like to know?'; }],
-    [/jenylyn|wife|asawa|misis|spouse|girlfriend|\bgf\b|fianc|jowa|married|kasal|relationship|life partner|family|pamilya|\bkids?\b|children|\banak\b/, 'My wife-to-be is <b>Jenylyn Forte</b> — soon to be Jenylyn Francisco.'],
+    [/^(hi|hello|hey|yo|hola|kumusta|kamusta)\b/, function () { return 'Hey! Ask me about my work, skills, education, services or how to reach me.'; }],
+    [/thank|salamat|\bty\b/, function () { return 'You\'re welcome! Anything else you\'d like to know?'; }],
+    [/jenylyn|wife|asawa|misis|spouse|girlfriend|\bgf\b|fianc|jowa|married|kasal|relationship|life partner|family|pamilya|\bkids?\b|children|\banak\b/, function (t) { return isTL(t) ? 'Ang asawa ko ay si <b>Jenylyn Forte Francisco</b>.' : 'My wife is <b>Jenylyn Forte Francisco</b>.'; }],
     [/hobb|pastime|free time|libangan|mahilig|interests?\b|for fun|sports?\b|gaming|\bgames?\b|motor|\brid(e|es|ing)\b|gym|workout|exercise|fitness|basketball|volleyball/, 'Outside of work I love playing online games and riding my motorcycle. I also hit the gym, and I play basketball and volleyball.'],
-    [/your name|what.?s your name|sino ka|who are you|who is robin|about (you|yourself|robin)|introduce|tell me about/, 'I\'m Robin Francisco — a graphic designer and social media / digital marketing manager. I create brand-aligned visuals for social media, web and promotional campaigns, taking work from concept to final delivery.'],
+    [/your name|what.?s your name|sino ka|who are you|who is robin|about (you|yourself|robin)|introduce|tell me about/, 'I\'m Robin Francisco — a graphic designer and social media manager. I create brand-aligned visuals for social media, web and promotional campaigns, taking work from concept to final delivery.'],
     [/where do you work|saan ka (nag)?trabaho|employer|company|current(ly)?|right now|miqa|job|ginagawa|what do you do|your (role|work|profession)/, 'Right now I\'m Digital Marketing Manager at Miqa Private Limited (since Oct 2025). I design graphics, ads and campaign content, and manage creative production across digital platforms.'],
     [/social space|freelanc/, 'I\'ve been a freelance Graphic Artist at Social Space since May 2021, doing digital marketing services including social media management and content creation.'],
     [/techfactors|intern|\bojt\b|on.the.job/, 'In Feb – May 2025 I did my OJT at Techfactors Inc. as a Graphic Designer — digital learning materials, infographics and marketing content for e-learning modules, using Photoshop, Illustrator and InDesign.'],
@@ -122,26 +145,27 @@
   function answer(q) {
     var t = q.toLowerCase().replace(/[^\w\s?&.'-]/g, ' ');
     for (var i = 0; i < KB.length; i++) {
-      if (KB[i][0].test(t)) return typeof KB[i][1] === 'function' ? KB[i][1]() : KB[i][1];
+      if (KB[i][0].test(t)) return typeof KB[i][1] === 'function' ? KB[i][1](t) : KB[i][1];
     }
     return FALLBACK;
   }
-  var chipBox = document.createElement('div'); chipBox.className = 'ask-chips'; chipBox.hidden = true;
   CHIPS.forEach(function (c) {
     var b = document.createElement('button'); b.type = 'button'; b.textContent = c;
-    b.addEventListener('click', function () { say(c); });
+    b.addEventListener('click', function () { send(c); });
     chipBox.appendChild(b);
   });
-  askLog.parentNode.insertBefore(chipBox, askLog);
-  var askTok = 0;
+  var askTok = 0, ASK_KEY = 'askHistory', hist = [];
+  try { hist = JSON.parse(localStorage.getItem(ASK_KEY) || '[]').filter(function (q) { return typeof q === 'string'; }).slice(-40); } catch (e) { hist = []; }
+  function saveHist() { try { localStorage.setItem(ASK_KEY, JSON.stringify(hist.slice(-40))); } catch (e) {} }
+  var THINK_ICON = '<svg class="think-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3.6"/><circle cx="16.4" cy="7" r="2.6"/><circle cx="7" cy="16.6" r="2.6"/><circle cx="15.6" cy="16" r="3.6"/></svg>';
   function askBubble(t, cls, html) {
     var p = document.createElement('p'); p.className = cls || 'bot';
     if (html) p.innerHTML = t; else p.textContent = t;
     askLog.appendChild(p); askLog.scrollTop = askLog.scrollHeight; return p;
   }
-  /* auto-reply: shows "…" then types the answer out letter by letter (links/bold keep working) */
+  /* shows "thinking…" (spinner + shimmer), then types the answer out (links/bold keep working) */
   function botType(html, done) {
-    var tok = askTok, p = askBubble('…', 'bot typing');
+    var tok = askTok, p = askBubble(THINK_ICON + '<span class="shimmer">thinking…</span>', 'bot thinking', true);
     setTimeout(function () {
       if (tok !== askTok) return;
       p.className = 'bot'; p.innerHTML = html;
@@ -158,32 +182,49 @@
         askLog.scrollTop = askLog.scrollHeight;
         setTimeout(tick, 14);
       })();
-    }, 520);
+    }, 1100 + Math.random() * 700);
   }
-  function say(q) { askBubble(q, 'me'); botType(answer(q)); }
+  function send(q) {
+    if (busy) return; busy = true;
+    askQ.hidden = true; chipBox.hidden = true; askForm.hidden = true;
+    askBubble(q, 'me'); hist.push(q); saveHist(); askClear.hidden = false;
+    botType(answer(q), function () {
+      busy = false; askForm.hidden = false; chipBox.hidden = false;
+      askIn.placeholder = 'ask another…'; askIn.focus();
+      askLog.scrollTop = askLog.scrollHeight;
+    });
+  }
+  var askClear = $('#ask-clear');
+  function resetAsk() {
+    askTok++; busy = false; askLog.innerHTML = ''; askIn.value = '';
+    askForm.hidden = false; askClear.hidden = !hist.length;
+    if (hist.length) {  /* bring back this user's earlier conversation, no animation */
+      askQ.hidden = true; askIn.placeholder = 'ask another…';
+      hist.forEach(function (q) { askBubble(q, 'me'); askBubble(answer(q), 'bot', true); });
+      chipBox.hidden = false;
+      askLog.scrollTop = askLog.scrollHeight;
+    } else {
+      askQ.hidden = false; chipBox.hidden = true; askIn.placeholder = '';
+      askQ.textContent = 'what do you want to ask?';
+    }
+  }
   function openAsk() {
-    show(ask); step = 0; who = ''; askTok++; askLog.innerHTML = ''; chipBox.hidden = true;
-    askQ.textContent = 'what do you want to ask?'; askIn.placeholder = "what's your name?"; askIn.value = '';
-    botType('Hi! I\'m Rob — ask me anything about me. First, what should I call you?');
-    setTimeout(function () { askIn.focus(); }, 30);
+    show(ask); resetAsk();
+    setTimeout(function () { askIn.focus(); askLog.scrollTop = askLog.scrollHeight; }, 30);
   }
-  $('#ask-form').addEventListener('submit', function (e) {
+  askClear.addEventListener('click', function () { hist = []; saveHist(); try { localStorage.removeItem(ASK_KEY); } catch (e) {} resetAsk(); askIn.focus(); });
+  askForm.addEventListener('submit', function (e) {
     e.preventDefault();
     var val = askIn.value.trim(); if (!val) return;
-    askIn.value = '';
-    if (step === 0) {
-      who = val; step = 1; askIn.placeholder = 'ask me anything about me…';
-      askBubble(who, 'me');
-      botType('Nice to meet you, ' + who.replace(/[<>&]/g, '') + '! Ask me anything about me — my work, skills, education, services or how to reach me.', function () { chipBox.hidden = false; });
-    } else {
-      say(val);
-    }
+    askIn.value = ''; send(val);
   });
   $('#ask-open').addEventListener('click', openAsk);
 
   /* ---------- typing test ---------- */
-  var tt = $('#tt'), box = $('#tt-words'), kb = $('#tt-kb');
-  var WORDS = 'build ship code design learn think make fast simple clean modern useful future ideas people world focus write test quick data model system mobile cloud launch create improve team share open great real time every day better start keep going small steps matter brand social media content visual story color layout motion pixel'.split(' ');
+  var tt = $('#tt'), box = $('#tt-words'), kb = $('#tt-kb'), inp = $('#tt-in'), play = $('#tt-play'), resEl = $('#tt-result');
+  var WORDS = 'the and you can way new try fun big top one two run map web app sky sun sea win now fast code type pixel build ship make play game ride rock flow wave glow neon bold calm kind real true time life work idea plan goal dream focus shape clean clear quick smart light bright sharp simple modern create design learn think grow start keep move jump write read share team brand color story style music video photo frame layout motion social media post reel feed ads sale page site link data cloud mobile launch improve better great small steps matter every day night coffee gym ball bike road trip city beach island'.split(' ');
+  var TT_LEN = 20;  /* short test: 20 words */
+  var OWNER = { name: 'rob', wpm: 140 };  /* score to beat on the results screen */
   var T = { list: [], el: [], wi: 0, cur: '', typed: 0, correct: 0, t0: 0, timer: null, done: false, lh: 0 };
   var ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'], keyEl = {}, nextKey = null;
   ROWS.forEach(function (r) {
@@ -235,12 +276,12 @@
   }
   function ttReset() {
     clearInterval(T.timer);
-    T.list = []; for (var i = 0; i < 40; i++) T.list.push(WORDS[Math.floor(Math.random() * WORDS.length)]);
+    T.list = []; for (var i = 0; i < TT_LEN; i++) { var nw; do { nw = WORDS[Math.floor(Math.random() * WORDS.length)]; } while (nw === T.list[i - 1]); T.list.push(nw); }
     T.wi = 0; T.cur = ''; T.typed = 0; T.correct = 0; T.t0 = 0; T.done = false; T.typedAt = []; T.lh = 0;
     box.innerHTML = ''; box.style.transform = ''; box.appendChild(ttHl); box.appendChild(caret);
     T.el = T.list.map(function (w) { var s = document.createElement('span'); s.className = 'w'; box.appendChild(s); box.appendChild(document.createTextNode(' ')); return s; });
     T.list.forEach(function (w, i) { paintWord(i); });
-    $('#tt-result').hidden = true; kb.hidden = false; stats(0);
+    resEl.hidden = true; play.hidden = false; tt.classList.remove('done'); kb.hidden = false; inp.value = ''; stats(0);
     box.classList.remove('run'); setNext();
     requestAnimationFrame(function () { box.style.transition = 'none'; moveCaret(); requestAnimationFrame(function () { box.style.transition = ''; }); });
   }
@@ -253,11 +294,15 @@
   function finish() {
     T.done = true; clearInterval(T.timer); setNext();
     var sec = (Date.now() - T.t0) / 1000, mins = Math.max(sec, 1) / 60;
-    $('#r-wpm').textContent = Math.round((T.correct / 5) / mins);
-    $('#r-acc').textContent = (T.typed ? Math.round(T.correct / T.typed * 100) : 100) + '%';
+    var wpm = Math.round((T.correct / 5) / mins), won = wpm >= OWNER.wpm, vs = $('#tt-vs');
+    $('#r-wpm').textContent = wpm;
+    $('#r-acc').textContent = T.typed ? Math.round(T.correct / T.typed * 100) : 100;
     $('#r-raw').textContent = Math.round((T.typed / 5) / mins);
-    $('#r-time').textContent = Math.round(sec) + 's';
-    $('#tt-result').hidden = false; kb.hidden = true;
+    $('#r-time').textContent = sec.toFixed(1);
+    vs.className = 'tt-vs' + (won ? ' win' : '');
+    vs.innerHTML = '<i>' + (won ? '✓' : '×') + '</i><span>' + (won ? 'you beat ' : 'you didn\'t beat ') + OWNER.name + ' · ' + OWNER.wpm + ' wpm</span>';
+    play.hidden = true; resEl.hidden = false; tt.classList.add('done'); tt.scrollTop = 0;
+    inp.blur();
   }
   function ttKey(e) {
     if (e.key === 'Tab') { e.preventDefault(); ttReset(); return; }
@@ -292,9 +337,28 @@
     stats(T.t0 ? (Date.now() - T.t0) / 1000 : 0);
     moveCaret(); setNext();
   }
-  function openTT() { show(tt); ttReset(); }
+  /* desktop: real key events (we cancel them so the hidden input never changes).
+     phones: the virtual keyboard sends no usable key events, so the hidden input's value is diffed against the typed word */
+  function ttKeydown(e) {
+    if (T.done) { if (e.key === 'Enter') { e.preventDefault(); ttReset(); inp.focus(); } else ttKey(e); return; }
+    var handled = !e.ctrlKey && !e.metaKey && !e.altKey && (e.key.length === 1 || e.key === 'Backspace');
+    ttKey(e);
+    if (handled && !T.done) { e.preventDefault(); inp.value = T.cur; }
+  }
+  var noop = function () {};
+  inp.addEventListener('input', function () {
+    if (T.done) { inp.value = ''; return; }
+    var v = inp.value.replace(/[\r\n]/g, ''), c = T.cur, i = 0;
+    while (i < c.length && i < v.length && c.charAt(i) === v.charAt(i)) i++;
+    for (var k = c.length; k > i; k--) ttKey({ key: 'Backspace', preventDefault: noop });
+    for (var j = i; j < v.length && !T.done; j++) ttKey({ key: v.charAt(j), preventDefault: noop });
+    if (!T.done && inp.value !== T.cur) inp.value = T.cur;
+  });
+  /* tapping anywhere on the test brings the phone keyboard back */
+  tt.addEventListener('click', function (e) { if (!T.done && !e.target.closest('.x')) inp.focus(); });
+  function openTT() { show(tt); ttReset(); inp.focus(); }
   $('#tt-open').addEventListener('click', openTT);
-  $('#tt-again').addEventListener('click', ttReset);
+  $('#tt-again').addEventListener('click', function () { ttReset(); inp.focus(); });
   addEventListener('resize', function () { if (openModal === tt && !T.done) { T.lh = 0; moveCaret(); } });
 
   /* ---------- community chat (local demo, no server) ---------- */
@@ -350,7 +414,11 @@
     btext.textContent = prev;
     var left = x + 18 + bw > innerWidth - 12, up = y + 22 + bh > innerHeight - 56;
     bubble.classList.toggle('left', left); bubble.classList.toggle('up', up);
-    bubble.style.transform = 'translate(' + (left ? x + 6 : x + 18) + 'px,' + (up ? y - 6 : y + 22) + 'px)';
+    /* keep the whole bubble (at its final size) inside the viewport */
+    var ax = left ? Math.max(x + 6, bw + 8) : Math.min(x + 18, innerWidth - bw - 8);
+    ax = Math.min(ax, innerWidth - 8);
+    var ay = up ? Math.max(y - 6, bh + 8) : Math.min(y + 22, innerHeight - bh - 8);
+    bubble.style.transform = 'translate(' + ax + 'px,' + ay + 'px)';
   }
   function typeText(str, done) {
     btext.textContent = ''; var i = 0;
@@ -394,12 +462,17 @@
   ['wheel', 'touchmove'].forEach(function (ev) { addEventListener(ev, function () { if (tOn) tourEnd(); }, { passive: true }); });
   addEventListener('resize', function () { if (tOn && steps[tIdx]) { var el = $(steps[tIdx][0]); el && place(el); } });
   var seen = false; try { seen = localStorage.getItem('toured') === '1'; } catch (e) {}
-  if (!seen) addEventListener('load', function () { setTimeout(tourStart, 2600); });
+  if (!seen) addEventListener('load', function () { setTimeout(function () { if (!openModal) tourStart(); }, 2600); });
 
   /* ---------- keyboard ---------- */
   addEventListener('keydown', function (e) {
     var combo = isMac ? e.metaKey : e.altKey;
-    if (openModal === tt) { if (e.key === 'Escape') hideAll(); else ttKey(e); return; }
+    if (openModal === tt) { if (e.key === 'Escape') hideAll(); else ttKeydown(e); return; }
+    if (openModal === ask) {  /* page shortcuts stay off while Ask anything is open */
+      if (e.key === 'Escape') hideAll();
+      else if (!busy && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && document.activeElement !== askIn) askIn.focus();
+      return;
+    }
     if (combo && e.code === 'KeyK') { e.preventDefault(); openAsk(); return; }
     if (combo && e.code === 'KeyJ') { e.preventDefault(); openTT(); return; }
     if (e.key === 'Escape') { hideAll(); side.classList.remove('open'); if (tOn) tourEnd(); return; }

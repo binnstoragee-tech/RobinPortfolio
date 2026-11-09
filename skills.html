@@ -94,14 +94,16 @@
   function mk(tag,attrs){var el=document.createElementNS(NS,tag);for(var k in attrs)el.setAttribute(k,attrs[k]);return el}
   function layout(animate){
     $$('#tree-svg path').forEach(function(p){p.remove()});
-    var cr=tree.getBoundingClientRect();
+    /* measure with offsets, not getBoundingClientRect: animations (pop-in transforms) must not shift the wire ends */
+    function box(el){var x=0,y=0,w=el.offsetWidth,h=el.offsetHeight,e=el;while(e&&e!==tree){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent}return {left:x,top:y,width:w,height:h,bottom:y+h}}
+    var cr={left:0,top:0,width:tree.offsetWidth,height:tree.offsetHeight};
     svg.setAttribute('viewBox','0 0 '+cr.width+' '+cr.height);
     $$('#tree .grp').forEach(function(g,gi){
-      var src=g.querySelector('[data-src]'),anchor=src.querySelector('.tile')||src,ar=anchor.getBoundingClientRect();
+      var src=g.querySelector('[data-src]'),anchor=src.querySelector('.tile')||src,ar=box(anchor);
       var sx=ar.left+ar.width/2-cr.left,sy=ar.bottom-cr.top+(anchor===src?2:0);
       if(gi===0)src.style.setProperty('--nd','0s'); else src.style.setProperty('--nd',(BASE[gi]-0.3)+'s');
       Array.prototype.slice.call(g.querySelectorAll('.node')).forEach(function(n,i){
-        var t=n.querySelector('.tile').getBoundingClientRect(),ex=t.left+t.width/2-cr.left,ey=t.top-cr.top,dy=(ey-sy)*0.55;
+        var t=box(n.querySelector('.tile')),ex=t.left+t.width/2-cr.left,ey=t.top-cr.top,dy=(ey-sy)*0.55;
         var d='M'+sx+' '+sy+' C'+sx+' '+(sy+dy)+' '+ex+' '+(ey-dy)+' '+ex+' '+ey;
         var ld=BASE[gi]+i*0.13,nd=ld+0.8;
         n.style.setProperty('--nd',nd+'s');
@@ -141,7 +143,7 @@
   function start(){if(started)return;started=true;(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(play)}
   if('IntersectionObserver' in window){new IntersectionObserver(function(en,o){if(en[0].isIntersecting){o.disconnect();start()}},{threshold:.15}).observe(tree)}else start();
   $('#replay').addEventListener('click',play);
-  var rt;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(started)layout(!done)},150)});
+  var rt,lastW=innerWidth;addEventListener('resize',function(){if(innerWidth===lastW)return;lastW=innerWidth;clearTimeout(rt);rt=setTimeout(function(){if(started)layout(!done)},150)}); /* ignore height-only resizes (phone URL bar) */
 })();
 </script>
 <script>

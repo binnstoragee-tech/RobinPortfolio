@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Inquiries — Admin</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="style.css?v=14">
+  <script>try{var t=localStorage.getItem('mode');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else if(t==='system'&&matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.dataset.theme='light'}catch(e){}</script>
+</head>
+<body class="ad-body">
+<header class="ad-top"><span class="ad-brand">Robin Francisco <em>admin</em></span><div><button id="rf">Refresh</button><button id="out">Sign out</button></div></header>
+<main class="ad-wrap">
+  <h1 class="svc-title">Inquiries</h1>
+  <p class="muted" id="st"></p>
+  <div id="ls"></div>
+</main>
+<script>
+var ls=document.getElementById('ls'),st=document.getElementById('st');
+function api(u,o){o=o||{};o.headers={'Content-Type':'application/json'};return fetch(u,o).then(function(r){if(r.status===401){location.href='/admin-login.html';throw 0}return r.json()})}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function row(k,v){if(!v)return null;var d=el('div','ad-row');d.append(el('b','',k),el('span','',v));return d}
+function render(a){
+  var n=a.filter(function(q){return q.status==='new'}).length;st.textContent=a.length+' total · '+n+' new';ls.textContent='';
+  if(!a.length){ls.append(el('p','muted','No inquiries yet.'));return}
+  a.forEach(function(q){
+    var it=el('article','ad-item'+(q.status==='new'?' new':'')),h=el('button','ad-ih');
+    h.append(el('i','dot'),el('strong','',q.name),el('span','muted',q.project),el('small','',new Date(q.createdAt).toLocaleString()));
+    var bd=el('div','ad-ib');bd.hidden=true;
+    var mail=el('a','',q.email);mail.href='mailto:'+q.email+'?subject='+encodeURIComponent('Re: '+q.project);
+    var re=el('div','ad-row');re.append(el('b','','Email'),mail);bd.append(re);
+    [['Company',q.company],['Project',q.project],['Budget',q.budget],['Timeline',q.timeline]].forEach(function(p){var r=row(p[0],p[1]);if(r)bd.append(r)});
+    bd.append(el('p','ad-det',q.details));
+    var ac=el('div','ad-ac'),tg=el('button','',q.status==='new'?'Mark as read':'Mark as new'),dl=el('button','danger','Delete');
+    tg.onclick=function(){api('/api/admin/inquiries/'+q.id,{method:'PATCH',body:JSON.stringify({status:q.status==='new'?'read':'new'})}).then(load)};
+    dl.onclick=function(){if(confirm('Delete this inquiry?'))api('/api/admin/inquiries/'+q.id,{method:'DELETE'}).then(load)};
+    ac.append(tg,dl);bd.append(ac);
+    h.onclick=function(){bd.hidden=!bd.hidden;if(!bd.hidden&&q.status==='new'){q.status='read';it.classList.remove('new');api('/api/admin/inquiries/'+q.id,{method:'PATCH',body:JSON.stringify({status:'read'})}).then(function(){st.textContent=st.textContent})}};
+    it.append(h,bd);ls.append(it);
+  });
+}
+function load(){return api('/api/admin/inquiries').then(render).catch(function(){})}
+document.getElementById('rf').onclick=load;
+document.getElementById('out').onclick=function(){api('/api/admin/logout',{method:'POST'}).then(function(){location.href='/admin-login.html'})};
+load();
+</script>
+</body>
+</html>

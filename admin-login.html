@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Sign in — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#fff;color:#0a0a0a;font-family:Geist,system-ui,sans-serif;position:relative;overflow-x:hidden}
+    body::before,body::after{content:"";position:fixed;width:340px;height:340px;pointer-events:none;background-image:radial-gradient(rgba(10,10,10,.14) 1px,transparent 1.2px);background-size:9px 9px}
+    body::before{top:0;right:0;-webkit-mask:radial-gradient(circle at top right,#000,transparent 70%);mask:radial-gradient(circle at top right,#000,transparent 70%)}
+    body::after{bottom:0;left:0;-webkit-mask:radial-gradient(circle at bottom left,#000,transparent 70%);mask:radial-gradient(circle at bottom left,#000,transparent 70%)}
+    main{position:relative;z-index:1;width:100%;max-width:384px;text-align:center}
+    .brand{font:400 17px 'Geist Mono',ui-monospace,monospace;margin:0 0 36px;letter-spacing:.01em}
+    form{text-align:left;padding:28px;background:#fff;border:1px solid #ececec;border-radius:22px;box-shadow:0 24px 60px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.03)}
+    .eye{font:400 10.5px 'Geist Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#a3a3a3;margin:0 0 4px}
+    h1{font:400 23px Geist,sans-serif;margin:0 0 22px}
+    label.f{display:block;font:400 10.5px 'Geist Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#737373;margin-bottom:16px}
+    input[type=email],input[type=password]{display:block;width:100%;margin-top:8px;padding:14px 15px;font:400 14px Geist,sans-serif;color:#0a0a0a;background:#fff;border:1px solid #e8e8e8;border-radius:12px;outline:none;transition:border-color .15s,box-shadow .15s;text-transform:none;letter-spacing:0}
+    input::placeholder{color:#b4b4b4}
+    input:focus{border-color:#0a0a0a;box-shadow:0 0 0 1px #0a0a0a}
+    .chk{display:flex;align-items:center;gap:9px;margin:4px 0 18px;font-size:13px;color:#525252;cursor:pointer}
+    .chk input{appearance:none;width:16px;height:16px;margin:0;border:1.4px solid #404040;border-radius:4px;display:grid;place-content:center;cursor:pointer}
+    .chk input:checked{background:#0a0a0a}.chk input:checked::after{content:"";width:8px;height:4px;border:solid #fff;border-width:0 0 1.6px 1.6px;transform:rotate(-45deg) translate(1px,-1px)}
+    button{width:100%;padding:14px;font:600 14px Geist,sans-serif;color:#fff;background:#0a0a0a;border:0;border-radius:12px;cursor:pointer;transition:opacity .15s}
+    button:hover{opacity:.88}button:disabled{opacity:.5;cursor:not-allowed}
+    .msg{margin:0 0 14px;font-size:13px;color:#d92d20}
+    .hp{position:absolute;left:-9999px;opacity:0}
+    .back,.copy{display:block;font:400 12px 'Geist Mono',monospace;color:#8a8a8a;text-decoration:none}
+    .back{margin-top:28px}.back:hover{color:#0a0a0a}.copy{margin-top:30px;font-size:11.5px}
+  </style>
+</head>
+<body>
+<main>
+  <p class="brand">robin francisco</p>
+  <form id="f" novalidate>
+    <p class="eye">Admin</p><h1>sign in</h1>
+    <label class="f">Email<input name="email" type="email" placeholder="you@example.com" autocomplete="username" required autofocus></label>
+    <label class="f">Password<input name="password" type="password" placeholder="••••••••" autocomplete="current-password" required></label>
+    <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label class="chk"><input type="checkbox" name="remember"> Remember me</label>
+    <p class="msg" id="m" role="alert" hidden></p>
+    <button id="b" type="submit">Sign in</button>
+  </form>
+  <a class="back" href="/">← back to site</a>
+  <span class="copy">© <span id="y">2026</span> Robin Francisco</span>
+</main>
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+var f=document.getElementById('f'),m=document.getElementById('m'),b=document.getElementById('b'),t;
+function lock(s){clearInterval(t);b.disabled=true;(function tick(){if(s<=0){clearInterval(t);b.disabled=false;b.textContent='Sign in';m.hidden=true;return}b.textContent='Try again in '+(s>=60?Math.ceil(s/60)+' min':s+'s');s--})();t=setInterval(function(){if(s<=0){clearInterval(t);b.disabled=false;b.textContent='Sign in';m.hidden=true;return}b.textContent='Try again in '+(s>=60?Math.ceil(s/60)+' min':s+'s');s--},1000)}
+f.addEventListener('submit',function(e){
+  e.preventDefault();m.hidden=true;
+  if(f.website.value)return; // bot
+  if(!f.email.value.trim()||!f.password.value){m.textContent='Enter your email and password.';m.hidden=false;return}
+  b.disabled=true;b.textContent='Signing in…';
+  fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:f.email.value,password:f.password.value,remember:f.remember.checked})})
+  .then(function(r){return r.json().catch(function(){return{}}).then(function(j){
+    if(r.ok){location.href='/admin';return}
+    m.textContent=j.error||'Sign in failed.';m.hidden=false;f.password.value='';
+    if(r.status===429)lock(j.retryAfter||900);else{b.disabled=false;b.textContent='Sign in'}
+  })})
+  .catch(function(){m.textContent='Backend not reachable. Open this page via http://localhost:3000/admin';m.hidden=false;b.disabled=false;b.textContent='Sign in'});
+});
+</script>
+</body>
+</html>

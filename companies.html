@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Companies — Robin Francisco</title>
+  <meta name="description" content="Companies Robin Francisco has worked with — Miqa, Techfactors and Social Space.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://yourdomain.com/companies">
+  <meta property="og:title" content="Companies — Robin Francisco">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="img/favicon/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Source+Serif+4:wght@400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap">
+  <link rel="stylesheet" href="style.css?v=12">
+  <script src="dev-links.js" defer></script>
+  <script>try{var t=localStorage.getItem('mode');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else if(t==='system'&&matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.dataset.theme='light'}catch(e){}</script>
+</head>
+<body>
+
+<nav class="side" id="side" aria-label="Site">
+  <div class="side-head">
+    <a href="/" class="brand">Robin Francisco</a>
+    <button class="icon-btn only-m" id="menu-close" aria-label="Close menu">✕</button>
+  </div>
+  <div class="side-scroll">
+    <div class="nav"><a href="/#summary"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Summary</a><a href="/experience"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M3 13h18"/></svg>Experience</a><a href="/education"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 012-2h12v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h12"/></svg>Education</a><a href="/skills"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="10" rx="1.5"/><path d="M3 19h18"/></svg>Skills</a><a href="/projects"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Projects</a><a href="/services"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg>Services</a></div>
+    <div class="nav sep"><a href="/companies" class="on"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.5a3 3 0 010 5M18 14.5c1.8.8 3 2.5 3 5.5"/></svg>Companies</a><a href="/#contact"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Contact</a></div>
+  </div>
+  <div class="side-foot">
+    <div class="keys">
+      <div><button id="ask-open">Ask anything</button> <kbd class="mod">Alt</kbd><span>+</span><kbd>K</kbd></div>
+      <div><button id="tt-open">Typing test</button> <kbd class="mod">Alt</kbd><span>+</span><kbd>J</kbd></div>
+    </div>
+    <div class="grp">
+      <div class="faces" id="faces"><img src="https://api.dicebear.com/9.x/notionists/svg?seed=Maria&radius=50&backgroundColor=f1f1f1" alt="" width="28" height="28" loading="lazy" onerror="this.style.visibility='hidden'"><img src="https://api.dicebear.com/9.x/notionists/svg?seed=Alex&radius=50&backgroundColor=f1f1f1" alt="" width="28" height="28" loading="lazy" onerror="this.style.visibility='hidden'"><img src="https://api.dicebear.com/9.x/notionists/svg?seed=Sam&radius=50&backgroundColor=f1f1f1" alt="" width="28" height="28" loading="lazy" onerror="this.style.visibility='hidden'"></div>
+      <p class="vline"><b id="v-count">3</b> <span id="v-label">people viewing now</span></p>
+      <button class="chat-link" id="chat-open"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M9 10h.01M12 10h.01M15 10h.01"/></svg>community chat</button>
+    </div>
+    <div class="tools">
+      <div class="mode" role="group" aria-label="Color mode">
+        <button data-mode="system" title="System"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></button><button data-mode="light" title="Light"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button><button data-mode="dark" title="Dark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg></button>
+      </div>
+      <button class="sound" id="sound" title="Sound" aria-label="Toggle sound" data-on="<svg class=&quot;ic&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;><path d=&quot;M4 9v6h4l5 4V5L8 9z&quot;/><path d=&quot;M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12&quot;/></svg>" data-off="<svg class=&quot;ic&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;><path d=&quot;M4 9v6h4l5 4V5L8 9z&quot;/><path d=&quot;M17 9l4 6M21 9l-4 6&quot;/></svg>"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l4 6M21 9l-4 6"/></svg></button>
+    </div>
+    <p class="reach">For work, collabs &amp; everything else, reach me at</p>
+    <a class="mail" href="mailto:binnfrancisco@gmail.com"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>binnfrancisco@gmail.com</a>
+  </div>
+</nav>
+
+<header class="top">
+  <a href="/" class="brand">Robin Francisco</a>
+  <button class="icon-btn" id="menu-open" aria-label="Open menu">☰</button>
+</header>
+
+<div class="page wide" id="top">
+
+  <section id="companies">
+    <a class="back" href="/">← back to portfolio</a>
+    <header class="sh"><h2>companies</h2><span>3 companies</span></header>
+    <h1 class="svc-title">Companies</h1>
+    <p class="muted svc-sub">The teams and clients I've worked with — from freelance social media work to in-house marketing.</p>
+    <div class="tl">
+      <article class="co">
+        <div class="co-badge"><img src="img/logos/miqa.png" alt="Miqa logo" width="56" height="56"></div>
+        <div class="co-body">
+          <h3 class="co-name">Miqa Private Limited</h3>
+          <p class="co-meta" data-prefix="" data-start="2025-10" data-end="present" data-mode="dur"></p>
+          <p class="co-loc">Malé, Maldives</p>
+          <div class="role">
+            <h4>Digital Marketing Manager</h4>
+            <p class="role-desc">Leads creative production and digital marketing — graphics, ad creatives, campaign content, video editing and web pages built with HTML, CSS and JavaScript.</p>
+          </div>
+        </div>
+      </article>
+      <article class="co">
+        <div class="co-badge"><img src="img/logos/techfactors.png" alt="Techfactors logo" width="56" height="56"></div>
+        <div class="co-body">
+          <h3 class="co-name">Techfactors Inc.</h3>
+          <p class="co-meta" data-prefix="OJT · " data-start="2025-02" data-end="2025-05" data-mode="dur"></p>
+          <p class="co-loc">Quezon City, Philippines</p>
+          <div class="role">
+            <h4>Graphic Designer (OJT)</h4>
+            <p class="role-desc">Designed digital learning materials, infographics and marketing content for e-learning modules during on-the-job training.</p>
+          </div>
+        </div>
+      </article>
+      <article class="co">
+        <div class="co-badge"><img src="img/logos/social-space.png" alt="Social Space logo" width="56" height="56"></div>
+        <div class="co-body">
+          <h3 class="co-name">Social Space</h3>
+          <p class="co-meta" data-prefix="Freelance · " data-start="2021-05" data-end="present" data-mode="dur"></p>
+          <p class="co-loc">Taguig, Philippines</p>
+          <div class="role">
+            <h4>Graphic Artist (Freelance)</h4>
+            <p class="role-desc">Provides social media management and content creation for clients — designing graphics, planning and scheduling posts.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+    <p class="muted plans-note">Want the full details? See my <a href="/experience">experience</a>.</p>
+  </section>
+
+  <footer class="foot"><p class="muted reach-line">binnfrancisco@gmail.com · +63 969 515 9058</p></footer>
+</div>
+
+<script>
+/* experience timeline: live durations ("Present" keeps counting) + skills toggle */
+(function () {
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function parse(v) { if (v === 'present') { var n = new Date(); return [n.getFullYear(), n.getMonth() + 1, true]; } var p = v.split('-'); return [+p[0], +p[1], false]; }
+  function dur(a, b) {
+    var m = (b[0] - a[0]) * 12 + (b[1] - a[1]) + 1, y = Math.floor(m / 12), r = m % 12, o = [];
+    if (y) o.push(y + (y > 1 ? ' yrs' : ' yr')); if (r) o.push(r + (r > 1 ? ' mos' : ' mo'));
+    return o.join(' ') || '1 mo';
+  }
+  document.querySelectorAll('[data-start]').forEach(function (el) {
+    var a = parse(el.dataset.start), b = parse(el.dataset.end), d = dur(a, b);
+    if (el.dataset.mode === 'dur') el.textContent = (el.dataset.prefix || '') + d;
+    else el.textContent = MON[a[1] - 1] + ' ' + a[0] + ' – ' + (b[2] ? 'Present' : MON[b[1] - 1] + ' ' + b[0]) + ' · ' + d;
+  });
+  document.querySelectorAll('.sk .more').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var sk = btn.closest('.sk'), open = sk.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+      btn.textContent = open ? 'show less' : '+' + btn.dataset.n + ' skills';
+    });
+  });
+})();
+
+</script>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)},$$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+  var root=document.documentElement,mq=matchMedia('(prefers-color-scheme: light)');
+  function applyMode(m){var t=m==='system'?(mq.matches?'light':'dark'):m;root.dataset.theme=t;$$('.mode button').forEach(function(b){b.classList.toggle('on',b.dataset.mode===m)});try{localStorage.setItem('mode',m)}catch(e){}}
+  var saved='dark';try{saved=localStorage.getItem('mode')||'dark'}catch(e){}
+  applyMode(saved);
+  $$('.mode button').forEach(function(b){b.addEventListener('click',function(){applyMode(b.dataset.mode)})});
+  var side=$('#side');
+  $('#menu-open').addEventListener('click',function(){side.classList.add('open')});
+  $('#menu-close').addEventListener('click',function(){side.classList.remove('open')});
+  $$('#side a').forEach(function(a){a.addEventListener('click',function(){side.classList.remove('open')})});
+  $$('.plan-more:not(.ghost)').forEach(function(b){b.addEventListener('click',function(){
+    var card=b.closest('.plan'),open=card.classList.toggle('open');
+    b.setAttribute('aria-expanded',open);
+    b.textContent=open?'− show less':'+ '+b.dataset.n+' more';
+  })});
+})();
+</script>
+<script>
+/* sidebar extras shared across pages: viewers, sound, shortcuts (Ask / Typing test / Chat live on the home page) */
+(function(){
+  function go(k){location.href='/?open='+k}
+  ['ask','tt','chat'].forEach(function(k){var b=document.getElementById(k+'-open');if(b)b.addEventListener('click',function(){go(k)})});
+  addEventListener('keydown',function(e){
+    if(e.altKey&&!e.ctrlKey&&!e.metaKey){if(e.code==='KeyK'){e.preventDefault();go('ask')}else if(e.code==='KeyJ'){e.preventDefault();go('tt')}}
+  });
+  var vc=document.getElementById('v-count'),vl=document.getElementById('v-label'),faces=Array.prototype.slice.call(document.querySelectorAll('#faces img')),v=3;
+  function showViewers(){if(!vc)return;vc.textContent=v;vl.textContent=v===1?'person viewing now':'people viewing now';faces.forEach(function(f,i){f.style.display=i<Math.min(3,v)?'':'none'})}
+  showViewers();setInterval(function(){v=Math.max(1,Math.min(6,v+(Math.random()<0.5?-1:1)));showViewers()},7000);
+  var sBtn=document.getElementById('sound'),sOn=false;
+  try{sOn=localStorage.getItem('sound')==='on'}catch(e){}
+  function paintSound(){if(sBtn)sBtn.innerHTML=sOn?sBtn.dataset.on:sBtn.dataset.off}
+  if(sBtn){paintSound();sBtn.addEventListener('click',function(){sOn=!sOn;paintSound();try{localStorage.setItem('sound',sOn?'on':'off')}catch(e){}})}
+})();
+</script>
+</body>
+</html>

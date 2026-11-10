@@ -763,7 +763,7 @@ var LINES=[
 ];
 function compose(){
   var c=ctx();
-  function intro(l){return{en:'My name is Madona. '+l.en,tl:'Ang pangalan ko ay Madona. '+l.tl}}
+  function intro(l){return l}
   if(vFirst){
     vFirst=false;var g=greetLine(c),w=LINES[2](c);
     g={en:g.en.replace(' Welcome back.',''),tl:g.tl.replace(' Welcome back.','')};
@@ -1003,7 +1003,7 @@ function readStart(){
 /* ---------- Tour = a quick walkthrough of every feature on this page ---------- */
 function ftSteps(){
   var S=[
-    {sel:'#hello',en:'Hi Master Robin, I\'m Madona! Here\'s a quick tour of this admin page.',tl:'Kumusta Master Robin, ako si Madona! Heto ang mabilis na tour ng admin page na ito.'},
+    {sel:'#hello',en:'Hi Master Robin! Here\'s a quick tour of this admin page.',tl:'Kumusta Master Robin! Heto ang mabilis na tour ng admin page na ito.'},
     {sel:'#micbtn',en:'This is the mic. Tap it to talk to me. Ask about your inquiries, the weather or the time.',tl:'Ito ang mic. I-tap mo para makipag-usap sa akin. Magtanong tungkol sa mga inquiry, weather o oras.'},
     {sel:'#bell',en:'The bell shows your notifications. A red dot means there are new inquiries.',tl:'Ang bell ay para sa mga notification. Ang pulang tuldok ay ibig sabihing may bagong inquiry.'},
     {sel:'#s-total',en:'This is the total number of inquiries you received.',tl:'Ito ang kabuuang bilang ng mga inquiry na natanggap mo.'},
@@ -1176,7 +1176,7 @@ function micStart(){
   try{speechSynthesis.cancel()}catch(e){}
   mic.on=true;mic.idle=0;mic.gen++;pendingSay=null;
   $('#mic').hidden=false;$('#micbtn').classList.add('on');micUI('Hi!','','');
-  micSpeak(L('My name is Madona. How can I help you, Master Robin?','Ako si Madona. Ano ang maitutulong ko, Master Robin?'),function(){listen()});
+  micSpeak(L('How can I help you, Master Robin?','Ano ang maitutulong ko, Master Robin?'),function(){listen()});
 }
 function micStop(keepPanel){
   mic.on=false;mic.gen++;

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#f1f2f4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="RF Admin">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32.png">
+  <link rel="apple-touch-icon" href="/img/favicon/apple-touch-icon.png">
+  <title>Sign in — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+  <script>try{if(localStorage.getItem('adm_theme')==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('meta[name=theme-color]').content='#09090a'}}catch(e){}</script>
+  <style>
+    :root{--bg:#f1f2f4;--card:#fff;--card2:#f6f6f8;--bd:#ececf0;--tx:#0b0b0c;--mu:#6b6e76;--mu2:#a6a9b1;--inv:#fff;--or:#ff8a3d;--or2:#ff6f1a;--dan:#e5484d;--sh:0 18px 50px rgba(12,12,16,.1);--ease:cubic-bezier(.2,.8,.2,1)}
+    :root[data-theme=dark]{--bg:#09090a;--card:#141416;--card2:#1c1c1f;--bd:#26262a;--tx:#f5f5f6;--mu:#8d9099;--mu2:#5c5f67;--inv:#0b0b0c;--sh:0 18px 50px rgba(0,0,0,.55)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+    body{margin:0;min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:calc(20px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom));background:var(--bg);color:var(--tx);font:400 15px/1.5 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    svg{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    [hidden]{display:none!important}
+    main{width:100%;max-width:400px;animation:rise .8s var(--ease) both}
+
+    .hero{position:relative;overflow:hidden;border-radius:34px;padding:28px 24px 56px;background:#0b0b0c;color:#fff;border:1px solid #1d1d20}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.07) 50%,transparent 65%);transform:translateX(-120%);animation:sweep 2.4s var(--ease) .7s 1 both;pointer-events:none}
+    .rings{position:absolute;right:-80px;top:-70px;width:280px;height:280px;pointer-events:none;animation:slow 60s linear infinite}
+    .rings circle{fill:none;stroke:#fff;stroke-opacity:.07;stroke-width:1.5}.rings .o{stroke:var(--or);stroke-opacity:.85;stroke-width:2;stroke-dasharray:70 500;stroke-linecap:round}
+    .logo{position:relative;display:block;width:60px;height:60px;border-radius:20px;overflow:hidden;margin-bottom:22px;box-shadow:0 0 0 1px rgba(255,255,255,.1);animation:pop .7s var(--ease) .2s both}
+    .logo img{width:100%;height:100%;display:block}
+    .hero h1{position:relative;margin:0 0 4px;font:600 28px/1.15 Geist,sans-serif;letter-spacing:-.02em}
+    .hero p{position:relative;margin:0;font-size:14px;color:rgba(255,255,255,.62)}
+
+    form{position:relative;margin:-30px 10px 0;padding:24px 20px 20px;background:var(--card);border:1px solid var(--bd);border-radius:30px;box-shadow:var(--sh);animation:rise .8s var(--ease) .15s both}
+    form.shake{animation:shake .5s var(--ease)}
+    .fld{display:block;margin-bottom:14px}
+    .fld span{display:block;margin-bottom:7px;font:400 11px 'Geist Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+    .in{position:relative;display:block}
+    .in>svg{position:absolute;left:17px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--mu);pointer-events:none;transition:color .2s}
+    .in:focus-within>svg{color:var(--or2)}
+    input[type=email],input[type=password],input#pw{display:block;width:100%;height:54px;padding:0 50px 0 46px;font:400 15px Geist,sans-serif;color:var(--tx);background:var(--card2);border:1px solid var(--bd);border-radius:99px;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+    input::placeholder{color:var(--mu2)}
+    input:focus{background:var(--card);border-color:var(--or);box-shadow:0 0 0 4px rgba(255,138,61,.18)}
+    input#pw{-webkit-appearance:none;appearance:none;text-overflow:ellipsis}input#pw::-ms-reveal,input#pw::-ms-clear{display:none}
+    .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:none;border:0;color:var(--mu);cursor:pointer;transition:background .2s,color .2s}
+    .eye:hover{background:var(--bd);color:var(--tx)}.eye svg{width:18px;height:18px}
+    .msg{display:flex;align-items:center;gap:8px;margin:2px 0 14px;padding:10px 14px;border-radius:16px;background:color-mix(in srgb,var(--dan) 10%,transparent);color:var(--dan);font-size:13.5px;animation:pop .35s var(--ease) both}
+    .msg svg{flex:none;width:16px;height:16px}
+    .rm{display:flex;align-items:center;gap:10px;margin:2px 0 14px 4px;font-size:13.5px;color:var(--mu);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+    .rm input{position:absolute;opacity:0;width:0;height:0}
+    .rm .bx{display:grid;place-items:center;width:20px;height:20px;border-radius:7px;border:1.5px solid var(--border2,var(--bd));background:var(--card2);transition:background .2s,border-color .2s}
+    .rm .bx svg{width:13px;height:13px;fill:none;stroke:#0b0b0c;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .25s var(--ease)}
+    .rm input:checked+.bx{background:var(--or);border-color:var(--or)}.rm input:checked+.bx svg{stroke-dashoffset:0}
+    .rm input:focus-visible+.bx{box-shadow:0 0 0 4px rgba(255,138,61,.18)}
+    .hp{position:absolute;left:-9999px;opacity:0}
+
+    #b{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:56px;margin-top:6px;font:600 15.5px Geist,sans-serif;color:#fff;background:#0b0b0c;border:0;border-radius:99px;cursor:pointer;transition:transform .2s var(--ease),background .4s,color .4s,box-shadow .3s}
+    :root[data-theme=dark] #b{background:#f5f5f6;color:#0b0b0c}
+    #b:hover{box-shadow:0 10px 26px rgba(0,0,0,.25)}#b:active{transform:scale(.97)}
+    #b .bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--or);transform:scaleX(0);transform-origin:left}
+    #b.load{pointer-events:none}#b.load .bar{animation:bar 1.4s var(--ease) infinite}
+    #b.ok{background:var(--or);color:#0b0b0c;pointer-events:none}#b.ok .bar{display:none}
+    .sp{width:18px;height:18px;border-radius:50%;border:2.5px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite}
+    .ck{width:22px;height:22px}.ck path{stroke-dasharray:24;stroke-dashoffset:24;animation:draw .5s var(--ease) .05s forwards}
+    .back,.copy{display:block;text-align:center;font:400 12px 'Geist Mono',monospace;color:var(--mu);text-decoration:none}
+    .back{margin-top:26px;transition:color .2s}.back:hover{color:var(--tx)}.copy{margin-top:12px;font-size:11.5px;color:var(--mu2)}
+
+    /* loading: first check + success curtain */
+    .boot{position:fixed;inset:0;z-index:50;display:grid;place-items:center;align-content:center;gap:18px;background:var(--bg);transition:opacity .5s var(--ease),visibility .5s}
+    .boot.gone{opacity:0;visibility:hidden}
+    .orb{position:relative;display:grid;place-items:center;width:92px;height:92px}
+    .orb::before{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid var(--bd);border-top-color:var(--or);animation:spin .9s linear infinite}
+    .orb img{width:60px;height:60px;border-radius:20px;animation:breathe 1.6s ease-in-out infinite}
+    .boot p{margin:0;font:400 12.5px 'Geist Mono',monospace;letter-spacing:.04em;color:var(--mu)}
+    .curtain{position:fixed;inset:0;z-index:60;display:grid;place-items:center;align-content:center;gap:18px;background:#0b0b0c;color:#fff;clip-path:circle(0 at var(--cx,50%) var(--cy,70%));pointer-events:none;transition:clip-path .75s var(--ease)}
+    .curtain.on{clip-path:circle(150% at var(--cx,50%) var(--cy,70%));pointer-events:auto}
+    .curtain .orb::before{border-color:rgba(255,255,255,.12);border-top-color:var(--or)}
+
+    @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+    @keyframes pop{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+    @keyframes spin{to{transform:rotate(360deg)}}@keyframes slow{to{transform:rotate(360deg)}}
+    @keyframes sweep{to{transform:translateX(120%)}}
+    @keyframes shake{0%,100%{transform:none}18%{transform:translateX(-9px)}36%{transform:translateX(8px)}54%{transform:translateX(-6px)}72%{transform:translateX(4px)}}
+    @keyframes bar{0%{transform:scaleX(0);transform-origin:left}50%{transform:scaleX(1);transform-origin:left}51%{transform:scaleX(1);transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
+    @keyframes draw{to{stroke-dashoffset:0}}
+    @keyframes fabp{0%{transform:scale(.9);opacity:.6}100%{transform:scale(1.35);opacity:0}}
+    @keyframes breathe{50%{transform:scale(1.07)}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+<div class="boot" id="boot" aria-live="polite"><div class="orb"><img src="/img/favicon/icon-192.png" alt="" width="60" height="60"></div><p id="boot-t">checking session…</p></div>
+<div class="curtain" id="cur" aria-live="polite"><div class="orb"><img src="/img/favicon/icon-192.png" alt="" width="60" height="60"></div></div>
+
+<main>
+  <section class="hero">
+    <svg class="rings" viewBox="0 0 280 280" aria-hidden="true"><circle cx="140" cy="140" r="44"/><circle cx="140" cy="140" r="78"/><circle cx="140" cy="140" r="110"/><circle class="o" cx="140" cy="140" r="110"/><circle class="o" cx="140" cy="140" r="78" style="stroke-dasharray:40 460"/></svg>
+    <span class="logo"><img src="/img/favicon/icon-192.png" alt="" width="60" height="60"></span>
+    <h1>Welcome back</h1>
+    <p>Sign in to your inquiries inbox.</p>
+  </section>
+  <form id="f" novalidate>
+    <label class="fld"><span>Email</span><span class="in"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg><input name="email" type="email" placeholder="you@example.com" autocomplete="username" required autofocus></span></label>
+    <label class="fld"><span>Password</span><span class="in"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><input name="password" id="pw" type="password" placeholder="••••••••" autocomplete="current-password" required><button class="eye" id="eye" type="button" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/></svg></button></span></label>
+    <label class="rm"><input type="checkbox" id="rm"><span class="bx"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Remember me</span></label>
+    <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="msg" id="m" role="alert" hidden><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5v.5M10.3 4.3L2.7 18a2 2 0 001.7 3h15.2a2 2 0 001.7-3L13.7 4.3a2 2 0 00-3.4 0z"/></svg><span id="mt"></span></p>
+    <button id="b" type="submit"><span class="bar"></span><span class="t">Sign in</span></button>
+  </form>
+  <a class="back" href="/">← back to site</a>
+  <span class="copy">© <span id="y">2026</span> Robin Francisco</span>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="supabase-config.js"></script>
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+var C=window.SUPABASE_CONFIG||{},sb=window.supabase.createClient(C.url,C.anonKey,{auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true}});
+var f=document.getElementById('f'),m=document.getElementById('m'),mt=document.getElementById('mt'),b=document.getElementById('b'),bt=b.querySelector('.t'),boot=document.getElementById('boot'),cur=document.getElementById('cur'),pw=document.getElementById('pw');
+var CK='<svg class="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function idle(){b.className='';b.disabled=false;bt.textContent='Sign in'}
+function err(t){mt.textContent=t;m.hidden=false;idle();f.classList.remove('shake');void f.offsetWidth;f.classList.add('shake')}
+/* curtain grows from the button, then we go to the inbox */
+function enter(fromBtn){
+  if(fromBtn){var r=b.getBoundingClientRect();cur.style.setProperty('--cx',(r.left+r.width/2)+'px');cur.style.setProperty('--cy',(r.top+r.height/2)+'px')}
+  cur.classList.add('on');setTimeout(function(){location.href='/admin.html'},2500);
+}
+/* show / hide password */
+document.getElementById('eye').addEventListener('click',function(){var show=pw.type==='password';pw.type=show?'text':'password';this.setAttribute('aria-label',show?'Hide password':'Show password');this.style.color=show?'var(--or2)':''});
+/* first load: short branded loader while the session is checked */
+var t0=Date.now();
+function hideBoot(){setTimeout(function(){boot.classList.add('gone');var e=f.elements.email;e&&e.focus&&e.focus({preventScroll:true})},Math.max(0,750-(Date.now()-t0)))}
+try{sessionStorage.removeItem('adm_greet')}catch(e){}
+/* every time the app is opened you must sign in again: drop any leftover session (old persistent one included) */
+try{Object.keys(localStorage).forEach(function(k){if(/^sb-.*-auth-token/.test(k))localStorage.removeItem(k)})}catch(e){}
+sb.auth.signOut({scope:'local'}).catch(function(){}).then(hideBoot);
+/* remember me: prefill email + password on this device (you still tap Sign in) */
+var rm=document.getElementById('rm');
+function enc(t){try{return btoa(unescape(encodeURIComponent(t)))}catch(e){return''}}
+function dec(t){try{return decodeURIComponent(escape(atob(t)))}catch(e){return''}}
+try{var sv=JSON.parse(localStorage.getItem('adm_rm')||'null');if(sv&&sv.e){f.email.value=dec(sv.e);pw.value=dec(sv.p||'');rm.checked=true}}catch(e){}
+f.addEventListener('submit',function(e){
+  e.preventDefault();m.hidden=true;
+  if(f.website.value)return; // bot
+  if(!f.email.value.trim()||!f.password.value){err('Enter your email and password.');return}
+  if(!C.url||!C.anonKey||/YOUR-/.test(C.url+C.anonKey)){err('Supabase is not configured (supabase-config.js).');return}
+  b.disabled=true;b.className='load';bt.insertAdjacentHTML('beforebegin','<span class="sp"></span>');bt.textContent='Signing in…';
+  var s0=Date.now();
+  sb.auth.signInWithPassword({email:f.email.value.trim(),password:f.password.value}).then(function(r){
+    var sp=b.querySelector('.sp');
+    if(r.error){sp&&sp.remove();f.password.value='';err(r.error.status===429?'Too many attempts. Try again later.':'Invalid email or password.');return}
+    try{if(rm.checked)localStorage.setItem('adm_rm',JSON.stringify({e:enc(f.email.value.trim()),p:enc(f.password.value)}));else localStorage.removeItem('adm_rm')}catch(e){}
+    /* success: keep the loading look for at least a beat, then check mark + curtain */
+    setTimeout(function(){sp&&sp.remove();b.className='ok';b.innerHTML=CK+'<span>Welcome!</span>';setTimeout(function(){enter(true)},450)},Math.max(0,700-(Date.now()-s0)));
+  }).catch(function(){var sp=b.querySelector('.sp');sp&&sp.remove();err('Could not reach the server.')});
+});
+if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})});
+</script>
+</body>
+</html>

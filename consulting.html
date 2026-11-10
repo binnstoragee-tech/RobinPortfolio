@@ -9,12 +9,14 @@
   <link rel="canonical" href="https://yourdomain.com/consulting">
   <meta property="og:title" content="Consulting — Robin Francisco">
   <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32.png">
   <link rel="icon" type="image/png" href="img/favicon/favicon.png">
+  <link rel="apple-touch-icon" href="img/favicon/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Source+Serif+4:wght@400&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap">
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=31">
   <script src="dev-links.js" defer></script>
   <script>try{var t=localStorage.getItem('mode');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else if(t==='system'&&matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.dataset.theme='light'}catch(e){}</script>
 </head>
@@ -26,7 +28,7 @@
     <button class="icon-btn only-m" id="menu-close" aria-label="Close menu">✕</button>
   </div>
   <div class="side-scroll">
-    <div class="nav"><a href="/#summary"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Summary</a><a href="/experience"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M3 13h18"/></svg>Experience</a><a href="/education"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 012-2h12v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h12"/></svg>Education</a><a href="/skills"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="10" rx="1.5"/><path d="M3 19h18"/></svg>Skills</a><a href="/projects"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Projects</a><a href="/services"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg>Services</a></div>
+    <div class="nav"><a href="/#summary"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Summary</a><a href="/experience"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M3 13h18"/></svg>Experience</a><a href="/education"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 012-2h12v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h12"/></svg>Education</a><a href="/tools"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="10" rx="1.5"/><path d="M3 19h18"/></svg>Tools</a><a href="/projects"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Projects</a><a href="/services"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg>Services</a></div>
     <div class="nav sep"><a href="/consulting" class="on"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M3 13h18"/></svg>Consulting</a><a href="/collabs"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M18 8v6M15 11h6"/></svg>Collabs</a></div>
   </div>
   <div class="side-foot">
@@ -105,11 +107,13 @@
   var vc=document.getElementById('v-count'),vl=document.getElementById('v-label'),faces=Array.prototype.slice.call(document.querySelectorAll('#faces img')),v=3;
   function showViewers(){if(!vc)return;vc.textContent=v;vl.textContent=v===1?'person viewing now':'people viewing now';faces.forEach(function(f,i){f.style.display=i<Math.min(3,v)?'':'none'})}
   showViewers();setInterval(function(){v=Math.max(1,Math.min(6,v+(Math.random()<0.5?-1:1)));showViewers()},7000);
+  function ting(){try{if(!(navigator.userActivation&&navigator.userActivation.hasBeenActive))return;var AC=window.AudioContext||window.webkitAudioContext;window.__tctx=window.__tctx||new AC();var c=window.__tctx,go=function(){var t=c.currentTime;[1318.5,1760].forEach(function(f,i){var o=c.createOscillator(),g=c.createGain(),u=t+i*.09;o.frequency.value=f;g.gain.setValueAtTime(.0001,u);g.gain.exponentialRampToValueAtTime(i?.08:.11,u+.01);g.gain.exponentialRampToValueAtTime(.0001,u+.55);o.connect(g);g.connect(c.destination);o.start(u);o.stop(u+.6)})};if(c.state==='running')go();else c.resume().then(go,function(){})}catch(e){}}
   var sBtn=document.getElementById('sound'),sOn=false;
-  try{sOn=localStorage.getItem('sound')==='on'}catch(e){}
+  try{sOn=localStorage.getItem('sound')!=='off'}catch(e){}
   function paintSound(){if(sBtn)sBtn.innerHTML=sOn?sBtn.dataset.on:sBtn.dataset.off}
-  if(sBtn){paintSound();sBtn.addEventListener('click',function(){sOn=!sOn;paintSound();try{localStorage.setItem('sound',sOn?'on':'off')}catch(e){}})}
+  if(sBtn){paintSound();sBtn.addEventListener('click',function(){sOn=!sOn;paintSound();if(sOn)ting();try{localStorage.setItem('sound',sOn?'on':'off')}catch(e){}})}
 })();
 </script>
+<script src="sfx.js" defer></script>
 </body>
 </html>

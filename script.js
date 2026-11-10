@@ -17,14 +17,50 @@
   var saved = 'dark';
   try { saved = localStorage.getItem('mode') || 'dark'; } catch (e) {}
   applyMode(saved);
-  $$('.mode button').forEach(function (b) { b.addEventListener('click', function () { applyMode(b.dataset.mode); }); });
+  /* theme switch: a circle grows out of the tapped button (View Transitions), soft cross-fade elsewhere */
+  function switchMode(m, btn) {
+    var next = m === 'system' ? (mq.matches ? 'light' : 'dark') : m;
+    if (next === root.dataset.theme) { applyMode(m); return; }
+    var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.startViewTransition && !calm && btn) {
+      var r = btn.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+      var end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      var vt = document.startViewTransition(function () { applyMode(m); });
+      vt.ready.then(function () {
+        root.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + end + 'px at ' + x + 'px ' + y + 'px)'] },
+          { duration: 650, easing: 'cubic-bezier(.4,0,.2,1)', pseudoElement: '::view-transition-new(root)' });
+      }).catch(function () {});
+    } else if (!calm) {
+      root.classList.add('theme-fade'); applyMode(m);
+      setTimeout(function () { root.classList.remove('theme-fade'); }, 450);
+    } else applyMode(m);
+  }
+  $$('.mode button').forEach(function (b) { b.addEventListener('click', function () { switchMode(b.dataset.mode, b); }); });
   mq.addEventListener && mq.addEventListener('change', function () { if (saved === 'system') applyMode('system'); });
 
   /* ---------- mobile menu ---------- */
   var side = $('#side');
-  $('#menu-open').addEventListener('click', function () { side.classList.add('open'); });
-  $('#menu-close').addEventListener('click', function () { side.classList.remove('open'); });
-  $$('#side a').forEach(function (a) { a.addEventListener('click', function () { side.classList.remove('open'); }); });
+  /* mobile menu: full-screen, fades in with staggered items, fades out on close */
+  var menuTimer = null;
+  $$('#side .nav a, #side .side-foot > *').forEach(function (el, i) { el.style.setProperty('--i', i); });
+  function openMenu() {
+    clearTimeout(menuTimer); side.classList.remove('closing');
+    root.style.setProperty('--sbw', Math.max(0, innerWidth - root.clientWidth) + 'px');
+    side.classList.add('open'); root.classList.add('menu-open'); side.scrollTop = 0;
+  }
+  function closeMenu(now) {
+    root.classList.remove('menu-open');
+    if (!side.classList.contains('open')) return;
+    clearTimeout(menuTimer);
+    if (now === true || matchMedia('(prefers-reduced-motion: reduce)').matches) { side.classList.remove('open', 'closing'); return; }
+    side.classList.add('closing');
+    menuTimer = setTimeout(function () { side.classList.remove('open', 'closing'); }, 240);
+  }
+  $('#menu-open').addEventListener('click', openMenu);
+  $('#menu-close').addEventListener('click', function () { closeMenu(); });
+  $$('#side a').forEach(function (a) { a.addEventListener('click', function () { closeMenu(); }); });
+  ['ask-open', 'tt-open', 'chat-open'].forEach(function (id) { var b = document.getElementById(id); b && b.addEventListener('click', function () { closeMenu(true); }); });
+  addEventListener('resize', function () { if (innerWidth >= 1024) closeMenu(true); });
 
   /* ---------- active section link ---------- */
   /* sidebar nav scrolls only when it does not fit (short laptop screens); big screens show everything */
@@ -63,20 +99,28 @@
   setInterval(function () { v = Math.max(1, Math.min(6, v + (Math.random() < 0.5 ? -1 : 1))); showViewers(); }, 7000);
 
   /* ---------- sound toggle (typing-test clicks) ---------- */
-  var sBtn = $('#sound'), sOn = false, actx = null;
-  try { sOn = localStorage.getItem('sound') === 'on'; } catch (e) {}
+  var sBtn = $('#sound'), sOn = true, actx = null;
+  try { sOn = localStorage.getItem('sound') !== 'off'; } catch (e) {}
   function paintSound() { sBtn.innerHTML = sOn ? sBtn.dataset.on : sBtn.dataset.off; }
   paintSound();
-  sBtn.addEventListener('click', function () { sOn = !sOn; paintSound(); try { localStorage.setItem('sound', sOn ? 'on' : 'off'); } catch (e) {} blip(); });
-  function blip() {
+  sBtn.addEventListener('click', function () { sOn = !sOn; paintSound(); try { localStorage.setItem('sound', sOn ? 'on' : 'off'); } catch (e) {} if (sOn) ting(); });
+  function blip(f, len, vol) {
     if (!sOn) return;
     try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      var o = actx.createOscillator(), g = actx.createGain();
-      o.frequency.value = 620; g.gain.value = 0.04; o.connect(g); g.connect(actx.destination);
-      o.start(); o.stop(actx.currentTime + 0.03);
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!actx && !(navigator.userActivation && navigator.userActivation.hasBeenActive)) return; /* blocked until the first tap/click */
+      actx = actx || new AC();
+      var play = function () {
+        var o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+        o.frequency.value = f || 620; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.04, t + 0.006);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + (len || 0.03));
+        o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + (len || 0.03) + 0.02);
+      };
+      if (actx.state === 'running') play(); else actx.resume().then(function () { if (sOn) play(); }, function () {});
     } catch (e) {}
   }
+  /* test sound when the sidebar toggle is switched on */
+  function ting() { blip(1318, 0.5, 0.11); setTimeout(function () { blip(1760, 0.6, 0.08); }, 90); }
 
   /* ---------- copy email ---------- */
   $('#copy-mail').addEventListener('click', function () {
@@ -119,29 +163,11 @@
   /* Tagalog question -> Tagalog answer, English question -> English answer */
   function isTL(t) { return /\b(sino|asawa|misis|mo|ka|ko|ba|ang|ng|nasaan|saan|ano|anak|pamilya|kasal|jowa|po|naman|siya|niya|mga|may|meron|magkano|kumusta|kamusta|mahal|mag-?asawa|kayo|natin|namin|iyo|inyo|nyo|niyo)\b/.test(t); }
   var KB = [
-    [/^(hi|hello|hey|yo|hola|kumusta|kamusta)\b/, function () { return 'Hey! Ask me about my work, skills, education, services or how to reach me.'; }],
-    [/thank|salamat|\bty\b/, function () { return 'You\'re welcome! Anything else you\'d like to know?'; }],
-    [/jenylyn|wife|asawa|misis|spouse|girlfriend|\bgf\b|fianc|jowa|married|kasal|relationship|life partner|family|pamilya|\bkids?\b|children|\banak\b/, function (t) { return isTL(t) ? 'Ang asawa ko ay si <b>Jenylyn Forte Francisco</b>.' : 'My wife is <b>Jenylyn Forte Francisco</b>.'; }],
-    [/hobb|pastime|free time|libangan|mahilig|interests?\b|for fun|sports?\b|gaming|\bgames?\b|motor|\brid(e|es|ing)\b|gym|workout|exercise|fitness|basketball|volleyball/, 'Outside of work I love playing online games and riding my motorcycle. I also hit the gym, and I play basketball and volleyball.'],
-    [/your name|what.?s your name|sino ka|who are you|who is robin|about (you|yourself|robin)|introduce|tell me about/, 'I\'m Robin Francisco — a graphic designer and social media manager. I create brand-aligned visuals for social media, web and promotional campaigns, taking work from concept to final delivery.'],
-    [/where do you work|saan ka (nag)?trabaho|employer|company|current(ly)?|right now|miqa|job|ginagawa|what do you do|your (role|work|profession)/, 'Right now I\'m Digital Marketing Manager at Miqa Private Limited (since Oct 2025). I design graphics, ads and campaign content, and manage creative production across digital platforms.'],
-    [/social space|freelanc/, 'I\'ve been a freelance Graphic Artist at Social Space since May 2021, doing digital marketing services including social media management and content creation.'],
-    [/techfactors|intern|\bojt\b|on.the.job/, 'In Feb – May 2025 I did my OJT at Techfactors Inc. as a Graphic Designer — digital learning materials, infographics and marketing content for e-learning modules, using Photoshop, Illustrator and InDesign.'],
-    [/experience|career|background|history|roles?\b|how long|years|worked/, 'I\'ve held 3 roles: Digital Marketing Manager at Miqa (Oct 2025 – present), freelance Graphic Artist at Social Space (May 2021 – present), and Graphic Designer intern at Techfactors Inc. (Feb – May 2025). That\'s 5+ years of freelancing.'],
-    [/school|educat|study|studied|universit|college|degree|\bbsit\b|bulacan state|graduat|course|senior high|aral/, 'I earned a BS in Information Technology (Major in Service Management Program) at Bulacan State University (2021 – 2025). Before that I took the Accountancy, Business, and Management strand at Iba National Senior High School (2019 – 2021).'],
-    [/\bai\b|artificial|generative|chatgpt|openai|claude|gemini|perplexity/, 'These days I\'m focused on generative AI. If you want to talk about it, email me at ' + MAIL + '.'],
-    [/this (site|website|page|portfolio)|who (made|built|created|designed|developed)|how (was|is) (this|the) (site|website)|tech stack|built with|shortcut|keyboard|typing test|dark mode|light mode|theme|community chat/, 'This portfolio is built with plain HTML, CSS and JavaScript and deployed on Vercel. You can ask me anything (Alt + K), take a typing test (Alt + J), jump into the community chat, and switch between light, dark and system mode.'],
-    [/build(ing)? (me )?(a |an )?(web)?sites?|make (me )?(a |an )?(web)?sites?|need (a |an )?(web)?sites?|web ?(dev|development|design)|landing page|e-?commerce|online (store|shop)|catalog|ordering system|admin panel/, 'Yes, I build custom websites and web apps — responsive sites, landing pages, portfolios, and catalog / ordering systems with an admin panel and database. I use HTML, CSS and JavaScript with Supabase and PostgreSQL. Web Development starts at <b>$1,000</b> per project. See the <a href=\"/services\">services page</a> or email me at ' + MAIL + '.'],
-    [/code|coding|program|developer|html|css|javascript|\bjs\b|web ?dev|website|supabase|postgres|database|backend|sql/, 'I build with HTML, CSS and JavaScript, and I use Supabase and PostgreSQL for the backend and database side.'],
-    [/skill|tool|software|adobe|photoshop|illustrator|premiere|indesign|canva|capcut|strength|good at|expert/, 'Design & video: Photoshop, Illustrator, InDesign, After Effects, Premiere Pro, Canva and CapCut. Marketing & dev tools: Meta Business Suite, Meta Pixel, GitHub and Vercel. AI agents & automation: Claude, Gemini, ChatGPT, Google Flow, Meta AI and n8n. Code: HTML, CSS and JavaScript, with Supabase and PostgreSQL. Core strengths: communication, team collaboration, problem-solving and critical thinking.'],
-    [/price|pricing|rate|cost|how much|magkano|package|plan|starter|basic|growth|fee|charge|budget/, 'I offer monthly social media packages: <b>Starter $99</b> (10 posts, basic graphics, 3 reels), <b>Basic $249</b> (12 posts, 10 reels, stories, FB &amp; IG ads management) and <b>Growth $399</b> (full management, 20 posts, 15 reels, campaign planning, monthly reports). For websites, <b>Web Development</b> starts at <b>$1,000</b> per project. Full details on the <a href="/services">services page</a>.'],
-    [/service|offer|hire|available|availab|open to|work with|social media|ads?\b|campaign|reels?|content|design for/, 'I do social media management, graphic design, reels and short videos, content strategy and ads management, sold as monthly packages. See the <a href="/services">services page</a>, or email me at ' + MAIL + '.'],
-    [/resume|\bcv\b|download/, 'You can download my resume with the “resume ↓” link at the top of the page.'],
-    [/contact|e-?mail|reach|message|phone|call|number|whatsapp|viber|mobile|text you|get in touch|collab/, 'Email: ' + MAIL + '<br>Phone: <a href=\"tel:+639695159058\">+63 969 515 9058</a><br>You can also send an inquiry on the Collabs page. I\'m open to work and collabs.'],
-    [/where|location|based|live|country|city|maldives|philippines|male|taga|nasaan|address/, 'I keep my location private. The best way to reach me is email: ' + MAIL + ', or send an inquiry on the Collabs page.']
+    /* the only thing it answers: who is Robin's wife (English or Tagalog) */
+    [/jenylyn|\bwife\b|asawa|misis|spouse|mag-?asawa/, function (t) { return isTL(t) ? 'Ang asawa ko ay si <b>Jenylyn Forte Francisco</b>.' : 'My wife is <b>Jenylyn Forte Francisco</b>.'; }]
   ];
   var FALLBACK = 'I don\'t have an answer for that yet. Try asking about my work, skills, education or services — or email me at ' + MAIL + '.';
-  var CHIPS = ['Who are you?', 'What do you do?', 'Experience', 'Skills', 'Hobbies', 'Pricing', 'Contact'];
+  var CHIPS = [];
   function answer(q) {
     var t = q.toLowerCase().replace(/[^\w\s?&.'-]/g, ' ');
     for (var i = 0; i < KB.length; i++) {
@@ -155,7 +181,7 @@
     chipBox.appendChild(b);
   });
   var askTok = 0, ASK_KEY = 'askHistory', hist = [];
-  try { hist = JSON.parse(localStorage.getItem(ASK_KEY) || '[]').filter(function (q) { return typeof q === 'string'; }).slice(-40); } catch (e) { hist = []; }
+  hist = []; try { localStorage.removeItem(ASK_KEY); } catch (e) {}
   function saveHist() { try { localStorage.setItem(ASK_KEY, JSON.stringify(hist.slice(-40))); } catch (e) {} }
   var THINK_ICON = '<svg class="think-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3.6"/><circle cx="16.4" cy="7" r="2.6"/><circle cx="7" cy="16.6" r="2.6"/><circle cx="15.6" cy="16" r="3.6"/></svg>';
   function askBubble(t, cls, html) {
@@ -184,19 +210,96 @@
       })();
     }, 1100 + Math.random() * 700);
   }
+  /* ---- "what your browser already shares" reveal: runs when a question is not about Robin ---- */
+  var revealed = false, revealSkip = null;
+  function fetchJSON(url, ms) {
+    return new Promise(function (ok, no) {
+      var ctl = window.AbortController ? new AbortController() : null, t = setTimeout(function () { ctl && ctl.abort(); no(); }, ms);
+      fetch(url, ctl ? { signal: ctl.signal } : {}).then(function (r) { return r.json(); }).then(function (j) { clearTimeout(t); ok(j); }, function () { clearTimeout(t); no(); });
+    });
+  }
+  /* public IP + rough location come from a free IP lookup, called from the visitor's own browser; nothing is sent to or stored by this site */
+  function getNet() {
+    return fetchJSON('https://ipwho.is/', 4000).then(function (j) {
+      if (!j || j.success === false || !j.ip) throw 0;
+      return { ip: j.ip, city: j.city, region: j.region, lat: j.latitude, lon: j.longitude, isp: (j.connection && (j.connection.isp || j.connection.org)) || '' };
+    }).catch(function () {
+      return fetchJSON('https://ipapi.co/json/', 4000).then(function (j) {
+        if (!j || !j.ip) throw 0;
+        return { ip: j.ip, city: j.city, region: j.region, lat: j.latitude, lon: j.longitude, isp: j.org || '' };
+      });
+    }).catch(function () { return null; });
+  }
+  function deviceFacts() {
+    var ua = navigator.userAgent || '', os = 'unknown';
+    if (/iPhone|iPad|iPod/.test(ua)) os = 'ios'; else if (/Android/.test(ua)) os = 'android'; else if (/Windows/.test(ua)) os = 'windows';
+    else if (/Mac OS X|Macintosh/.test(ua)) os = 'mac'; else if (/Linux|X11/.test(ua)) os = 'linux';
+    var br = 'a web browser', m;
+    if ((m = ua.match(/(?:Edg|EdgiOS|EdgA)\/(\d+)/))) br = 'edge ' + m[1];
+    else if ((m = ua.match(/OPR\/(\d+)/))) br = 'opera ' + m[1];
+    else if ((m = ua.match(/(?:Firefox|FxiOS)\/(\d+)/))) br = 'firefox ' + m[1];
+    else if ((m = ua.match(/(?:Chrome|CriOS)\/(\d+)/))) br = 'chrome ' + m[1];
+    else if ((m = ua.match(/Version\/(\d+)[\d.]*.*Safari/))) br = 'safari ' + m[1];
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    var time = ''; try { time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); } catch (e) {}
+    var c = navigator.connection || {};
+    return { os: os, br: br, lang: (navigator.language || '').toLowerCase(), cores: navigator.hardwareConcurrency, mem: navigator.deviceMemory, tz: tz.toLowerCase(), time: time.toLowerCase(), net: c.effectiveType ? c.effectiveType : '' };
+  }
+  function revealLines(net) {
+    var d = deviceFacts(), L = ['before i answer', 'here is what your browser already shared the moment you opened this site'];
+    if (net) {
+      var place = [net.city, net.region].filter(Boolean).join(', ');
+      if (place) L.push('you are currently in ' + place.toLowerCase());
+      L.push('your public ip address is ' + net.ip);
+      if (net.isp) L.push('you are connected through ' + String(net.isp).toLowerCase());
+      if (net.lat != null && net.lon != null) L.push('your approximate coordinates are around ' + (+net.lat).toFixed(2) + ', ' + (+net.lon).toFixed(2));
+    }
+    var dev = 'you are on a ' + d.os + ' device';
+    if (d.cores) dev += ' with ' + d.cores + ' processor cores' + (d.mem ? ' and ' + d.mem + 'gb of memory' : '');
+    L.push(dev);
+    L.push('you are browsing with ' + d.br + (d.lang ? ' set to ' + d.lang : ''));
+    if (d.tz) L.push('your timezone is ' + d.tz + (d.time ? ' and it is around ' + d.time + ' where you are' : ''));
+    if (d.net) L.push('you are on a ' + d.net + ' connection');
+    L.push('none of this needed your permission', 'your browser shares it with every website you open, automatically', 'so be mindful of what you click, and who you trust online', 'as for your question', 'i don\'t want to waste tokens on that, search for it yourself :)');
+    return L;
+  }
+  function revealRun(q, done) {
+    var tok = askTok, netP = getNet();
+    var p = askBubble(THINK_ICON + '<span class="shimmer">thinking…</span>', 'bot thinking', true);
+    setTimeout(function () { if (tok === askTok) p.innerHTML = THINK_ICON + '<span class="shimmer">analyzing…</span>'; }, 1100);
+    Promise.all([netP, new Promise(function (r) { setTimeout(r, 2300); })]).then(function (r) {
+      if (tok !== askTok) return;
+      var lines = revealLines(r[0]); askLog.innerHTML = ''; ask.classList.add('revealing');
+      var st = document.createElement('p'); st.className = 'reveal'; askLog.appendChild(st);
+      (function step(i) {
+        if (tok !== askTok) return;
+        var dim = /^(you are |your public|your approximate|your timezone)/.test(lines[i]) ? ' dim' : '';
+        st.className = 'reveal' + dim; st.textContent = lines[i]; void st.offsetWidth; st.className = 'reveal in' + dim;
+        var last = i === lines.length - 1, hold = Math.min(3600, 1500 + lines[i].length * 32), t1, t2;
+        var next = function () {
+          revealSkip = null; clearTimeout(t1); clearTimeout(t2);
+          if (last) { st.className = 'reveal in' + dim + ' done'; ask.classList.remove('revealing'); done && done(); return; }
+          st.className = 'reveal out' + dim; t2 = setTimeout(function () { step(i + 1); }, 360);
+        };
+        revealSkip = next; t1 = setTimeout(next, last ? 900 : hold);
+      })(0);
+    });
+  }
+  askLog.addEventListener('click', function () { revealSkip && revealSkip(); });
   function send(q) {
     if (busy) return; busy = true;
     askQ.hidden = true; chipBox.hidden = true; askForm.hidden = true;
-    askBubble(q, 'me'); hist.push(q); saveHist(); askClear.hidden = false;
-    botType(answer(q), function () {
-      busy = false; askForm.hidden = false; chipBox.hidden = false;
-      askIn.placeholder = 'ask another…'; askIn.focus();
+    askBubble(q, 'me');
+    var ans = answer(q), fin = function () {
+      /* the conversation ends here: last line stays on screen, no input, chips or hints (close with X or esc) */
+      busy = false; askForm.hidden = true; chipBox.hidden = true; ask.classList.add('ended');
       askLog.scrollTop = askLog.scrollHeight;
-    });
+    };
+    if (ans === FALLBACK) revealRun(q, fin); else botType(ans, fin);
   }
   var askClear = $('#ask-clear');
   function resetAsk() {
-    askTok++; busy = false; askLog.innerHTML = ''; askIn.value = '';
+    askTok++; busy = false; askLog.innerHTML = ''; askIn.value = ''; ask.classList.remove('revealing', 'ended');
     askForm.hidden = false; askClear.hidden = !hist.length;
     if (hist.length) {  /* bring back this user's earlier conversation, no animation */
       askQ.hidden = true; askIn.placeholder = 'ask another…';
@@ -208,9 +311,20 @@
       askQ.textContent = 'what do you want to ask?';
     }
   }
+  /* iOS: keep the overlay exactly on the visible area (above the keyboard) instead of the full page behind it */
+  function fitAsk() {
+    var vv = window.visualViewport; if (!vv) return;
+    if (openModal === ask && !ask.hidden) {
+      ask.style.height = vv.height + 'px'; ask.style.top = vv.offsetTop + 'px'; ask.style.bottom = 'auto';
+      if (vv.offsetTop || vv.pageTop) scrollTo(0, 0);
+    } else { ask.style.height = ''; ask.style.top = ''; ask.style.bottom = ''; }
+  }
+  if (window.visualViewport) { visualViewport.addEventListener('resize', fitAsk); visualViewport.addEventListener('scroll', fitAsk); }
   function openAsk() {
-    show(ask); resetAsk();
-    setTimeout(function () { askIn.focus(); askLog.scrollTop = askLog.scrollHeight; }, 30);
+    show(ask); resetAsk(); fitAsk();
+    /* focus right inside the tap: iOS only opens the keyboard for a focus that happens during the user gesture */
+    try { askIn.focus({ preventScroll: true }); } catch (e) { askIn.focus(); }
+    setTimeout(function () { try { askIn.focus({ preventScroll: true }); } catch (e) { askIn.focus(); } askLog.scrollTop = askLog.scrollHeight; fitAsk(); }, 60);
   }
   askClear.addEventListener('click', function () { hist = []; saveHist(); try { localStorage.removeItem(ASK_KEY); } catch (e) {} resetAsk(); askIn.focus(); });
   askForm.addEventListener('submit', function (e) {
@@ -373,6 +487,19 @@
   var cursor = $('#cursor'), bubble = $('#bubble'), btext = $('#bubble-text'), skip = $('#tour-skip');
   var steps = [
     ['h1', "Hi! I'm Rob, welcome to my website! 👋"],
+    /* phones/tablets: the tour taps the menu button, walks the whole menu, then closes it ('m' = mobile only) */
+    ['#menu-open', 'Tap the menu to see every page.', 'm-open'],
+    ['#side .nav a[href="#summary"]', 'Summary: a quick intro to me.', 'm'],
+    ['#side .nav a[href="/experience"]', 'Experience: my roles and work.', 'm'],
+    ['#side .nav a[href="/education"]', 'Education: where I studied.', 'm'],
+    ['#side .nav a[href="/tools"]', 'Tools: what I use every day.', 'm'],
+    ['#side .nav a[href="/projects"]', 'Projects: things I have built.', 'm'],
+    ['#side .nav a[href="/services"]', 'Services: how I can help you.', 'm'],
+    ['#side .nav a[href="/consulting"]', 'Consulting: work with me.', 'm'],
+    ['#side .nav a[href="/collabs"]', 'Collabs: companies I worked with.', 'm'],
+    ['#ask-open', 'Ask me anything right here.', 'm'],
+    ['#tt-open', 'Try the typing test.', 'm'],
+    ['.vline', 'See who is viewing the site now.', 'm-close'],
     ['#nav-consulting', 'Want to work together? Reach out here.', true],
     ['.nums a:nth-child(2)', 'A quick look at my experience, roles and degree.'],
     ['#collabs', 'Companies I have worked with.'],
@@ -404,14 +531,42 @@
   function clearTimers() { timers.forEach(clearTimeout); timers = []; }
   function place(el, text) {
     var r = el.getBoundingClientRect();
-    var x = r.left + Math.min(r.width * 0.55, 150), y = r.top + r.height * 0.65;
-    x = Math.max(8, Math.min(innerWidth - 40, x)); y = Math.max(8, Math.min(innerHeight - 40, y));
-    cursor.style.transform = 'translate(' + x + 'px,' + y + 'px)';
     /* measure the final (full-message) size so the bubble opens in the right direction */
     var prev = btext.textContent;
     btext.textContent = text != null ? text : (steps[tIdx] ? steps[tIdx][1] : prev);
     var bw = bubble.offsetWidth, bh = bubble.offsetHeight;
     btext.textContent = prev;
+    /* headings / short targets: park the cursor just beside the text and open the bubble to the SIDE, so it never covers what it points at */
+    var tr = r;
+    try { var rg = document.createRange(); rg.selectNodeContents(el); var b = rg.getBoundingClientRect(); if (b.width) tr = b; } catch (e) {}
+    var side = null, inUI = !!el.closest('#side, .top'), roomAbove = tr.top > bh + 50;
+    if (tr.height < 150 && (inUI || !roomAbove)) {
+      var cy = tr.top + Math.min(tr.height / 2, 36) - 12;
+      if (tr.right + 14 + 20 + bw <= innerWidth - 12) side = { x: tr.right + 10, y: cy, left: false };
+      else if (tr.left - 30 - bw >= 12) side = { x: tr.left - 30, y: cy, left: true };
+    }
+    if (side) {
+      /* cursor sits beside the label; the bubble hangs just below-right of it (never over the label) */
+      var sy = Math.max(8, Math.min(innerHeight - bh - 40, side.y));
+      cursor.style.transform = 'translate(' + side.x + 'px,' + sy + 'px)';
+      bubble.classList.toggle('left', side.left); bubble.classList.remove('up');
+      var sx = side.left ? side.x + 8 : side.x + 12;
+      var by = Math.max(8, Math.min(innerHeight - bh - 8, sy + 22));
+      bubble.style.transform = 'translate(' + sx + 'px,' + by + 'px)';
+      return;
+    }
+    /* page content: cursor at the top-left of the target, bubble above-right of it so the text stays readable */
+    if (tr.height < 150 && tr.top > bh + 50) {
+      var ux = Math.max(8, Math.min(innerWidth - 40, tr.left - 4)), uy = tr.top - 16;
+      cursor.style.transform = 'translate(' + ux + 'px,' + uy + 'px)';
+      bubble.classList.remove('left'); bubble.classList.add('up');
+      var bx = Math.max(8, Math.min(innerWidth - bw - 8, ux + 16));
+      bubble.style.transform = 'translate(' + bx + 'px,' + (uy + 6) + 'px)';
+      return;
+    }
+    var x = r.left + Math.min(r.width * 0.55, 150), y = r.top + r.height * 0.65;
+    x = Math.max(8, Math.min(innerWidth - 40, x)); y = Math.max(8, Math.min(innerHeight - 40, y));
+    cursor.style.transform = 'translate(' + x + 'px,' + y + 'px)';
     var left = x + 18 + bw > innerWidth - 12, up = y + 22 + bh > innerHeight - 56;
     bubble.classList.toggle('left', left); bubble.classList.toggle('up', up);
     /* keep the whole bubble (at its final size) inside the viewport */
@@ -421,30 +576,49 @@
     bubble.style.transform = 'translate(' + ax + 'px,' + ay + 'px)';
   }
   function typeText(str, done) {
-    btext.textContent = ''; var i = 0;
-    (function tick() { btext.textContent = str.slice(0, ++i); if (i < str.length) later(tick, 22); else done && done(); })();
+    btext.textContent = ''; var i = 0; bubble.classList.add('typing');
+    (function tick() {
+      btext.textContent = str.slice(0, ++i);
+      var ch = str.charAt(i - 1); if (ch !== ' ') blip(1500 + Math.random() * 500, 0.018, 0.016); /* soft typewriter tick */
+      if (i < str.length) later(tick, 22); else { bubble.classList.remove('typing'); done && done(); }
+    })();
+  }
+  /* true = desktop-sidebar step; 'm...' = phone-menu steps */
+  function stepSkipped(st) {
+    var k = st[2];
+    if (k === true) return innerWidth < 1024 || getComputedStyle(side).display === 'none';
+    if (typeof k === 'string') return innerWidth >= 1024;
+    return false;
   }
   function tourShow() {
     if (!tOn) return;
     if (hl) hl.classList.remove('tour-hl');
-    while (tIdx < steps.length && steps[tIdx][2] && getComputedStyle(side).display === 'none') tIdx++;
-    if (tIdx >= steps.length) { tourEnd(); return; }
+    while (tIdx < steps.length && stepSkipped(steps[tIdx])) tIdx++;
+    if (tIdx >= steps.length) { blip(659, 0.3, 0.05); setTimeout(function () { blip(880, 0.3, 0.045); }, 110); setTimeout(function () { blip(1175, 0.45, 0.04); }, 220); tourEnd(); return; }
     var el = $(steps[tIdx][0]);
     if (!el) { tIdx++; tourShow(); return; }
     var r = el.getBoundingClientRect();
-    var inView = r.top > 90 && r.bottom < innerHeight - 140;
+    var inFixed = !!el.closest('.top, #side');
+    var inView = el.closest('.top') ? true : inFixed ? (r.top > 50 && r.bottom < innerHeight - 90) : (r.top > 90 && r.bottom < innerHeight - 140);
     if (!inView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     btext.textContent = ''; /* bubble shrinks to just the name while it travels */
     later(function () {
       if (steps[tIdx][0] !== 'h1') { hl = el.closest('.sh, .stats, #collabs, .eyebrow') || el; hl.classList.add('tour-hl'); } else hl = null;
-      place(el, steps[tIdx][1]);
+      place(el, steps[tIdx][1]); blip(784, 0.35, 0.05); blip(1046, 0.4, 0.035);
       later(function () {
-        typeText(steps[tIdx][1], function () { later(function () { tIdx++; tourShow(); }, 2600); });
+        typeText(steps[tIdx][1], function () {
+          var kind = steps[tIdx][2], isMenu = typeof kind === 'string';
+          later(function () {
+            if (kind === 'm-open') { blip(520, 0.06, 0.05); openMenu(); tIdx++; later(tourShow, 1100); return; }
+            if (kind === 'm-close') { if (hl) hl.classList.remove('tour-hl'); closeMenu(); tIdx++; later(tourShow, 700); return; }
+            tIdx++; tourShow();
+          }, isMenu ? 1500 : 2600);
+        });
       }, 1150);
     }, inView ? 150 : 950);
   }
   function tourStart(here) {
-    hideAll(); side.classList.remove('open');
+    hideAll(); closeMenu(true);
     tOn = true; tIdx = here === true ? nearestStep() : 0; clearTimers();
     tourVis(true); bubble.style.opacity = '1'; btext.textContent = '';
     cursor.style.transform = 'translate(' + innerWidth * 0.5 + 'px,' + innerHeight * 0.4 + 'px)';
@@ -453,16 +627,25 @@
     later(tourShow, 600);
   }
   function tourEnd() {
-    tOn = false; clearTimers();
+    tOn = false; clearTimers(); bubble.classList.remove('typing');
     if (hl) hl.classList.remove('tour-hl');
     tourVis(false);
     try { localStorage.setItem('toured', '1'); } catch (e) {}
   }
   skip.addEventListener('click', tourEnd);
+  /* any tap / click / scroll cancels the tour (desktop + mobile); pointerdown fires before the click so the buttons still work */
   ['wheel', 'touchmove'].forEach(function (ev) { addEventListener(ev, function () { if (tOn) tourEnd(); }, { passive: true }); });
+  addEventListener('pointerdown', function () { if (tOn) tourEnd(); }, { capture: true, passive: true });
   addEventListener('resize', function () { if (tOn && steps[tIdx]) { var el = $(steps[tIdx][0]); el && place(el); } });
-  var seen = false; try { seen = localStorage.getItem('toured') === '1'; } catch (e) {}
-  if (!seen) addEventListener('load', function () { setTimeout(function () { if (!openModal) tourStart(); }, 2600); });
+  /* auto tour */
+  /* once per visit: runs when the page is opened, but not again after a refresh (flag lives in sessionStorage) */
+  function autoTour() {
+    var ran = false; try { ran = sessionStorage.getItem('tourRan') === '1'; } catch (e) {}
+    if (ran) return;
+    try { sessionStorage.setItem('tourRan', '1'); } catch (e) {}
+    setTimeout(function () { if (!openModal && !tOn && !root.classList.contains('menu-open')) tourStart(); }, 1800);
+  }
+  if (document.readyState === 'complete') autoTour(); else addEventListener('load', autoTour);
 
   /* ---------- keyboard ---------- */
   addEventListener('keydown', function (e) {
@@ -475,7 +658,7 @@
     }
     if (combo && e.code === 'KeyK') { e.preventDefault(); openAsk(); return; }
     if (combo && e.code === 'KeyJ') { e.preventDefault(); openTT(); return; }
-    if (e.key === 'Escape') { hideAll(); side.classList.remove('open'); if (tOn) tourEnd(); return; }
+    if (e.key === 'Escape') { hideAll(); closeMenu(true); if (tOn) tourEnd(); return; }
     var typing = /INPUT|TEXTAREA/.test((e.target.tagName || ''));
     if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.key === 'd') applyMode(root.dataset.theme === 'dark' ? 'light' : 'dark');

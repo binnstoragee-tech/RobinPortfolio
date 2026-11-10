@@ -1,0 +1,11 @@
+# Private backend + admin (never upload)
+private/
+.env
+.env.*
+data/
+node_modules/
+# misc
+*.log
+*.zip
+.DS_Store
+.vercel/

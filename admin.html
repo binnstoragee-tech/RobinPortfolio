@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#f1f2f4">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="RF Admin">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Inquiries — Admin</title>
+  <meta name="robots" content="noindex,nofollow">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32.png">
   <link rel="apple-touch-icon" href="/img/favicon/apple-touch-icon.png">
@@ -17,9 +17,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
   <script>try{if(localStorage.getItem('adm_theme')==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('meta[name=theme-color]').content='#09090a'}}catch(e){}</script>
+  <script>try{var _f=localStorage.getItem('adm_folder');if(_f!=='site')document.documentElement.dataset.accent='red'}catch(e){document.documentElement.dataset.accent='red'}</script>
   <style>
-    :root{--bg:#f1f2f4;--card:#fff;--card2:#f6f6f8;--bd:#ececf0;--tx:#0b0b0c;--mu:#6b6e76;--mu2:#a6a9b1;--inv:#fff;--or:#ff8a3d;--or2:#ff6f1a;--dan:#e5484d;--ok:#22a559;--sh:0 8px 28px rgba(12,12,16,.07);--ease:cubic-bezier(.2,.8,.2,1)}
+    :root{--bg:#f1f2f4;--card:#fff;--card2:#f6f6f8;--bd:#ececf0;--tx:#0b0b0c;--mu:#6b6e76;--mu2:#a6a9b1;--inv:#fff;--or:#ff8a3d;--or2:#ff6f1a;--orrgb:255,138,61;--dan:#e5484d;--ok:#22a559;--sh:0 8px 28px rgba(12,12,16,.07);--ease:cubic-bezier(.2,.8,.2,1)}
     :root[data-theme=dark]{--bg:#09090a;--card:#141416;--card2:#1c1c1f;--bd:#26262a;--tx:#f5f5f6;--mu:#8d9099;--mu2:#5c5f67;--inv:#0b0b0c;--sh:0 8px 28px rgba(0,0,0,.5)}
+    /* AdFlare folder = red accent (My Website stays orange) */
+    :root[data-accent=red]{--or:#f0303c;--or2:#d41f2c;--orrgb:240,48,60}
+    :root[data-accent=red] .tb.on .tc,:root[data-accent=red] .pf-t,:root[data-accent=red] .fold button.on,:root[data-accent=red] .btn.or,:root[data-accent=red] .it.open .av,:root[data-accent=red] .ac .btn.pri,:root[data-accent=red] .toast .ti,:root[data-accent=red] .modal .mi,:root[data-accent=red] .ni .av{color:#fff}
+    :root[data-accent=red] .rnd.on svg{stroke:#fff}:root[data-accent=red] #tcur svg{stroke:#fff}
+    :root,.pf-t,.fold button,.rings .o{transition:background-color .35s,border-color .35s,color .35s,stroke .35s}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
     body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font:400 15px/1.5 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background .4s,opacity .45s,transform .45s var(--ease)}
@@ -67,7 +73,7 @@
     .pf-b{position:relative;margin-top:-18px;box-shadow:var(--sh);padding:18px 20px 20px;border-radius:30px;background:#0b0b0c;color:#fff;display:flex;align-items:flex-end;justify-content:space-between;overflow:hidden}
     .pf-b small{display:block;font-size:13px;color:rgba(255,255,255,.6)}
     .pf-b strong{display:block;font:600 40px/1.1 Geist,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-    .pf-b .pill{padding:5px 12px;border-radius:99px;background:rgba(255,138,61,.16);color:var(--or);font:500 13px 'Geist Mono',monospace}
+    .pf-b .pill{padding:5px 12px;border-radius:99px;background:rgba(var(--orrgb),.16);color:var(--or);font:500 13px 'Geist Mono',monospace}
     .pf-b::after{content:"";position:absolute;right:-30px;bottom:-40px;width:130px;height:130px;border-radius:50%;border:2px solid rgba(255,255,255,.06);box-shadow:0 0 0 18px rgba(255,255,255,.03)}
     .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
     .mini{padding:16px 18px;border-radius:24px;background:var(--card);border:1px solid var(--bd);box-shadow:var(--sh);transition:transform .3s var(--ease)}.mini:hover{transform:translateY(-3px)}
@@ -80,9 +86,14 @@
     .search svg{position:absolute;left:18px;top:50%;width:19px;height:19px;transform:translateY(-50%);color:var(--tx);pointer-events:none}
     .search input{width:100%;height:54px;padding:0 20px 0 48px;font:inherit;font-size:15px;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:99px;outline:none;transition:border-color .2s,box-shadow .2s}
     .search input::placeholder{color:var(--mu)}
-    .search input:focus{border-color:var(--or);box-shadow:0 0 0 4px rgba(255,138,61,.18)}
+    .search input:focus{border-color:var(--or);box-shadow:0 0 0 4px rgba(var(--orrgb),.18)}
     .sech{display:flex;align-items:center;justify-content:space-between;margin:20px 2px 12px}
     .sech h2{margin:0;font:600 19px Geist,sans-serif;letter-spacing:-.01em}.sech span{font:400 12px 'Geist Mono',monospace;color:var(--mu)}
+    .fold{display:flex;gap:8px;margin-bottom:14px}
+    .fold button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;border-radius:99px;border:1px solid var(--bd);background:var(--card);font-size:14.5px;font-weight:600;color:var(--mu);transition:background .3s,color .3s,border-color .3s,transform .2s var(--ease)}
+    .fold button:active{transform:scale(.96)}
+    .fold button.on{background:var(--or);border-color:var(--or);color:#0b0b0c}
+    .fold b{min-width:20px;padding:0 6px;border-radius:99px;background:color-mix(in srgb,currentColor 18%,transparent);font:500 11px/18px 'Geist Mono',monospace;text-align:center}
     .tabs{position:relative;display:flex;padding:5px;border-radius:99px;background:var(--card);border:1px solid var(--bd);margin-bottom:14px}
     .tabs button{position:relative;z-index:1;flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;border-radius:99px;font-size:14px;font-weight:500;color:var(--mu);transition:color .3s}
     .tabs button.on{color:var(--inv)}
@@ -165,9 +176,9 @@
     @keyframes slow{to{transform:rotate(360deg)}}
     @keyframes sweep{to{transform:translateX(120%)}}
     @keyframes ring{0%,100%{transform:rotate(0)}15%{transform:rotate(18deg)}35%{transform:rotate(-16deg)}55%{transform:rotate(10deg)}75%{transform:rotate(-6deg)}}
-    @keyframes ping{0%{box-shadow:0 0 0 0 rgba(255,138,61,.6)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
-    @keyframes pingO{0%{box-shadow:0 0 0 0 rgba(255,138,61,.7)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
-    @keyframes flash{0%{background:rgba(255,138,61,.2)}100%{background:var(--card)}}
+    @keyframes ping{0%{box-shadow:0 0 0 0 rgba(var(--orrgb),.6)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+    @keyframes pingO{0%{box-shadow:0 0 0 0 rgba(var(--orrgb),.7)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+    @keyframes flash{0%{background:rgba(var(--orrgb),.2)}100%{background:var(--card)}}
 
     /* animated time / weather icon inside the toast */
     .toast .ti.big{width:58px;height:58px;border-radius:20px;overflow:hidden;color:#fff;animation:wxPop .6s var(--ease) both}
@@ -213,7 +224,7 @@
     }
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
     .it{scroll-margin-top:84px}.it.reading{outline:2px solid var(--or);outline-offset:2px}
-    .det mark{background:rgba(255,138,61,.35);color:inherit;border-radius:6px;padding:1px 2px}
+    .det mark{background:rgba(var(--orrgb),.35);color:inherit;border-radius:6px;padding:1px 2px}
     .ai{position:fixed;z-index:48;left:0;top:0;transform:translate3d(var(--ax,300px),var(--ay,200px),0);pointer-events:none;transition:transform .75s cubic-bezier(.34,1.3,.5,1)}
     .ai:not(.on){transition:none}
     .ai-in{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:scale(.55) translateY(24px);transition:transform .5s var(--ease),opacity .3s}
@@ -266,9 +277,9 @@
     #tcur{position:fixed;left:0;top:0;z-index:70;width:30px;height:30px;pointer-events:none;opacity:0;transition:opacity .25s;will-change:transform}
     #tcur svg{position:absolute;left:0;top:0;width:28px;height:28px;fill:var(--or);stroke:#0b0b0c;stroke-width:1.6;stroke-linejoin:round;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))}
     #tcur i{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;border:2px solid var(--or);animation:ping 1.2s infinite}
-    .ftgt{outline:3px solid var(--or);outline-offset:4px;box-shadow:0 0 0 9px rgba(255,138,61,.22);animation:ftPulse 1.4s ease-in-out infinite}
-    @keyframes ftPulse{50%{box-shadow:0 0 0 14px rgba(255,138,61,.08)}}
-    .tgt{background:rgba(255,138,61,.28);border-radius:6px;box-shadow:0 0 0 3px rgba(255,138,61,.28);transition:background .2s}
+    .ftgt{outline:3px solid var(--or);outline-offset:4px;box-shadow:0 0 0 9px rgba(var(--orrgb),.22);animation:ftPulse 1.4s ease-in-out infinite}
+    @keyframes ftPulse{50%{box-shadow:0 0 0 14px rgba(var(--orrgb),.08)}}
+    .tgt{background:rgba(var(--orrgb),.28);border-radius:6px;box-shadow:0 0 0 3px rgba(var(--orrgb),.28);transition:background .2s}
   </style>
 </head>
 <body style="visibility:hidden">
@@ -280,6 +291,11 @@
     <button class="rnd" id="micbtn" aria-label="Talk to Madona" title="Talk to Madona"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4"/><path class="sl" d="M4 4l16 16"/></svg></button>
     <button class="rnd" id="bell" aria-label="Show new inquiries" title="New inquiries"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9zM10 20a2 2 0 004 0"/></svg></button>
   </header>
+
+  <div class="fold rv" id="fold" role="tablist" aria-label="Inbox folders" style="--d:.04s">
+    <button type="button" class="on" data-k="adflare" role="tab"><span>AdFlare</span><b id="fc-adflare">0</b></button>
+    <button type="button" data-k="site" role="tab"><span>My Website</span><b id="fc-site">0</b></button>
+  </div>
 
   <section class="hero rv" style="--d:.08s" aria-label="Summary">
     <svg class="rings" viewBox="0 0 260 260" aria-hidden="true"><circle cx="130" cy="130" r="40"/><circle cx="130" cy="130" r="70"/><circle cx="130" cy="130" r="100"/><circle class="o" cx="130" cy="130" r="100"/><circle class="o" cx="130" cy="130" r="70" style="stroke-dasharray:40 400"/></svg>
@@ -299,7 +315,7 @@
   </section>
   <section class="two rv" style="--d:.22s">
     <div class="mini"><small>This week</small><strong id="s-week">0</strong><em>last 7 days</em></div>
-    <div class="mini"><small>Replied / read</small><strong id="s-read">0</strong><em class="o">handled</em></div>
+    <div class="mini"><small>Read</small><strong id="s-read">0</strong><em class="o">kept in inbox</em></div>
   </section>
 
   <label class="search rv" style="--d:.28s"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Try “name, email, project…”" autocomplete="off"></label>
@@ -317,7 +333,7 @@
   <button class="nv on" data-f="all"><svg viewBox="0 0 24 24"><path d="M3 13l3-8h12l3 8v6H3zM3 13h5l1 3h6l1-3h5"/></svg>Inbox</button>
   <button class="nv" data-f="new"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg>New<b id="nb" hidden>0</b></button>
   <button class="fab" id="rf" aria-label="Refresh" title="Refresh"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7"/></svg></button>
-  <button class="nv" data-f="read"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Read</button>
+  <button class="nv" id="nfold"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span id="nfold-l">Website</span></button>
   <button class="nv" id="nsearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
 </nav>
 
@@ -328,7 +344,7 @@
   <button class="fmid" id="fm-r" aria-label="Refresh"><span class="fi"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7"/></svg></span><span class="lb">Refresh</span></button>
   <button id="fm-w" aria-label="Weather"><span class="fi"><svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 01-.5-7.97A5.5 5.5 0 0117 9a4.5 4.5 0 01.5 9z"/></svg></span><span class="lb">Weather</span></button>
 </div>
-<aside class="ai" id="ai" aria-hidden="true"><div class="ai-in"><span class="ai-bot" id="ai-bot"><img src="/img/madona-ai.png" alt="Madona" width="88" height="88" draggable="false"></span><span class="ai-eq"><i></i><i></i><i></i><i></i><i></i></span></div></aside>
+<aside class="ai" id="ai" aria-hidden="true"><div class="ai-in"><span class="ai-bot" id="ai-bot"><img src="/img/madona-ai.png" onerror="this.style.display='none'" alt="Madona" width="88" height="88" draggable="false"></span><span class="ai-eq"><i></i><i></i><i></i><i></i><i></i></span></div></aside>
 <div id="npb" hidden></div>
 <div class="np" id="np" role="dialog" aria-label="Notifications" hidden><div class="np-h"><b>Notifications<i id="np-n"></i></b><span class="np-a"><button id="np-all">Mark all as read</button></span></div><div class="np-l" id="np-l"></div><button class="np-f" id="np-f" type="button" hidden></button></div>
 <div id="toasts" aria-live="polite"></div>
@@ -340,7 +356,12 @@
 <script src="supabase-config.js"></script>
 <script>
 var C=window.SUPABASE_CONFIG||{},sb=window.supabase.createClient(C.url,C.anonKey,{auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true}});
-var T='inquiries',data=[],seen=null,openIds={},filter='all',query='',firstRender=true,polling=null;
+/* two folders, one login: AdFlare inquiries and the portfolio website's inquiries */
+var FOLDERS=[{k:'adflare',t:'adflare_inquiries',n:'AdFlare'},{k:'site',t:'inquiries',n:'Website'}];
+var folder='adflare';try{var fk=localStorage.getItem('adm_folder');if(FOLDERS.some(function(f){return f.k===fk}))folder=fk}catch(e){}
+function setAccent(){document.documentElement.dataset.accent=folder==='adflare'?'red':''}setAccent();
+function curF(){return FOLDERS.filter(function(f){return f.k===folder})[0]}
+var T=curF().t,data=[],seen=null,openIds={},filter='all',query='',firstRender=true,polling=null,cleared=0,pendingDel={};
 var $=function(s){return document.querySelector(s)},ls=$('#ls');
 function toLogin(){location.replace('/login.html')}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
@@ -350,13 +371,39 @@ var P={chev:'M6 9l6 6 6-6',mail:'M4 6h16v12H4zM4 7l8 6 8-6',copy:'M9 9h10v10H9zM
 /* ---------- sample inquiries: shown only while the real inbox is empty (local only, never saved) ---------- */
 var ago_=function(m){return new Date(Date.now()-m*6e4).toISOString()};
 var SAMPLES=[
- {id:'sample-1',status:'new',created_at:ago_(12),name:'Maria Santos',email:'maria.santos@example.com',company:'Santos Bakeshop',project:'E-commerce storefront for our bakery',budget:'PHP 30k-50k',timeline:'1 month',details:'Hi Robin! We sell cakes and pastries and want an online store with a cart, GCash payment option and delivery area checker. Can you send a quotation?'},
- {id:'sample-2',status:'new',created_at:ago_(95),name:'John Reyes',email:'john.reyes@example.com',company:'Reyes Hardware Supply',project:'Admin panel para sa inventory',budget:'PHP 20k-30k',timeline:'3 weeks',details:'Magandang araw po! Gusto po sana naming ipagawa ang admin panel para sa inventory at mga order namin. Kailangan po naming makita ang stock at mga produkto sa isang dashboard. Magkano po kaya ito?'},
- {id:'sample-3',status:'new',created_at:ago_(60*26),name:'Angela Cruz',email:'angela.cruz@example.com',company:'',project:'Personal portfolio website',budget:'PHP 10k-15k',timeline:'2 weeks',details:'I am a freelance photographer and need a clean portfolio site with a gallery, an about page and a contact form. I love minimal designs.'},
- {id:'sample-4',status:'read',created_at:ago_(60*24*3),name:'Mark dela Cruz',email:'mark.delacruz@example.com',company:'Dela Cruz Trading',project:'PWA ordering app for our customers',budget:'PHP 50k-80k',timeline:'2 months',details:'We want an installable web app where our regular customers can order products and see their order history. It must work on Android phones even with weak signal.'},
- {id:'sample-5',status:'read',created_at:ago_(60*24*6),name:'Sofia Ramos',email:'sofia.ramos@example.com',company:'Ramos Boutique',project:'Chat widget and quotation generator',budget:'PHP 15k-25k',timeline:'1 month',details:'Our boutique gets many inquiries on Facebook. We would like a chat widget on our website that sends messages to an admin panel, plus a simple quotation generator.'}
+ {id:'sample-1',status:'new',created_at:ago_(12),name:'Aishath Nazima',email:'aishath@example.com',company:'Nazima Cafe',project:'More walk-ins and orders for our cafe',budget:'$250 – $500',timeline:'This month',details:'Hi AdFlare! We run a small cafe in Male. We post on Facebook and Instagram but get few messages. We want ads that bring people in and send orders to our inbox.'},
+ {id:'sample-2',status:'new',created_at:ago_(95),name:'Ibrahim Rasheed',email:'ibrahim@example.com',company:'Rasheed Travels',project:'Leads for island tour packages',budget:'$500 – $1,000',timeline:'Next week',details:'We sell guesthouse and tour packages. We need lead ads and reels for the peak season. Can you also handle the page posting?'},
+ {id:'sample-3',status:'new',created_at:ago_(60*26),name:'Maria Santos',email:'maria@example.com',company:'',project:'Sell my handmade soaps online',budget:'Under $250',timeline:'2 weeks',details:'I just started a small soap business. I have photos but no ads yet. What package do you recommend for a tiny budget?'},
+ {id:'sample-4',status:'read',created_at:ago_(60*24*3),name:'Hassan Ali',email:'hassan@example.com',company:'Ali Auto',project:'Sell cars faster',budget:'$1,000 – $2,500',timeline:'Not sure yet',details:'We have 20 cars in stock and want ads for each. We also need a short reel for the showroom.'},
+ {id:'sample-5',status:'read',created_at:ago_(60*24*6),name:'Sofia Ramos',email:'sofia@example.com',company:'Ramos Boutique',project:'Grow our Instagram and messages',budget:'$250 – $500',timeline:'This month',details:'Our boutique gets many questions in DMs but few sales. We want help with content and ads that turn those chats into orders.'}
 ];
-function sampleRows(){return SAMPLES.filter(function(x){return !x.gone})}
+function sampleRows(){return SAMPLES.filter(function(x){return !x.gone&&x.status==='new'})}
+/* unread count of every folder, for the folder buttons */
+var otherCnt={};
+function loadCounts(){
+  FOLDERS.forEach(function(f){
+    if(f.k===folder)return;
+    sb.from(f.t).select('id',{count:'exact',head:true}).eq('status','new').then(function(r){
+      if(r.error||r.count==null||f.k===folder)return;
+      var b=$('#fc-'+f.k);if(b)b.textContent=r.count;
+      var prev=otherCnt[f.k];otherCnt[f.k]=r.count;
+      if(prev!=null&&r.count>prev){chime();try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(e){}toast('New inquiry in '+f.n,'Tap to open that folder',function(){setFolder(f.k)})}
+      stats();
+    });
+  });
+}
+function setFolder(k){
+  if(k===folder)return;flushDel();folder=k;setAccent();T=curF().t;otherCnt={};try{localStorage.setItem('adm_folder',k)}catch(e){}
+  data=[];seen=null;openIds={};filter='all';query='';$('#q').value='';cleared=0;
+  document.querySelectorAll('#fold button').forEach(function(b){b.classList.toggle('on',b.dataset.k===k)});
+  var o=FOLDERS.filter(function(f){return f.k!==k})[0];$('#nfold-l').textContent=o.n==='Website'?'Website':o.n;
+  document.querySelectorAll('#tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.f==='all')});moveInd();
+  document.querySelectorAll('.nav [data-f]').forEach(function(b){b.classList.toggle('on',b.dataset.f==='all')});
+  ls.textContent='';ls.append(el('div','sk'),el('div','sk'));firstRender=true;stats();load(true);
+}
+document.querySelectorAll('#fold button').forEach(function(b){b.onclick=function(){setFolder(b.dataset.k)}});
+(function(){document.querySelectorAll('#fold button').forEach(function(b){b.classList.toggle('on',b.dataset.k===folder)});$('#nfold-l').textContent=FOLDERS.filter(function(f){return f.k!==folder})[0].n})();
+$('#nfold').onclick=function(){setFolder(FOLDERS.filter(function(f){return f.k!==folder})[0].k);scrollTo({top:0,behavior:'smooth'})};
 
 /* ---------- helpers ---------- */
 function ago(iso){var s=Math.max(0,(Date.now()-new Date(iso))/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return new Date(iso).toLocaleDateString(undefined,{month:'short',day:'numeric'})}
@@ -413,7 +460,7 @@ snd.onclick=function(){
 };
 function notifyOS(n){
   if(!document.hidden||!('Notification' in window)||Notification.permission!=='granted')return;
-  var title=n.length>1?n.length+' new inquiries':'New inquiry from '+n[0].name,body=n.length>1?'Open the inbox to read them.':n[0].project,opt={body:body,icon:'/img/favicon/icon-192.png',badge:'/img/favicon/favicon-32.png',tag:'inquiry',renotify:true};
+  var title=n.length>1?n.length+' new inquiries':'New inquiry from '+n[0].name,body=n.length>1?'Open the inbox to read them.':n[0].project,opt={body:body,icon:'/img/favicon/icon-192.png',badge:'/img/favicon/icon-192.png',tag:'inquiry',renotify:true};
   if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(function(r){r.showNotification(title,opt)}).catch(function(){try{new Notification(title,opt)}catch(e){}});
   else try{new Notification(title,opt)}catch(e){}
 }
@@ -431,8 +478,8 @@ function matches(q){
 }
 function stats(){
   var n=data.filter(function(q){return q.status==='new'}).length,wk=data.filter(function(q){return Date.now()-new Date(q.created_at)<6048e5}).length;
-  countTo($('#s-total'),data.length);countTo($('#s-new'),n);countTo($('#s-week'),wk);countTo($('#s-read'),data.length-n);var bl=$('#bell');if(bl)bl.classList.toggle('has',n>0);var nb=$('#nb');if(nb){nb.hidden=!n;nb.textContent=n>99?'99+':n}$('#pill').textContent=n===1?'1 unread':n+' unread';
-  $('#c-all').textContent=data.length;$('#c-new').textContent=n;$('#c-read').textContent=data.length-n;
+  countTo($('#s-total'),data.length);countTo($('#s-new'),n);countTo($('#s-week'),wk);countTo($('#s-read'),data.length-n);var oc=0;for(var ok in otherCnt)oc+=otherCnt[ok]||0;var tn=n+oc,bl=$('#bell');if(bl)bl.classList.toggle('has',tn>0);var nb=$('#nb');if(nb){nb.hidden=!tn;nb.textContent=tn>99?'99+':tn}$('#pill').textContent=n===1?'1 unread':n+' unread';
+  $('#c-all').textContent=data.length;$('#c-new').textContent=n;$('#c-read').textContent=data.length-n;var fcb=$('#fc-'+folder);if(fcb)fcb.textContent=n;
   document.title=(n?'('+n+') ':'')+'Inquiries — Admin';if(window.np)npSync();
   try{n?navigator.setAppBadge&&navigator.setAppBadge(n):navigator.clearAppBadge&&navigator.clearAppBadge()}catch(e){}
 }
@@ -452,10 +499,10 @@ function card(q,i,mode){
   var a=el('div','ac');
   var rep=btn('pri',P.mail,'Reply',function(){location.href='mailto:'+q.email+'?subject='+encodeURIComponent('Re: '+q.project)});
   var cp=btn('',P.copy,'Copy email',function(b){(navigator.clipboard?navigator.clipboard.writeText(q.email):Promise.reject()).then(function(){b.lastChild.textContent='Copied ✓';setTimeout(function(){b.lastChild.textContent='Copy email'},1400)}).catch(function(){})});
-  var tg=btn('',q.status==='new'?P.check:P.undo,q.status==='new'?'Mark as read':'Mark as new',function(){setStatus(q,q.status==='new'?'read':'new')});
+  var isNew=q.status==='new',tg=btn('',isNew?P.check:P.undo,isNew?'Mark as read':'Mark as unread',function(){setStatus(q,q.status==='new'?'read':'new')});
   var dl=btn('dan',P.trash,'Delete',function(){ask(q,it)});
   a.append(rep,cp,tg,dl);inn.append(kv,det,a);w.appendChild(inn);ib.appendChild(w);
-  h.onclick=function(){var o=!it.classList.contains('open');it.classList.toggle('open',o);openIds[q.id]=o;h.setAttribute('aria-expanded',o);if(o&&q.status==='new')setStatus(q,'read',true)};
+  h.onclick=function(){var o=!it.classList.contains('open');it.classList.toggle('open',o);openIds[q.id]=o;h.setAttribute('aria-expanded',o);if(!o&&q.status==='new'){setTimeout(function(){if(!openIds[q.id])setStatus(q,'read',true)},420)}};  /* opened, then closed = read (stays in inbox, can be marked unread) */
   it.append(h,ib);return it;
 }
 function render(freshIds){
@@ -477,13 +524,38 @@ addEventListener('resize',moveInd);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(moveInd);
 
 /* ---------- data ---------- */
-function setStatus(q,s,quiet){
-  var old=q.status;q.status=s;stats();
+/* read = stays in the inbox with status "read" (same as email); mark as unread brings it back to New */
+function setStatus(q,s,silent){
+  var old=q.status;if(old===s)return;
+  q.status=s;if(s==='read')openIds[q.id]=false;stats();
   var node=ls.querySelector('[data-id="'+q.id+'"]');
-  if(node&&!quiet){render()}else if(node){node.classList.remove('new')}
-  if(q.sample||/^sample-/.test(q.id))return;
+  if(node&&silent)node.classList.toggle('new',s==='new');else render();
+  if(q.gone||/^sample-/.test(q.id))return;
   sb.from(T).update({status:s}).eq('id',q.id).then(function(r){if(r.error){q.status=old;stats();render();toast('Could not update','Please try again.',null,true)}});
+  if(!silent&&s==='read')toast('Marked as read','Tap here to mark as unread',function(){setStatus(q,'new')});
 }
+function archive(q,silent){
+  if(pendingDel[q.id]||q.gone)return;
+  var node=ls.querySelector('[data-id="'+q.id+'"]');if(node)node.classList.add('out');
+  cleared++;openIds[q.id]=false;q.status='read';stats();
+  setTimeout(function(){data=data.filter(function(x){return x.id!==q.id});render()},300);
+  if(/^sample-/.test(q.id)){q.gone=true;return}
+  pendingDel[q.id]={q:q,t:T,timer:setTimeout(function(){doDel(q.id)},silent?2500:6000)};
+  if(!silent)toast('Read — cleared from inbox','Tap here to undo',function(){undoDel(q.id)});
+}
+function doDel(id){
+  var r=pendingDel[id];if(!r)return;clearTimeout(r.timer);delete pendingDel[id];
+  sb.from(r.t).delete().eq('id',id).then(function(x){
+    if(x.error){cleared=Math.max(0,cleared-1);toast('Could not delete','It will come back on refresh.',null,true);if(r.t===T)load()}
+  });
+}
+function undoDel(id){
+  var r=pendingDel[id];if(!r)return;clearTimeout(r.timer);delete pendingDel[id];cleared=Math.max(0,cleared-1);
+  if(r.t===T){r.q.status='new';data.push(r.q);data.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)});firstRender=true;render()}
+}
+function flushDel(){Object.keys(pendingDel).forEach(doDel)}
+addEventListener('pagehide',flushDel);
+document.addEventListener('visibilitychange',function(){if(document.hidden)flushDel()});
 var pending=null,dlg=$('#dlg');
 function ask(q,node){pending={q:q,node:node};$('#dlg-t').textContent='From '+q.name+' — "'+q.project+'". This can\'t be undone.';dlg.hidden=false;$('#dlg-no').focus()}
 function closeDlg(){dlg.hidden=true;pending=null}
@@ -500,7 +572,11 @@ function load(manual){
   var rf=$('#rf');if(manual){rf.classList.remove('spin');void rf.offsetWidth;rf.classList.add('spin')}
   return sb.from(T).select('*').order('created_at',{ascending:false}).then(function(r){
     if(r.error){if(manual||!data.length){ls.textContent='';var e=el('div','empty');e.append(el('strong','','Could not load inquiries'),el('span','',r.error.message||'Check your connection and try again.'));ls.appendChild(e)}return}
-    var old=data,fresh=[],ids={};if(!r.data.length)r.data=sampleRows();
+    var old=data,fresh=[],ids={};
+    /* read messages stay in the inbox (like email); only the Delete button removes one */
+    r.data=r.data.filter(function(q){return !pendingDel[q.id]});
+    if(!r.data.length&&folder==='adflare')r.data=sampleRows();
+    loadCounts();
     if(seen){r.data.forEach(function(q){if(!seen.has(q.id)){ids[q.id]=1;if(q.status==='new')fresh.push(q)}})}
     seen=new Set(r.data.map(function(q){return q.id}));data=r.data;
     render(ids);if(fresh.length)announce(fresh);
@@ -551,7 +627,7 @@ setInterval(function(){document.querySelectorAll('time').forEach(function(t){t.t
 function live(on){var l=$('#live');if(!l)return;l.classList.toggle('on',on);l.lastChild.textContent=on?'live':'auto-refresh'}
 function startLive(){
   live(false);
-  try{sb.channel('inq-live').on('postgres_changes',{event:'*',schema:'public',table:T},function(){load()}).subscribe(function(s){live(s==='SUBSCRIBED')})}catch(e){}
+  try{sb.channel('inq-live').on('postgres_changes',{event:'*',schema:'public',table:'adflare_inquiries'},function(){load()}).on('postgres_changes',{event:'*',schema:'public',table:'inquiries'},function(){load()}).subscribe(function(s){live(s==='SUBSCRIBED')})}catch(e){}
   clearInterval(polling);polling=setInterval(function(){if(!document.hidden)load()},30000);
   document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});
 }
@@ -592,7 +668,7 @@ function renderNp(){
     var b=el('button','ni'),mid=el('span','mid');mid.append(el('strong','',q.name),el('span','',q.project));
     var tm=el('time','',ago(q.created_at));tm.dateTime=q.created_at;
     b.append(el('span','av',initials(q.name)),mid,tm);
-    b.onclick=function(){npOpen(false);openIds[q.id]=true;setStatus(q,'read',true);setFilter('all');var n=ls.querySelector('[data-id="'+q.id+'"]');if(n)setTimeout(function(){n.scrollIntoView({behavior:'smooth',block:'center'})},60)};
+    b.onclick=function(){npOpen(false);openIds[q.id]=true;setFilter('all');var n=ls.querySelector('[data-id="'+q.id+'"]');if(n)setTimeout(function(){n.scrollIntoView({behavior:'smooth',block:'center'})},60)};
     box.appendChild(b);
   });
   box.scrollTop=keep;npMore();
@@ -1137,7 +1213,6 @@ function focusInq(q){
   if(!q)return;openIds[q.id]=true;setFilter('all');
   var node=ls.querySelector('[data-id="'+q.id+'"]');
   if(node){node.classList.add('reading');setTimeout(function(){node.scrollIntoView({behavior:'smooth',block:'start'})},120);setTimeout(function(){node.classList.remove('reading')},7000)}
-  if(q.status==='new')setStatus(q,'read',true);
 }
 function toTop(){scrollTo({top:0,behavior:'smooth'})}
 function micUI(st,you,bot){if(st!=null)$('#mic-st').textContent=st;if(you!=null)$('#mic-y').textContent=you;if(bot!=null)$('#mic-b').textContent=bot}
@@ -1204,7 +1279,6 @@ addEventListener('appinstalled',function(){inst.hidden=true;$('#ios').hidden=tru
   if(ios&&!standalone&&!dismissed)$('#ios').hidden=false;
   $('#ios-x').onclick=function(){$('#ios').hidden=true;try{localStorage.setItem('adm_ios','1')}catch(e){}};
 })();
-if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})});
 </script>
 </body>
 </html>

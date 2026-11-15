@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Source+Serif+4:wght@400&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap">
-  <link rel="stylesheet" href="style.css?v=31">
+  <link rel="stylesheet" href="style.css?v=33">
   <script src="dev-links.js" defer></script>
   <script src="supabase-config.js"></script>
   <script>try{var t=localStorage.getItem('mode');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else if(t==='system'&&matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.dataset.theme='light'}catch(e){}</script>
@@ -91,10 +91,45 @@
   <footer class="foot"><p class="muted reach-line">binnfrancisco@gmail.com</p></footer>
 </div>
 
+
+<div class="ok-wrap" id="ok-wrap" role="dialog" aria-modal="true" aria-labelledby="ok-title" aria-hidden="true">
+  <div class="ok-card" id="ok-card">
+    <button class="ok-x" id="ok-x" type="button" aria-label="Close">✕</button>
+    <div class="ok-badge"><svg viewBox="0 0 86 86" aria-hidden="true"><circle class="ok-ring" cx="43" cy="43" r="40"/><path class="ok-tick" d="M27 44l11 11 22-24"/></svg></div>
+    <p class="ok-eye">INQUIRY SENT</p>
+    <h3 id="ok-title">Message received!</h3>
+    <p class="ok-sub">Thanks, <b id="ok-name"></b>. Your inquiry is in my inbox and I'll reply to <b id="ok-mail"></b> soon.</p>
+    <dl class="ok-sum">
+      <div><dt>Project</dt><dd id="ok-proj"></dd></div>
+      <div><dt>Sent</dt><dd id="ok-time"></dd></div>
+    </dl>
+    <button class="ok-btn" id="ok-done" type="button">Done</button>
+    <span class="ok-bar"></span>
+  </div>
+</div>
 <script>
 (function(){
   var f=document.getElementById('cb-form'),m=document.getElementById('cb-msg'),b=document.getElementById('cb-send');
   function say(t,ok){m.hidden=!t;m.textContent=t||'';m.className='cb-msg full'+(ok?' ok':'')}
+  var W=document.getElementById('ok-wrap'),lastFocus=null,autoT=null;
+  function $i(id){return document.getElementById(id)}
+  function closeOk(){clearTimeout(autoT);W.classList.remove('show');W.setAttribute('aria-hidden','true');document.removeEventListener('keydown',onKey);if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+  function onKey(e){if(e.key==='Escape')closeOk()}
+  function showOk(row){
+    lastFocus=document.activeElement;
+    $i('ok-name').textContent=row.name.split(' ')[0]||row.name;
+    $i('ok-mail').textContent=row.email;
+    $i('ok-proj').textContent=row.project;
+    $i('ok-time').textContent=new Date().toLocaleString([], {dateStyle:'medium',timeStyle:'short'});
+    W.setAttribute('aria-hidden','false');
+    W.classList.remove('show');void W.offsetWidth;W.classList.add('show');
+    if(window.sfxPlay)window.sfxPlay('success');
+    document.addEventListener('keydown',onKey);
+    setTimeout(function(){$i('ok-done').focus()},350);
+    clearTimeout(autoT);autoT=setTimeout(closeOk,9000);
+  }
+  $i('ok-x').addEventListener('click',closeOk);$i('ok-done').addEventListener('click',closeOk);
+  W.addEventListener('click',function(e){if(e.target===W)closeOk()});
   if(location.hash==='#inquiry')setTimeout(function(){f.name.focus({preventScroll:true})},900);
   f.addEventListener('submit',function(e){
     e.preventDefault();say('');
@@ -107,7 +142,7 @@
     var row={name:d.name.trim(),email:d.email.trim(),company:(d.company||'').trim(),project:d.project.trim(),budget:(d.budget||'').trim(),timeline:(d.timeline||'').trim(),details:d.details.trim()};
     fetch(C.url+'/rest/v1/inquiries',{method:'POST',headers:{'Content-Type':'application/json',apikey:C.anonKey,Authorization:'Bearer '+C.anonKey,Prefer:'return=minimal'},body:JSON.stringify(row)})
       .then(function(r){if(!r.ok)throw new Error('Something went wrong. Please try again or email me directly.')})
-      .then(function(){f.reset();say("Thanks! Your inquiry was sent. I'll reply by email soon.",true);b.textContent='Sent ✓'})
+      .then(function(){f.reset();say('');showOk(row);b.textContent='Sent ✓'})
       .catch(function(err){say(err.message==='Failed to fetch'?'Could not reach the server. Please email me directly instead.':err.message);b.disabled=false;b.textContent='Send inquiry →'})
       .then(function(){setTimeout(function(){b.disabled=false;b.textContent='Send inquiry →'},4000)});
   });

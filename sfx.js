@@ -22,7 +22,9 @@
     /* cards / tiles / rows: little rising "pop" so the highlight feels noticeable */
     pop: function () { note(660, 0, 0.09, 0.04, 'sine'); note(990, 0.045, 0.12, 0.035, 'sine'); },
     /* click / tap confirm */
-    click: function () { note(520, 0, 0.05, 0.05, 'square'); note(780, 0.04, 0.08, 0.04, 'triangle'); }
+    click: function () { note(520, 0, 0.05, 0.05, 'square'); note(780, 0.04, 0.08, 0.04, 'triangle'); },
+    /* inquiry sent: soft rising three-note chime */
+    success: function () { note(659, 0, 0.16, 0.05, 'sine'); note(784, 0.11, 0.16, 0.05, 'sine'); note(1047, 0.22, 0.34, 0.055, 'sine'); }
   };
 
   function play(name) {
@@ -35,6 +37,8 @@
       if (ctx.state === 'running') go(); else ctx.resume().then(go, function () {});
     } catch (e) {}
   }
+
+  window.sfxPlay = play;
 
   /* what counts as a "feature" and which sound it makes */
   var TICK = '#side .nav a, #ask-open, #tt-open, #chat-open, .keys button, .chat-link, .mode button, .sound, .sh > a, .links a, .mail, .tour-pill button, .back, .plan-btn, .plan-more, .ask-chips button';

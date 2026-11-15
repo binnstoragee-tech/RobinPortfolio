@@ -920,3 +920,32 @@ section:has(> .back:first-child){padding-top:28px}
 /* typing caret in the tour bubble */
 .bubble.typing p::after{content:"";display:inline-block;width:1.5px;height:1.05em;margin-left:1px;vertical-align:-.15em;background:currentColor;animation:caret 1s steps(1) infinite}
 @keyframes caret{50%{opacity:0}}
+
+/* ===== inquiry success modal ===== */
+.ok-wrap{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .3s}
+.ok-wrap.show{opacity:1;pointer-events:auto}
+.ok-card{position:relative;width:min(440px,100%);padding:38px 30px 28px;text-align:center;border:1px solid var(--border2);border-radius:22px;background:var(--bg);color:var(--text);box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden;transform:translateY(24px) scale(.94);transition:transform .5s cubic-bezier(.2,.9,.25,1.15)}
+.ok-wrap.show .ok-card{transform:none}
+.ok-card::before{content:"";position:absolute;left:50%;top:-90px;width:320px;height:200px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(52,211,153,.28),transparent);pointer-events:none}
+.ok-x{position:absolute;top:12px;right:12px;width:32px;height:32px;border:0;border-radius:50%;background:var(--soft);color:var(--text2);font-size:14px;cursor:pointer;transition:.2s}.ok-x:hover{color:var(--text);transform:rotate(90deg)}
+.ok-badge{position:relative;width:86px;height:86px;margin:0 auto 22px}
+.ok-badge svg{width:100%;height:100%;overflow:visible}
+.ok-ring{fill:rgba(52,211,153,.1);stroke:#34d399;stroke-width:3;stroke-dasharray:252;stroke-dashoffset:252;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center}
+.ok-tick{fill:none;stroke:#34d399;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:50;stroke-dashoffset:50}
+.ok-wrap.show .ok-ring{animation:ok-draw .7s .15s cubic-bezier(.65,0,.35,1) forwards}
+.ok-wrap.show .ok-tick{animation:ok-draw .45s .7s cubic-bezier(.65,0,.35,1) forwards}
+.ok-wrap.show .ok-badge::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #34d399;animation:ok-pulse 1.2s .9s ease-out forwards;opacity:0}
+@keyframes ok-draw{to{stroke-dashoffset:0}}
+@keyframes ok-pulse{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.9)}}
+.ok-eye{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#34d399;margin:0 0 8px}
+.ok-card h3{font-size:25px;font-weight:600;margin:0 0 10px;letter-spacing:-.01em}
+.ok-sub{margin:0 auto;max-width:340px;font-size:14px;line-height:1.55;color:var(--text2)}
+.ok-sum{margin:22px 0 0;padding:14px 16px;text-align:left;border:1px solid var(--border);border-radius:14px;background:var(--raise);font-size:13px;display:grid;gap:8px}
+.ok-sum div{display:flex;justify-content:space-between;gap:16px}
+.ok-sum dt{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.ok-sum dd{margin:0;text-align:right;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ok-btn{margin-top:22px;width:100%;font:600 14px Geist,system-ui,sans-serif;background:var(--text);color:var(--bg);border:0;border-radius:12px;padding:13px 20px;cursor:pointer;transition:opacity .2s,transform .2s}.ok-btn:hover{opacity:.88}.ok-btn:active{transform:scale(.98)}
+.ok-bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:#34d399;transform-origin:left;transform:scaleX(0)}
+.ok-wrap.show .ok-bar{animation:ok-bar 9s linear forwards}
+@keyframes ok-bar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media(prefers-reduced-motion:reduce){.ok-card,.ok-wrap{transition:none}.ok-ring,.ok-tick{animation:none!important;stroke-dashoffset:0}.ok-bar,.ok-badge::after{display:none}}

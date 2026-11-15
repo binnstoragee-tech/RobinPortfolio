@@ -17,3 +17,13 @@ self.addEventListener('notificationclick', e => {
     return self.clients.openWindow('/admin');
   }));
 });
+
+/* Phone push: the server sends a small JSON payload; show it even when the app is closed. */
+self.addEventListener('push', e => {
+  let d = {}; try { d = e.data ? e.data.json() : {}; } catch (_) {}
+  e.waitUntil(self.registration.showNotification(d.title || 'New inquiry', {
+    body: d.body || 'Open the inbox to read it.',
+    icon: '/img/favicon/icon-192.png', badge: '/img/favicon/icon-192.png',
+    tag: d.tag || 'inquiry', renotify: true, vibrate: [80, 40, 80], data: { url: '/admin' }
+  }));
+});

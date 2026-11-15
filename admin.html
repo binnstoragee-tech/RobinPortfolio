@@ -16,14 +16,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
-  <script>try{if(localStorage.getItem('adm_theme')==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('meta[name=theme-color]').content='#09090a'}}catch(e){}</script>
-  <script>try{var _f=localStorage.getItem('adm_folder');if(_f!=='site')document.documentElement.dataset.accent='red'}catch(e){document.documentElement.dataset.accent='red'}</script>
+  <script>try{var _t=localStorage.getItem('adm_theme');if(_t==='dark'||(_t==='system'&&matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.dataset.theme='dark';document.querySelector('meta[name=theme-color]').content='#09090a'}}catch(e){}</script>
   <style>
     :root{--bg:#f1f2f4;--card:#fff;--card2:#f6f6f8;--bd:#ececf0;--tx:#0b0b0c;--mu:#6b6e76;--mu2:#a6a9b1;--inv:#fff;--or:#ff8a3d;--or2:#ff6f1a;--orrgb:255,138,61;--dan:#e5484d;--ok:#22a559;--sh:0 8px 28px rgba(12,12,16,.07);--ease:cubic-bezier(.2,.8,.2,1)}
     :root[data-theme=dark]{--bg:#09090a;--card:#141416;--card2:#1c1c1f;--bd:#26262a;--tx:#f5f5f6;--mu:#8d9099;--mu2:#5c5f67;--inv:#0b0b0c;--sh:0 8px 28px rgba(0,0,0,.5)}
     /* AdFlare folder = red accent (My Website stays orange) */
     :root[data-accent=red]{--or:#f0303c;--or2:#d41f2c;--orrgb:240,48,60}
-    :root[data-accent=red] .tb.on .tc,:root[data-accent=red] .pf-t,:root[data-accent=red] .fold button.on,:root[data-accent=red] .btn.or,:root[data-accent=red] .it.open .av,:root[data-accent=red] .ac .btn.pri,:root[data-accent=red] .toast .ti,:root[data-accent=red] .modal .mi,:root[data-accent=red] .ni .av{color:#fff}
+    :root[data-accent=red] .tb.on .tc,:root[data-accent=red] .pf-t,:root[data-accent=red] .fold button.on,:root[data-accent=red] .btn.or,:root[data-accent=red] .ac .btn.pri,:root[data-accent=red] .toast .ti,:root[data-accent=red] .modal .mi,:root[data-accent=red] .ni .av{color:#fff}
     :root[data-accent=red] .rnd.on svg{stroke:#fff}:root[data-accent=red] #tcur svg{stroke:#fff}
     :root,.pf-t,.fold button,.rings .o{transition:background-color .35s,border-color .35s,color .35s,stroke .35s}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -81,9 +80,62 @@
     .mini strong{display:block;margin:4px 0 6px;font:600 28px/1.1 Geist,sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
     .mini em{font-style:normal;font:500 12px 'Geist Mono',monospace;color:var(--ok)}.mini em.o{color:var(--or2)}
 
+
+    /* ---------- overall dashboard (home) + folders ---------- */
+    .hm{display:none}
+    body.home .hm{display:block}
+    body.home .fold,body.home .app>.search,body.home .app>.sech,body.home .app>.tabs,body.home .app>.list{display:none}
+    .hm .hh{display:flex;align-items:center;justify-content:space-between;margin:20px 2px 12px}
+    .hm .hh h2{margin:0;font:600 19px Geist,sans-serif;letter-spacing:-.01em}
+    .hm .hh span{font:400 12px 'Geist Mono',monospace;color:var(--mu)}
+    .fgrid{display:grid;gap:12px}
+    .fc{--c:#ff8a3d;--crgb:255,138,61;position:relative;display:flex;align-items:center;gap:14px;width:100%;padding:16px;text-align:left;border-radius:24px;background:var(--card);border:1px solid var(--bd);overflow:hidden;transition:transform .25s var(--ease),border-color .25s,box-shadow .25s}
+    .fc.fc-adflare{--c:#f0303c;--crgb:240,48,60}
+    .fc::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(var(--crgb),.16),transparent 62%);pointer-events:none}
+    .fc>*{position:relative}
+    .fic{flex:none;display:grid;place-items:center;width:58px;height:58px;border-radius:19px;background:var(--c);box-shadow:0 10px 22px rgba(var(--crgb),.38)}
+    .fic svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .fc .ft{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+    .fc .ft strong{font:600 18px Geist,sans-serif;letter-spacing:-.01em;color:var(--tx)}
+    .fc .ft em{font:400 12px 'Geist Mono',monospace;font-style:normal;color:var(--mu);line-height:1.45}
+    .fc .fb{flex:none;padding:5px 11px;border-radius:99px;background:rgba(var(--crgb),.15);color:var(--c);font:600 12px Geist,sans-serif;white-space:nowrap}
+    .fc .fb.z{background:var(--card2);color:var(--mu)}
+    .fc .chv{flex:none;width:18px;height:18px;fill:none;stroke:var(--mu);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s var(--ease)}
+    .fc:active{transform:scale(.98)}
+    @media(hover:hover){.fc:hover{transform:translateY(-3px);border-color:rgba(var(--crgb),.55);box-shadow:0 16px 34px rgba(var(--crgb),.2)}.fc:hover .chv{transform:translateX(3px)}}
+    @media(min-width:700px){.fgrid{grid-template-columns:1fr 1fr}}
+    @media(min-width:1024px) and (max-width:1199px){.hm{grid-column:2/5;grid-row:2/span 3}}
+    @media(min-width:1200px){.hm{grid-column:1/-1;grid-row:4}.fc{padding:22px}.fic{width:64px;height:64px}}
+    .fold{display:none!important}
+    .sech .sbk{flex:none;display:grid;place-items:center;width:38px;height:38px;margin-right:10px;border-radius:50%;background:var(--card);border:1px solid var(--bd);color:var(--tx);transition:background .2s,transform .2s var(--ease)}
+    .sech .sbk svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .sech .sbk:active{transform:scale(.92)}
+    @media(hover:hover){.sech .sbk:hover{background:var(--card2)}}
+    .app>.sech{justify-content:flex-start}
     /* search + tabs */
     .search{position:relative;display:block;margin-bottom:14px}
-    .search svg{position:absolute;left:18px;top:50%;width:19px;height:19px;transform:translateY(-50%);color:var(--tx);pointer-events:none}
+    .sbp{position:relative}
+    .sbb,.sbx{position:absolute;top:50%;display:grid;place-items:center;padding:0;border:0;background:none;border-radius:50%;color:var(--tx);transition:background .2s}
+    .sbb{left:9px;width:38px;height:38px;margin-top:-19px;pointer-events:none}
+    .sbb svg{grid-area:1/1;width:19px;height:19px;transition:opacity .2s,transform .3s var(--ease)}
+    .sbb .i-b{opacity:0;transform:rotate(90deg) scale(.5)}
+    .sbx{right:10px;width:36px;height:36px;margin-top:-18px;display:none}
+    .sbx svg{width:18px;height:18px}
+    .search input::-webkit-search-cancel-button,.search input::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none}
+    /* expanded search: takes over the top bar (back arrow + clear) */
+    .search.sxd.rv{animation:none!important;opacity:1;transform:none}/* a running rise-animation would trap the fixed bar */
+    .search.sx .sb{position:fixed;z-index:52;top:0;left:0;right:0;padding:calc(9px + env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) 9px max(12px,env(safe-area-inset-left));background:var(--bg);border-bottom:1px solid var(--bd);animation:sbIn .22s var(--ease) both}
+    .search.sx .sbp{max-width:1416px;margin:0 auto;animation:spIn .3s var(--ease) both}
+    .search.sx input{height:48px;padding:0 52px 0 56px;background:var(--card)}
+    .search.sx .sbb{pointer-events:auto;cursor:pointer}
+    .search.sx .sbb .i-s{opacity:0;transform:rotate(-90deg) scale(.5)}
+    .search.sx .sbb .i-b{opacity:1;transform:none}
+    .search.sx .sbx{display:grid;cursor:pointer}
+    @media(hover:hover){.search.sx .sbb:hover,.search.sx .sbx:hover{background:var(--card2)}}
+    .search.sx .sbb:active,.search.sx .sbx:active{background:var(--card2)}
+    @keyframes sbIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+    @keyframes spIn{from{transform:scaleX(.9)}to{transform:none}}
+    @media(prefers-reduced-motion:reduce){.search.sx .sb,.search.sx .sbp{animation:none}}
     .search input{width:100%;height:54px;padding:0 20px 0 48px;font:inherit;font-size:15px;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:99px;outline:none;transition:border-color .2s,box-shadow .2s}
     .search input::placeholder{color:var(--mu)}
     .search input:focus{border-color:var(--or);box-shadow:0 0 0 4px rgba(var(--orrgb),.18)}
@@ -114,7 +166,6 @@
     .it.out{opacity:0;transform:translateX(34px) scale(.96)}
     .ih{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;text-align:left}
     .av{position:relative;flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--card2);border:1px solid var(--bd);font:500 13px 'Geist Mono',monospace;transition:transform .35s var(--ease),background .3s,color .3s}
-    .it.open .av{background:var(--or);border-color:var(--or);color:#0b0b0c;transform:rotate(-8deg) scale(1.06)}
     .it.new .av::after{content:"";position:absolute;right:-2px;top:-2px;width:12px;height:12px;border-radius:50%;background:var(--dan);border:2px solid var(--card)}
     .mid{flex:1;min-width:0;display:grid}
     .mid strong{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.it:not(.new) .mid strong{font-weight:500}
@@ -274,19 +325,344 @@
     .fm #fm-t{animation-delay:.1s}.fm #fm-w{animation-delay:.15s}.fm button:active .fi{transform:scale(.92)}
     .fm .lb{padding:3px 11px;border-radius:12px;background:rgba(0,0,0,.7);text-shadow:none}
     .fab svg{transition:transform .4s var(--ease)}.fab.open svg{transform:rotate(180deg)}
+    .tapfx{transform:scale(.93)!important;transition:transform .15s var(--ease)!important}
     #tcur{position:fixed;left:0;top:0;z-index:70;width:30px;height:30px;pointer-events:none;opacity:0;transition:opacity .25s;will-change:transform}
     #tcur svg{position:absolute;left:0;top:0;width:28px;height:28px;fill:var(--or);stroke:#0b0b0c;stroke-width:1.6;stroke-linejoin:round;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))}
     #tcur i{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;border:2px solid var(--or);animation:ping 1.2s infinite}
     .ftgt{outline:3px solid var(--or);outline-offset:4px;box-shadow:0 0 0 9px rgba(var(--orrgb),.22);animation:ftPulse 1.4s ease-in-out infinite}
     @keyframes ftPulse{50%{box-shadow:0 0 0 14px rgba(var(--orrgb),.08)}}
     .tgt{background:rgba(var(--orrgb),.28);border-radius:6px;box-shadow:0 0 0 3px rgba(var(--orrgb),.28);transition:background .2s}
+
+    /* ===== DESKTOP LAYOUT (>=1024px): left rail + wide workspace. Phones are untouched. ===== */
+    @media(min-width:1024px) and (max-width:1199px){
+      .app{max-width:1360px;padding:40px 48px 72px;display:grid;grid-template-columns:360px minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);column-gap:28px;row-gap:18px;align-items:start}
+      .app>*{margin:0!important;min-width:0}
+      /* left rail */
+      .hd{grid-column:1;grid-row:1;align-self:center}
+      .hi h1{font-size:17px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25}
+      .fold{grid-column:1;grid-row:2;align-self:center}
+      .hero{grid-column:1;grid-row:3/span 3;position:sticky;top:28px}
+      /* stats row: all three cards share the same height */
+      .pf{grid-column:2;grid-row:1;align-self:stretch;display:flex;flex-direction:column}
+      .pf-t,.pf-b small{white-space:nowrap}
+      .pf-t{flex:none;margin:0 22px}
+      .pf-b{flex:1;align-items:center}
+      .pf-b strong{font-size:44px}
+      .two{grid-column:3/5;grid-row:1;align-self:stretch;align-items:stretch;gap:18px}
+      .mini{display:flex;flex-direction:column;justify-content:center}
+      .search{grid-column:2/5;grid-row:2;align-self:center}
+      .search input{height:50px}
+      .sech{grid-column:2;grid-row:3;align-self:center}
+      .tabs{grid-column:3/5;grid-row:3}
+      .list{grid-column:2/5;grid-row:4;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:14px}
+      .list>.it.open,.list>:not(.it){grid-column:1/-1}
+      /* bottom bar becomes a single floating refresh button */
+      .nav{left:auto;right:32px;bottom:28px;transform:none;width:auto;display:block;padding:0;background:none;border:0;box-shadow:none;border-radius:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+      .nav .nv{display:none}
+      .nav .fab{margin:0;width:56px;height:56px}
+      /* floating panels line up with the new layout */
+      .np{left:max(48px,calc((100vw - 1360px)/2 + 48px));right:auto;margin:0;top:92px}
+      #toasts{left:auto;right:32px;transform:none;bottom:100px}
+    }
+  
+    /* ===== DASHBOARD LAYOUT (>=1200px): sidebar + main + right panel ===== */
+    @keyframes sbIn{from{opacity:0;transform:translateX(-26px)}}
+    @keyframes drift{to{transform:translate(150px,-70px) scale(1.25)}}
+    @keyframes popIn{from{opacity:0;transform:translateY(22px) scale(.94)}}
+    @media(min-width:1200px){
+      body{background:#dde0e5}:root[data-theme=dark] body{background:#000}
+      .app{position:relative;width:calc(100% - 64px);max-width:1440px;min-height:calc(100vh - 64px);margin:32px auto;padding:0 28px 0 0;background:var(--bg);border-radius:34px;box-shadow:0 30px 80px rgba(10,12,18,.14);display:grid;grid-template-columns:248px repeat(3,minmax(0,1fr)) 320px;grid-template-rows:auto auto auto auto 1fr;column-gap:22px;row-gap:20px;align-items:start}
+      .app>*{margin:0!important;min-width:0}
+      .app::before{content:"";grid-column:1;grid-row:1/-1;align-self:stretch;border-radius:34px 0 0 34px;border-right:1px solid var(--bd);background:var(--card) url(/img/favicon/icon-192.png) no-repeat 26px 28px/42px;animation:sbIn .8s var(--ease) both}
+      /* header */
+      .hd{grid-column:2/6;grid-row:1;padding-top:30px;gap:12px}
+      .hi{order:-1}.hi h1{font-size:28px;white-space:normal;overflow:visible;letter-spacing:-.02em}.hi p{font-size:13.5px}
+      .me{order:9;width:48px;height:48px;margin-left:6px}
+      .hd .rnd{width:44px;height:44px}
+      /* sidebar nav */
+      .fold{grid-column:1;grid-row:2/span 3;flex-direction:column;gap:6px;padding:0 18px;align-self:start;position:relative;z-index:1}
+      .fold button{flex:none;justify-content:flex-start;height:46px;padding:0 16px;border:0;border-radius:14px;background:transparent;gap:10px}
+      .fold button span{flex:1;text-align:left}
+      .fold button:not(.on):hover{background:var(--card2);transform:translateX(5px)}
+      /* pastel stat cards */
+      .pf,.mini{position:relative;overflow:hidden;border:0;border-radius:26px;box-shadow:none;transition:transform .35s var(--ease),box-shadow .35s}
+      .pf:hover,.mini:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(30,30,70,.16)}
+      .pf::after,.mini::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.5) 50%,transparent 65%);transform:translateX(-120%)}
+      .pf:hover::after,.mini:hover::after{transform:translateX(120%);transition:transform .9s var(--ease)}
+      .pf{grid-column:2;grid-row:2;align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;padding:18px 20px;background:#dcd6fb;color:#1a1530}
+      .pf-t{margin:0;padding:0;background:none;border-radius:0;color:inherit;font-size:13px;white-space:nowrap}
+      .pf-b{margin:12px 0 0;padding:0;background:none;box-shadow:none;border-radius:0;color:inherit}.pf-b::after{display:none}
+      .pf-b small{color:rgba(26,21,48,.65);white-space:nowrap}.pf-b strong{font-size:42px}
+      .pf-b .pill{background:rgba(255,255,255,.6);color:#1a1530}
+      .two{grid-column:3/5;grid-row:2;align-self:stretch;gap:20px;margin:0}
+      .mini{display:flex;flex-direction:column;justify-content:center;padding:18px 22px;color:#10241b}
+      .mini:first-child{background:#cde2ff}.mini:last-child{background:#c6eedb}
+      .mini small{color:rgba(16,36,27,.65)}.mini em{color:#1d7a47}.mini em.o{color:#a0501a}
+      .pf,.mini{animation:popIn .7s var(--ease) both}.mini:first-child{animation-delay:.1s}.mini:last-child{animation-delay:.2s}
+      /* workspace */
+      .search{grid-column:2/5;grid-row:3}
+      .sech{grid-column:2;grid-row:4;align-self:center}
+      .tabs{grid-column:3/5;grid-row:4}
+      .list{grid-column:2/5;grid-row:5;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start;padding-bottom:30px}
+      .list>.it.open,.list>:not(.it){grid-column:1/-1}
+      .it{border-radius:24px}.it:hover{transform:translateY(-3px);border-color:var(--or);box-shadow:0 14px 30px rgba(var(--orrgb),.16)}
+      /* right panel */
+      .hero{grid-column:5;grid-row:2/span 4;align-self:start;position:sticky;top:28px;border-radius:30px}
+      .hero::before{content:"";position:absolute;left:-70px;bottom:-90px;width:230px;height:230px;border-radius:50%;background:rgba(var(--orrgb),.4);filter:blur(55px);animation:drift 7s ease-in-out infinite alternate;pointer-events:none}
+      .hero>:not(.rings){position:relative;z-index:1}
+      .tray{gap:2px;padding:14px 6px 12px}.tb{font-size:12.5px}.tc{width:48px;height:48px;transition:transform .3s var(--ease),background .3s}.tb:hover .tc{transform:translateY(-4px) scale(1.06)}
+      /* floating bits */
+      .nav{left:auto;right:36px;bottom:32px;transform:none;width:auto;display:block;padding:0;background:none;border:0;box-shadow:none;border-radius:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+      .nav .nv{display:none}.nav .fab{margin:0;width:56px;height:56px}
+      .np{left:calc(max(32px,(100vw - 1440px)/2) + 270px);right:auto;margin:0;top:104px}
+      #toasts{left:auto;right:36px;transform:none;bottom:104px}
+    }
+  
+    /* ===== FLAT + FULL-SCREEN refinement (>=1200px) ===== */
+    @media(min-width:1200px){
+      body{background:var(--bg)}
+      .app{width:100%;max-width:none;min-height:100vh;margin:0;padding:0 36px 0 0;border-radius:0;box-shadow:none;grid-template-columns:260px repeat(3,minmax(0,1fr)) 340px}
+      .app::before{border-radius:0}
+      .hd{padding-top:32px}
+      /* flat, colour-matched cards: accent / accent tint / neutral */
+      .pf,.mini,.hero,.it{box-shadow:none!important}
+      .pf,.mini{border-radius:20px}.hero{border-radius:24px}.it{border-radius:18px}
+      .pf:hover,.mini:hover{transform:translateY(-3px)}
+      .pf{background:var(--or);color:#0b0b0c}
+      :root[data-accent=red] .pf{color:#fff}
+      :root[data-accent] .app .pf-t{color:inherit;gap:12px;justify-content:space-between}
+      .pf-t span:last-child{opacity:.75;font-weight:500}
+      .pf-b small{color:inherit;opacity:.75}
+      .pf-b .pill{background:rgba(0,0,0,.16);color:inherit;white-space:nowrap;padding:6px 14px}
+      .mini{color:var(--tx)}
+      .mini:first-child{background:color-mix(in srgb,var(--or) 13%,var(--card))}
+      .mini:last-child{background:var(--card2);border:1px solid var(--bd)}
+      .mini small{color:var(--mu)}
+      .pf::after,.mini::after{background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%)}
+      .list{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+      .it:hover{transform:translateY(-2px);box-shadow:none!important}
+      /* refresh button */
+      .nav{right:32px;bottom:30px}
+      .nav .fab{width:54px;height:54px;border-radius:18px;background:var(--or);color:#0b0b0c;border:0;box-shadow:none;transition:transform .3s var(--ease),background .25s}
+      :root[data-accent=red] .nav .fab{color:#fff}
+      .nav .fab:hover{background:var(--or2);transform:translateY(-4px) rotate(-6deg)}
+      .nav .fab:active{transform:scale(.92)}
+      .nav .fab svg{width:23px;height:23px;stroke-width:2}
+      .nav .fab:hover svg{transform:rotate(180deg)}
+      .np{left:276px}
+    }
+  
+    /* ===== MAZI-STYLE ADMIN (>=1200px): white sidebar + top bar + bordered flat cards ===== */
+    .who{display:none}
+    @media(min-width:1200px){
+      .app{margin:0 0 0 232px;width:auto;padding:0 28px 40px;grid-template-columns:repeat(3,minmax(0,1fr)) 340px;grid-template-rows:68px auto auto auto auto auto 1fr;column-gap:18px;row-gap:18px;min-height:100vh;background:var(--bg)}
+      .app::before{display:none}
+      .app::after{content:"";grid-column:1/-1;grid-row:1;margin:0 -28px;background:var(--card);border-bottom:1px solid var(--bd);align-self:stretch;z-index:0}
+      .hd{display:contents}
+      .who,#install,#micbtn,#bell,.me{grid-column:4;grid-row:1;justify-self:end;align-self:center;z-index:2;animation:popIn .6s var(--ease) both}
+      .me{order:0;width:40px;height:40px;margin:0;box-shadow:none}
+      .who{display:grid;width:110px;margin-right:50px;text-align:right;line-height:1.2}.who b{font-size:13.5px;font-weight:600}.who small{font-size:12px;color:var(--mu)}
+      #bell{margin-right:172px}#micbtn{margin-right:220px}#install{margin-right:268px}
+      .hd .rnd{width:38px;height:38px;background:var(--card);border-color:var(--bd)}
+      .hi{grid-column:1/4;grid-row:2;padding-top:12px}.hi h1{font-size:24px;letter-spacing:-.02em}.hi p{font-size:13.5px}
+      /* sidebar (the old bottom bar) */
+      .nav{position:fixed;left:0;top:0;bottom:0;right:auto;width:232px;transform:none;display:flex;flex-direction:column;gap:4px;padding:104px 12px 18px;background:var(--card);border:0;border-right:1px solid var(--bd);border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;z-index:40;animation:sbIn .7s var(--ease) both}
+      .nav::before{content:"";position:absolute;left:22px;top:22px;width:40px;height:40px;border-radius:11px;background:url(/img/favicon/icon-192.png) center/cover}
+      .nav::after{content:"Inquiries Admin";position:absolute;left:72px;top:31px;font:600 15px Geist,sans-serif;letter-spacing:-.01em}
+      .nav .nv{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;width:100%;height:42px;padding:0 14px;border-radius:12px;font-size:14px;font-weight:500;color:var(--mu);transition:background .2s,color .2s,transform .25s var(--ease)}
+      .nav .nv::before{display:none}
+      .nav .nv svg{width:19px;height:19px;flex:none}
+      .nav .nv:hover{background:var(--card2);color:var(--tx);transform:translateX(4px)}
+      .nav .nv.on{background:var(--card2);color:var(--tx);font-weight:600}.nav .nv.on svg{color:var(--or)}
+      .nav .nv b{position:static;transform:none;margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--or);color:#fff;font:500 11px/20px 'Geist Mono',monospace;text-align:center}
+      .nav .fab,:root[data-accent=red] .nav .fab{order:9;margin:auto 0 0;width:100%;height:42px;padding:0 14px;display:flex;align-items:center;justify-content:flex-start;gap:12px;border-radius:12px;background:transparent;color:var(--mu);border-top:1px solid var(--bd);border-radius:0 0 12px 12px;transition:background .2s,color .2s}
+      .nav .fab::after{content:"Refresh";font:500 14px Geist,sans-serif}
+      .nav .fab:hover{background:var(--card2);color:var(--tx);transform:none}.nav .fab svg{width:19px;height:19px}
+      /* tabs + cards */
+      .fold{grid-column:1/3;grid-row:3;flex-direction:row;width:max-content;padding:4px;gap:2px;border:1px solid var(--bd);border-radius:99px;background:var(--card)}
+      .fold button{height:36px;padding:0 18px;gap:8px;justify-content:center}.fold button span{flex:none}
+      .fold button:not(.on):hover{transform:none;background:var(--card2)}
+      .pf,.mini,.mini:first-child,.mini:last-child{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:18px;box-shadow:none}
+      :root[data-accent=red] .pf{color:var(--tx)}:root[data-accent] .app .pf-t{color:var(--mu)}
+      .pf{grid-column:1;grid-row:4}.two{grid-column:2/4;grid-row:4}
+      .pf-b strong{font-size:36px;color:var(--or)}.pf-b small{opacity:1;color:var(--mu)}
+      .pf-b .pill{background:rgba(var(--orrgb),.14);color:var(--or)}
+      .mini strong{font-size:36px}
+      .search{grid-column:1/4;grid-row:5}.sech{grid-column:1;grid-row:6}.tabs{grid-column:2/4;grid-row:6}
+      .list{grid-column:1/4;grid-row:7}
+      .hero{grid-column:4;grid-row:3/span 5;top:88px}
+      .np{left:auto;right:28px;top:76px}
+    }
+  
+    /* ===== PROFILE MENU + HERO GAUGE (>=1200px) ===== */
+    .tsub{display:none}
+    @keyframes spinr{to{transform:rotate(-360deg)}}
+    @media(min-width:1200px){
+      .me{cursor:pointer}
+      .hero{z-index:5;display:grid;place-content:center;min-height:300px;padding:30px 20px;background:#0b0b0c}
+      .hero small{font-size:14px}.big{margin:8px 0 0;font-size:84px}
+      .hero .rings{left:50%;top:50%;right:auto;width:330px;height:330px;margin:-165px 0 0 -165px;opacity:1;animation:slow 14s linear infinite}
+      .rings circle{stroke-opacity:.1}.rings .o{stroke-width:3.5;stroke-opacity:1}
+      .rings .o+.o{animation:spinr 6s linear infinite;transform-box:fill-box;transform-origin:center}
+      body>.tray{position:fixed;top:66px;right:28px;z-index:60;width:228px;color:var(--tx);display:flex;flex-direction:column;gap:2px;padding:8px;border-radius:16px;background:var(--card);border:1px solid var(--bd);box-shadow:0 20px 48px rgba(10,12,18,.18);-webkit-backdrop-filter:none;backdrop-filter:none;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.97);transform-origin:top right;transition:opacity .2s,transform .25s var(--ease),visibility .2s}
+      body.pm-open>.tray,body.ft-menu>.tray{opacity:1;visibility:visible;transform:none}
+      .tray .tb{display:flex;flex-direction:row;align-items:center;justify-items:unset;gap:12px;height:42px;padding:0 12px;border-radius:10px;font-size:14px;font-weight:500;color:var(--tx);transition:background .2s}
+      .tray .tb:hover{background:var(--card2)}
+      .tray .tc,.tray .tb:hover .tc{width:auto;height:auto;background:none!important;color:var(--mu);transform:none}
+      :root[data-accent] .tray .tb.on .tc{background:none!important;color:var(--or)}
+      .tray .tc svg{width:18px;height:18px}
+      #thm::after{content:"\203A";margin-left:auto;font-size:20px;color:var(--mu)}
+      #out,#out .tc{color:var(--dan)!important}
+      .tray.sub-open .tsub{display:block;animation:popIn .25s var(--ease) both}
+      .tsub{position:absolute;right:calc(100% + 10px);top:92px;width:180px;padding:8px;border-radius:16px;background:var(--card);border:1px solid var(--bd);box-shadow:0 20px 48px rgba(10,12,18,.18)}
+      .tsub button{color:var(--tx);display:flex;align-items:center;justify-content:space-between;width:100%;height:40px;padding:0 12px;border-radius:10px;font-size:14px;font-weight:500;text-align:left}
+      .tsub button:hover{background:var(--card2)}.tsub button.on i::after{content:"\2713";font-style:normal;color:var(--tx)}
+    }
+  
+    /* ===== PROFESSIONAL POLISH (>=1200px): hero half-circle + consistent buttons ===== */
+    @media(min-width:1200px){
+      /* hero: left-aligned figures, circle is a half-visible background */
+      .hero{place-content:center start;text-align:left;padding:30px 28px}
+      .hero small{font-size:14px;letter-spacing:.01em}
+      .big{font-size:88px;margin:6px 0 0}
+      .hero .rings{left:auto;right:-190px;top:50%;width:380px;height:380px;margin:-190px 0 0;opacity:1}
+      .hero::before{left:-60px;bottom:-110px}
+      /* focus + states */
+      button,[role=tab]{cursor:pointer}
+      button:disabled{opacity:.5;cursor:not-allowed}
+      :is(button,a,input):focus-visible{outline:2px solid var(--or);outline-offset:2px}
+      .search input:focus-visible{outline:0}
+      /* top bar */
+      .hd .rnd{width:40px;height:40px;border:1px solid var(--bd);background:var(--card);transition:background .2s,border-color .2s,transform .2s var(--ease)}
+      .hd .rnd:hover{background:var(--card2);border-color:var(--mu2)}.hd .rnd:active{transform:scale(.92)}
+      .me{transition:box-shadow .25s}.me:hover{box-shadow:0 0 0 3px rgba(var(--orrgb),.28)}
+      .who:hover b{color:var(--or)}.who b{transition:color .2s}
+      /* tabs / pills */
+      .fold button,.tabs button{transition:background .25s,color .25s,transform .15s var(--ease)}
+      .fold button:active,.tabs button:active{transform:scale(.97)}
+      .tabs button:not(.on):hover{color:var(--tx)}
+      /* inquiry rows */
+      .it{transition:border-color .25s,transform .25s var(--ease),background .25s}
+      .ih{border-radius:inherit;transition:background .2s}.ih:hover{background:color-mix(in srgb,var(--card2) 55%,transparent)}
+      .chev{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;transition:transform .4s var(--ease),background .2s}
+      .ih:hover .chev{background:var(--card2);color:var(--tx)}
+      /* action buttons */
+      .btn{height:40px;padding:0 16px;border-radius:10px;font-weight:500;letter-spacing:-.005em;box-shadow:none;transition:background .2s,border-color .2s,color .2s,transform .15s var(--ease)}
+      .btn:hover{transform:translateY(-1px)}.btn:active{transform:scale(.97)}
+      .btn svg{width:16px;height:16px;stroke-width:1.9}
+      .ac{gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--bd)}
+      .ac .btn{height:38px;font-size:13px}
+      .ac .btn.pri{box-shadow:0 1px 0 rgba(0,0,0,.08)}
+      .ac .btn.pri:hover{background:var(--or2);border-color:var(--or2)}
+      .ac .dan{border-color:color-mix(in srgb,var(--dan) 35%,var(--bd))}
+      .modal .row .btn{height:42px;min-width:110px;justify-content:center;border-radius:10px}
+      .nav .nv:focus-visible{outline-offset:-2px}
+    }
+  
+    /* ===== REDESIGNED PLACEMENT (>=1200px): title row, 4 KPI cards, toolbar, full-width list ===== */
+    @media(min-width:1200px){
+      .app{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:68px auto auto auto auto 1fr;column-gap:18px;row-gap:18px}
+      .hi{grid-column:1/3;grid-row:2;padding-top:10px}
+      .fold{grid-column:3/5;grid-row:2;justify-self:end;align-self:end}
+      /* KPI row: same height, same rhythm */
+      .hero{grid-column:1;grid-row:3;position:relative;top:auto;align-self:stretch;min-height:0;padding:22px 24px;border-radius:18px}
+      .hero small{font-size:13px}
+      .big{font-size:56px;margin:4px 0 0}
+      .hero .rings{right:-150px;width:300px;height:300px;margin:-150px 0 0}
+      .pf{grid-column:2;grid-row:3}.two{grid-column:3/5;grid-row:3}
+      .pf,.mini{padding:20px 22px}
+      .pf-t{flex-wrap:wrap;gap:2px 10px;white-space:normal}
+      .pf-b strong,.mini strong{font-size:40px}
+      /* toolbar: search + filter tabs on one line */
+      .search{grid-column:1/4;grid-row:4}
+      .tabs{grid-column:4;grid-row:4;height:50px}
+      .sech{grid-column:1/-1;grid-row:5;margin-top:6px}
+      /* full-width inbox list */
+      .list{grid-column:1/-1;grid-row:6;grid-template-columns:1fr;gap:12px}
+    }
+    @media(min-width:1200px) and (max-width:1439px){.pf-t span:last-child{display:none}.big{font-size:48px}}
+  
+    /* modal buttons: crisp, no fade/blur on hover */
+    .btn.del:hover{background:color-mix(in srgb,var(--dan) 84%,#000);border-color:transparent;opacity:1}
+    .modal .btn:hover,.modal .btn:active{transform:none}
+    .modal .btn.del:active,.modal .btn.pri:active{transform:scale(.98)}
+    .modal .btn.pri:hover{opacity:1;background:color-mix(in srgb,var(--tx) 84%,var(--card))}
+    .modal .box{-webkit-font-smoothing:antialiased}
+    :root[data-accent] .modal .mi.dn,.modal .mi.dn{color:var(--dan)}
+
+    /* logo without the black box, one logo on desktop, R text profile */
+    .me{background:none;box-shadow:none;border-radius:0;overflow:visible;cursor:pointer}
+    .me img{object-fit:contain;opacity:0;transition:opacity .25s}
+    .logo-ok .me img{opacity:1}
+    .me .rl{display:none;font:700 18px Geist,sans-serif;line-height:1}
+    .slogo{display:none}
+    @media(min-width:1200px){
+      .me{border-radius:50%;overflow:hidden;background:var(--or);color:#0b0b0c}
+      :root[data-accent=red] .me{color:#fff}
+      .me img{display:none}.me .rl{display:block}
+      .nav::before{background:var(--logo,none) center/contain no-repeat;border-radius:0}
+      .slogo{display:block;position:absolute;left:0;top:0;width:100%;height:84px;z-index:2;background:none;border:0;cursor:pointer}
+    }
+  
+    /* ---- nav: neutral active state (no orange/red) ---- */
+    .nav .nv.on svg{color:var(--tx)}
+    .nv::before{background:var(--tx)}
+    .nav .nv b{background:var(--tx);color:var(--inv)}
+    /* ---- search: fixed in place, neutral focus, clear (x) shows when typing ---- */
+    .search input{padding-right:52px}
+    .search input:focus{border-color:var(--tx);box-shadow:0 0 0 4px rgba(128,128,128,.16)}
+    .search input:not(:placeholder-shown)~.sbx{display:grid;cursor:pointer}
+    @media(hover:hover){.search input:not(:placeholder-shown)~.sbx:hover{background:var(--card2)}}
+  
+    /* ---- nav = Dashboard + Time + Weather only ---- */
+    .nav{grid-template-columns:1fr}
+    @media(max-width:1023px),(min-width:1200px){.nav .fab{display:none!important}}
+    body.home .nav #ndash{color:var(--tx);font-weight:600}
+    body.home .nav #ndash::before{transform:translateX(-50%) scaleX(1)}
+    body.home .nav #ndash svg{transform:translateY(-2px);color:var(--tx)}
+    @media(min-width:1200px){
+      body.home .nav #ndash{background:var(--card2)}
+      body.home .nav #ndash svg{transform:none}
+    }
+  
+    /* ---- stat cards (Total / New / This week / Read) = dashboard only ---- */
+    @media(min-width:1200px),(max-width:1023px){
+      body:not(.home) .pf,body:not(.home) .two,
+      body:not(.home) .hero>small,body:not(.home) .hero>.big,body:not(.home) .hero>.rings{display:none}
+    }
+    /* whole hero card (incl. Alerts/Tour/Theme/Log out) is dashboard-only on desktop and mobile */
+    @media(min-width:1200px),(max-width:1023px){body:not(.home) .hero{display:none}}
+  
+    /* ---- back button lives in the header, beside the folder name ---- */
+    .hi .hb{display:none}
+    .hi .hit{min-width:0}
+    @media(min-width:1200px),(max-width:1023px){
+      body:not(.home) .hi{display:flex;align-items:center;gap:12px}
+      body:not(.home) .hi .hb{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--bd);color:var(--tx);transition:background .2s,transform .2s var(--ease)}
+      .hi .hb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .hi .hb:active{transform:scale(.92)}
+      body:not(.home) .app>.sech{display:none}
+    }
+    @media(hover:hover) and (min-width:1200px),(hover:hover) and (max-width:1023px){body:not(.home) .hi .hb:hover{background:var(--card2)}}
+    @media(max-width:1023px){body:not(.home) .hd .me{display:none}}
+  
+    /* name label (ROBIN / Admin) is display-only, not a button */
+    .who{pointer-events:none;cursor:default;-webkit-user-select:none;user-select:none}
+  
+    /* ---- sidebar bottom: divider + Logout (desktop) ---- */
+    #nout{display:none}
+    @media(min-width:1200px){
+      #nout{display:flex;margin:auto 0 2px}
+      #nout::before{display:block;content:"";position:absolute;left:0;right:0;top:-9px;width:auto;height:1px;border-radius:0;background:var(--bd);transform:none}
+    }
   </style>
 </head>
-<body style="visibility:hidden">
+<body class="home" style="visibility:hidden">
 <div class="app">
   <header class="hd rv" style="--d:0s">
-    <span class="me"><img src="/img/favicon/icon-192.png" alt="" width="46" height="46"></span>
-    <div class="hi"><h1 id="hello">Hello, Master Robin!</h1><p>Inquiries inbox</p></div>
+    <span class="me" id="meBtn" role="button" tabindex="0" aria-label="Profile"><img src="/img/favicon/icon-192.png" alt="" width="46" height="46"><b class="rl" id="rl">R</b></span>
+    <span class="who"><b id="whoName">ROBIN</b><small>Admin</small></span>
+    <div class="hi"><button type="button" class="hb" id="hback" aria-label="Back to dashboard" title="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><div class="hit"><h1 id="hello">Hello, ROBIN!</h1><p id="hsub">Overview · all inboxes</p></div></div>
     <button class="rnd" id="install" hidden><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg><span class="lbl">Install</span></button>
     <button class="rnd" id="micbtn" aria-label="Talk to Madona" title="Talk to Madona"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4"/><path class="sl" d="M4 4l16 16"/></svg></button>
     <button class="rnd" id="bell" aria-label="Show new inquiries" title="New inquiries"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9zM10 20a2 2 0 004 0"/></svg></button>
@@ -294,7 +670,7 @@
 
   <div class="fold rv" id="fold" role="tablist" aria-label="Inbox folders" style="--d:.04s">
     <button type="button" class="on" data-k="adflare" role="tab"><span>AdFlare</span><b id="fc-adflare">0</b></button>
-    <button type="button" data-k="site" role="tab"><span>My Website</span><b id="fc-site">0</b></button>
+    <button type="button" data-k="site" role="tab"><span>Portfolio</span><b id="fc-site">0</b></button>
   </div>
 
   <section class="hero rv" style="--d:.08s" aria-label="Summary">
@@ -306,6 +682,7 @@
       <button class="tb" id="tourbtn" aria-label="Quick tour of the features"><span class="tc"><svg viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0116 0v3M4 15h3v5H5a1 1 0 01-1-1zM20 15h-3v5h2a1 1 0 001-1z"/></svg></span><span>Tour</span></button>
       <button class="tb" id="thm" aria-label="Switch theme"><span class="tc"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg></span><span>Theme</span></button>
       <button class="tb" id="out" aria-label="Log out"><span class="tc"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg></span><span>Log out</span></button>
+    <div class="tsub" id="tsub" role="menu"><button type="button" data-t="system">System<i></i></button><button type="button" data-t="light">Light<i></i></button><button type="button" data-t="dark">Dark<i></i></button></div>
     </div>
   </section>
 
@@ -318,8 +695,19 @@
     <div class="mini"><small>Read</small><strong id="s-read">0</strong><em class="o">kept in inbox</em></div>
   </section>
 
-  <label class="search rv" style="--d:.28s"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Try “name, email, project…”" autocomplete="off"></label>
-  <div class="sech rv" style="--d:.32s"><h2>Inquiries</h2></div>
+  <section class="hm rv" id="home" aria-label="Folders" style="--d:.24s">
+    <div class="hh"><h2>Folders</h2><span>2 inboxes</span></div>
+    <div class="fgrid">
+    <button type="button" class="fc fc-site" data-k="site" aria-label="Open Portfolio inbox"><span class="fic"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></span><span class="ft"><strong>Portfolio</strong><em id="hs-site-t">0 inquiries · 0 this week</em></span><span class="fb z" id="hs-site-n">0 new</span><svg class="chv" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button type="button" class="fc fc-adflare" data-k="adflare" aria-label="Open AdFlare inbox"><span class="fic"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></span><span class="ft"><strong>AdFlare</strong><em id="hs-adflare-t">0 inquiries · 0 this week</em></span><span class="fb z" id="hs-adflare-n">0 new</span><svg class="chv" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </section>
+  <div class="search rv" id="sbox" role="search" style="--d:.28s"><div class="sb"><div class="sbp">
+    <button type="button" class="sbb" id="qb" tabindex="-1" aria-label="Back"><svg class="i-s" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><svg class="i-b" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+    <input id="q" type="search" enterkeyhint="search" aria-label="Search inquiries" placeholder="Try “name, email, project…”" autocomplete="off">
+    <button type="button" class="sbx" id="qx" tabindex="-1" aria-label="Clear search"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div></div></div>
+  <div class="sech rv" style="--d:.32s"><button type="button" class="sbk" id="fhome" aria-label="Back to dashboard" title="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><h2>Inquiries</h2></div>
   <div class="tabs rv" id="tabs" role="tablist" style="--d:.34s">
     <span class="ind" id="ind"></span>
     <button class="on" data-f="all" role="tab">All <b id="c-all">0</b></button>
@@ -330,11 +718,10 @@
 </div>
 
 <nav class="nav" aria-label="Main">
-  <button class="nv on" data-f="all"><svg viewBox="0 0 24 24"><path d="M3 13l3-8h12l3 8v6H3zM3 13h5l1 3h6l1-3h5"/></svg>Inbox</button>
-  <button class="nv" data-f="new"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg>New<b id="nb" hidden>0</b></button>
+  <button type="button" class="slogo" id="slogo" aria-label="Go to dashboard" title="Dashboard"></button>
+  <button class="nv" id="ndash" aria-label="Dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</button>
+  <button class="nv" id="nout" aria-label="Logout"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg>Logout</button>
   <button class="fab" id="rf" aria-label="Refresh" title="Refresh"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7"/></svg></button>
-  <button class="nv" id="nfold"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span id="nfold-l">Website</span></button>
-  <button class="nv" id="nsearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
 </nav>
 
 <div class="mic" id="mic" hidden><span class="md" id="mic-st">Listening…</span><button class="chip2" id="mic-lang">TL</button><button class="rnd" id="mic-x" aria-label="Stop"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><p id="mic-y"></p><p id="mic-b"></p></div>
@@ -346,7 +733,7 @@
 </div>
 <aside class="ai" id="ai" aria-hidden="true"><div class="ai-in"><span class="ai-bot" id="ai-bot"><img src="/img/madona-ai.png" onerror="this.style.display='none'" alt="Madona" width="88" height="88" draggable="false"></span><span class="ai-eq"><i></i><i></i><i></i><i></i><i></i></span></div></aside>
 <div id="npb" hidden></div>
-<div class="np" id="np" role="dialog" aria-label="Notifications" hidden><div class="np-h"><b>Notifications<i id="np-n"></i></b><span class="np-a"><button id="np-all">Mark all as read</button></span></div><div class="np-l" id="np-l"></div><button class="np-f" id="np-f" type="button" hidden></button></div>
+<div class="np" id="np" role="dialog" aria-label="Notifications" hidden><div class="np-h"><b>Notifications<i id="np-n"></i></b><span class="np-a"><button id="np-push" type="button" hidden>Phone alerts</button><button id="np-all">Mark all as read</button></span></div><div class="np-l" id="np-l"></div><button class="np-f" id="np-f" type="button" hidden></button></div>
 <div id="toasts" aria-live="polite"></div>
 <div class="modal" id="dlg" hidden><div class="box" role="alertdialog" aria-modal="true"><div class="mi dn"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></div><h3>Delete this inquiry?</h3><p id="dlg-t">This can't be undone.</p><div class="row"><button class="btn" id="dlg-no">Cancel</button><button class="btn del" id="dlg-yes">Delete</button></div></div></div>
 <div class="modal" id="lo" hidden><div class="box" role="alertdialog" aria-modal="true" aria-labelledby="lo-h"><div class="mi"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg></div><h3 id="lo-h">Log out?</h3><p id="lo-t">You'll need to sign in again to see your inquiries.</p><div class="row"><button class="btn" id="lo-no">Cancel</button><button class="btn pri" id="lo-yes">Log out</button></div></div></div>
@@ -357,9 +744,11 @@
 <script>
 var C=window.SUPABASE_CONFIG||{},sb=window.supabase.createClient(C.url,C.anonKey,{auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true}});
 /* two folders, one login: AdFlare inquiries and the portfolio website's inquiries */
-var FOLDERS=[{k:'adflare',t:'adflare_inquiries',n:'AdFlare'},{k:'site',t:'inquiries',n:'Website'}];
+var MYN='Robin';try{var _sn=localStorage.getItem('adm_name');if(_sn&&/^[\p{L}][\p{L} .'-]{0,19}$/u.test(_sn))MYN=_sn}catch(e){}
+var FOLDERS=[{k:'adflare',t:'adflare_inquiries',n:'AdFlare'},{k:'site',t:'inquiries',n:'Portfolio'}];
 var folder='adflare';try{var fk=localStorage.getItem('adm_folder');if(FOLDERS.some(function(f){return f.k===fk}))folder=fk}catch(e){}
-function setAccent(){document.documentElement.dataset.accent=folder==='adflare'?'red':''}setAccent();
+var HOME=true,HD={adflare:{t:0,n:0,wk:0},site:{t:0,n:0,wk:0}};
+function setAccent(){document.documentElement.dataset.accent=(folder==='adflare'&&!HOME)?'red':''}setAccent();
 function curF(){return FOLDERS.filter(function(f){return f.k===folder})[0]}
 var T=curF().t,data=[],seen=null,openIds={},filter='all',query='',firstRender=true,polling=null,cleared=0,pendingDel={};
 var $=function(s){return document.querySelector(s)},ls=$('#ls');
@@ -387,28 +776,70 @@ function loadCounts(){
       if(r.error||r.count==null||f.k===folder)return;
       var b=$('#fc-'+f.k);if(b)b.textContent=r.count;
       var prev=otherCnt[f.k];otherCnt[f.k]=r.count;
-      if(prev!=null&&r.count>prev){chime();try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(e){}toast('New inquiry in '+f.n,'Tap to open that folder',function(){setFolder(f.k)})}
+      if(prev!=null&&r.count>prev){chime();try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(e){}toast('New inquiry in '+f.n,'Tap to open that folder',function(){openFolder(f.k)})}
       stats();
     });
   });
 }
-function setFolder(k){
-  if(k===folder)return;flushDel();folder=k;setAccent();T=curF().t;otherCnt={};try{localStorage.setItem('adm_folder',k)}catch(e){}
-  data=[];seen=null;openIds={};filter='all';query='';$('#q').value='';cleared=0;
-  document.querySelectorAll('#fold button').forEach(function(b){b.classList.toggle('on',b.dataset.k===k)});
-  var o=FOLDERS.filter(function(f){return f.k!==k})[0];$('#nfold-l').textContent=o.n==='Website'?'Website':o.n;
+function setFolder(k,force){
+  if(k===folder&&!force)return;flushDel();folder=k;setAccent();T=curF().t;if(!HOME&&typeof MYN!=='undefined')paintName();otherCnt={};try{localStorage.setItem('adm_folder',k)}catch(e){}
+  data=[];seen=null;openIds={};filter='all';query='';$('#q').value='';cleared=0;if(window.sxClose)sxClose(false);
+  document.querySelectorAll('#fold button[data-k]').forEach(function(b){b.classList.toggle('on',b.dataset.k===k)});
+  
   document.querySelectorAll('#tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.f==='all')});moveInd();
   document.querySelectorAll('.nav [data-f]').forEach(function(b){b.classList.toggle('on',b.dataset.f==='all')});
   ls.textContent='';ls.append(el('div','sk'),el('div','sk'));firstRender=true;stats();load(true);
 }
-document.querySelectorAll('#fold button').forEach(function(b){b.onclick=function(){setFolder(b.dataset.k)}});
-(function(){document.querySelectorAll('#fold button').forEach(function(b){b.classList.toggle('on',b.dataset.k===folder)});$('#nfold-l').textContent=FOLDERS.filter(function(f){return f.k!==folder})[0].n})();
-$('#nfold').onclick=function(){setFolder(FOLDERS.filter(function(f){return f.k!==folder})[0].k);scrollTo({top:0,behavior:'smooth'})};
+document.querySelectorAll('#fold button[data-k]').forEach(function(b){b.onclick=function(){setFolder(b.dataset.k)}});
+(function(){document.querySelectorAll('#fold button[data-k]').forEach(function(b){b.classList.toggle('on',b.dataset.k===folder)})})();
+
+
+/* ---------- overall dashboard (home): combined numbers + two folders ---------- */
+function hsum(){var a=HD.adflare,b=HD.site;return{t:a.t+b.t,n:a.n+b.n,wk:a.wk+b.wk}}
+function paintHome(){
+  FOLDERS.forEach(function(f){
+    var h=HD[f.k],t=$('#hs-'+f.k+'-t'),n=$('#hs-'+f.k+'-n'),fc=$('#fc-'+f.k);
+    if(t)t.textContent=h.t+(h.t===1?' inquiry':' inquiries')+' · '+h.wk+' this week';
+    if(n){n.textContent=h.n+' new';n.classList.toggle('z',!h.n)}
+    if(fc)fc.textContent=h.n;
+  });
+}
+function loadHome(manual){
+  var rf=$('#rf');if(manual&&rf){rf.classList.remove('spin');void rf.offsetWidth;rf.classList.add('spin')}
+  return Promise.all(FOLDERS.map(function(f){
+    return sb.from(f.t).select('id,status,created_at').then(function(r){
+      var rows=r.error?null:r.data;if(!rows)return;
+      if(!rows.length&&f.k==='adflare')rows=sampleRows();
+      HD[f.k]={t:rows.length,n:rows.filter(function(q){return q.status==='new'}).length,wk:rows.filter(function(q){return Date.now()-new Date(q.created_at)<6048e5}).length};
+    },function(){});
+  })).then(function(){paintHome();stats()});
+}
+function openFolder(k,fromPop){
+  var wasHome=HOME;HOME=false;document.body.classList.remove('home');
+  if(wasHome&&!fromPop){try{history.pushState({f:1},'')}catch(e){}}
+  $('#hsub').textContent='Inquiries inbox';
+  paintName();
+  if(k!==folder||!data.length)setFolder(k,true);
+  else{setAccent();document.querySelectorAll('#fold button[data-k]').forEach(function(b){b.classList.toggle('on',b.dataset.k===k)});firstRender=true;render();stats()}
+  moveInd();scrollTo(0,0);
+}
+function showHome(){
+  if(HOME)return;
+  flushDel();if(window.sxClose)sxClose(true);try{npOpen(false)}catch(e){}
+  HOME=true;otherCnt={};document.body.classList.add('home');setAccent();
+  $('#hsub').textContent='Overview · all inboxes';
+  paintName();
+  stats();loadHome();scrollTo(0,0);
+}
+function goHome(){if(HOME)return;if(history.state&&history.state.f){history.back();return}showHome()}
+$('#fhome').onclick=goHome;$('#hback').onclick=goHome;
+document.querySelectorAll('.fc').forEach(function(c){c.onclick=function(){openFolder(c.dataset.k)}});
+addEventListener('popstate',function(){if(history.state&&history.state.f){if(HOME)openFolder(folder,true)}else if(!HOME)showHome()});
 
 /* ---------- helpers ---------- */
 function ago(iso){var s=Math.max(0,(Date.now()-new Date(iso))/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return new Date(iso).toLocaleDateString(undefined,{month:'short',day:'numeric'})}
 function initials(n){var p=String(n).trim().split(/\s+/);return((p[0]||'?')[0]+(p.length>1?p[p.length-1][0]:'')).toUpperCase()}
-function countTo(node,to){var from=+node.dataset.v||0;node.dataset.v=to;if(from===to){node.textContent=to;return}var t0=performance.now(),d=Math.min(700,260+Math.abs(to-from)*40);(function f(t){var k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);node.textContent=Math.round(from+(to-from)*e);if(k<1)requestAnimationFrame(f)})(t0)}
+function countTo(node,to){var from=+node.textContent||0,my=node._ct=(node._ct||0)+1;node.dataset.v=to;if(from===to){node.textContent=to;return}var t0=performance.now(),d=Math.min(700,260+Math.abs(to-from)*40);(function f(t){if(node._ct!==my)return;var k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);node.textContent=Math.round(from+(to-from)*e);if(k<1)requestAnimationFrame(f)})(t0)}
 function toast(title,sub,cb,err,ico){
   var t=el('div','toast'+(err?' err':'')),i=el('span','ti'+(ico?' big k-'+ico.k+(ico.n?' n':''):''));
   if(ico)i.innerHTML=ico.h;else i.appendChild(svg(err?'M12 8v5M12 16.5v.5M10.3 4.3L2.7 18a2 2 0 001.7 3h15.2a2 2 0 001.7-3L13.7 4.3a2 2 0 00-3.4 0z':P.bell));
@@ -458,6 +889,29 @@ snd.onclick=function(){
   if(sndOn){ac();chime();snd.classList.remove('ring');void snd.offsetWidth;snd.classList.add('ring');
     if('Notification' in window&&Notification.permission==='default')Notification.requestPermission().catch(function(){})}
 };
+/* ---------- phone push: alerts reach your phone even when the app is closed ---------- */
+var PK=C.pushKey||'',pushBtn=$('#np-push');
+function pushOK(){return !!(PK&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window)}
+function b64u(s){var r=atob((s+'='.repeat((4-s.length%4)%4)).replace(/-/g,'+').replace(/_/g,'/')),o=new Uint8Array(r.length);for(var i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o}
+function savePush(sub){var j=sub.toJSON();return sb.from('push_subscriptions').upsert({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,user_agent:navigator.userAgent.slice(0,200)},{onConflict:'endpoint'})}
+function enablePush(ask){
+  if(!pushOK())return Promise.resolve(false);
+  var p=Notification.permission==='default'&&ask?Notification.requestPermission():Promise.resolve(Notification.permission);
+  return p.then(function(perm){
+    if(perm!=='granted')return false;
+    return navigator.serviceWorker.register('/sw.js').then(function(){return navigator.serviceWorker.ready}).then(function(reg){
+      return reg.pushManager.getSubscription().then(function(s){return s||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(PK)})});
+    }).then(savePush).then(function(r){if(r&&r.error)throw r.error;return true});
+  }).catch(function(){return false});
+}
+function paintPush(){
+  if(!pushBtn)return;if(!pushOK()){pushBtn.hidden=true;return}
+  navigator.serviceWorker.getRegistration().then(function(reg){return reg&&reg.pushManager.getSubscription()}).then(function(s){pushBtn.hidden=!!s&&Notification.permission==='granted'}).catch(function(){pushBtn.hidden=false});
+}
+if(pushBtn)pushBtn.onclick=function(){
+  if(Notification.permission==='denied'){toast('Notifications are blocked','Allow them in your phone or browser settings, then try again.',null,true);return}
+  enablePush(true).then(function(ok){paintPush();ok?toast('Phone alerts are on','You will be notified when a new inquiry comes in.'):toast('Could not turn on alerts','Open the app from your home screen and try again.',null,true)});
+};
 function notifyOS(n){
   if(!document.hidden||!('Notification' in window)||Notification.permission!=='granted')return;
   var title=n.length>1?n.length+' new inquiries':'New inquiry from '+n[0].name,body=n.length>1?'Open the inbox to read them.':n[0].project,opt={body:body,icon:'/img/favicon/icon-192.png',badge:'/img/favicon/icon-192.png',tag:'inquiry',renotify:true};
@@ -477,10 +931,11 @@ function matches(q){
   if(!query)return true;var s=(q.name+' '+q.email+' '+q.project+' '+q.company+' '+q.details).toLowerCase();return s.indexOf(query)>-1;
 }
 function stats(){
-  var n=data.filter(function(q){return q.status==='new'}).length,wk=data.filter(function(q){return Date.now()-new Date(q.created_at)<6048e5}).length;
-  countTo($('#s-total'),data.length);countTo($('#s-new'),n);countTo($('#s-week'),wk);countTo($('#s-read'),data.length-n);var oc=0;for(var ok in otherCnt)oc+=otherCnt[ok]||0;var tn=n+oc,bl=$('#bell');if(bl)bl.classList.toggle('has',tn>0);var nb=$('#nb');if(nb){nb.hidden=!tn;nb.textContent=tn>99?'99+':tn}$('#pill').textContent=n===1?'1 unread':n+' unread';
-  $('#c-all').textContent=data.length;$('#c-new').textContent=n;$('#c-read').textContent=data.length-n;var fcb=$('#fc-'+folder);if(fcb)fcb.textContent=n;
-  document.title=(n?'('+n+') ':'')+'Inquiries — Admin';if(window.np)npSync();
+  var H=HOME?hsum():null,n=H?H.n:data.filter(function(q){return q.status==='new'}).length,wk=H?H.wk:data.filter(function(q){return Date.now()-new Date(q.created_at)<6048e5}).length,tot=H?H.t:data.length;
+  if(!HOME)HD[folder]={t:data.length,n:n,wk:wk};
+  countTo($('#s-total'),tot);countTo($('#s-new'),n);countTo($('#s-week'),wk);countTo($('#s-read'),tot-n);var oc=0;for(var ok in otherCnt)oc+=otherCnt[ok]||0;var tn=n+oc,bl=$('#bell');if(bl)bl.classList.toggle('has',tn>0);var nb=$('#nb');if(nb){nb.hidden=!tn;nb.textContent=tn>99?'99+':tn}$('#pill').textContent=n===1?'1 unread':n+' unread';
+  $('#c-all').textContent=data.length;$('#c-new').textContent=n;$('#c-read').textContent=data.length-n;var fcb=$('#fc-'+folder);if(fcb&&!HOME)fcb.textContent=n;if(HOME)paintHome();
+  document.title=(n?'('+n+') ':'')+(HOME?'Dashboard':'Inquiries')+' — Admin';if(window.np)npSync();
   try{n?navigator.setAppBadge&&navigator.setAppBadge(n):navigator.clearAppBadge&&navigator.clearAppBadge()}catch(e){}
 }
 function row(k,v,href){if(!v)return null;var d=el('div','kv');var a;if(href){a=el('a','',v);a.href=href}else a=el('span','',v);return[el('b','',k),a]}
@@ -520,6 +975,31 @@ function setFilter(f){
 function moveInd(){var b=document.querySelector('#tabs button.on'),i=$('#ind');if(!b)return;i.style.width=b.offsetWidth+'px';i.style.transform='translateX('+b.offsetLeft+'px)'}
 document.querySelectorAll('#tabs button').forEach(function(b){b.onclick=function(){setFilter(b.dataset.f)}});
 $('#q').addEventListener('input',function(e){query=e.target.value.trim().toLowerCase();firstRender=true;render()});
+/* expanding search: focus -> bar takes over the top, arrow goes back, X clears */
+var sbox=$('#sbox'),qi=$('#q');
+function sxOpen(){
+  return;/* search stays where it is — no fixed top-bar takeover, no scroll jump */
+  if(!sbox||sbox.classList.contains('sx'))return;
+  sbox.style.height=sbox.offsetHeight+'px';sbox.classList.add('sxd','sx');
+  var t=$('#tabs').getBoundingClientRect();
+  if(t.top>innerHeight*.55)scrollTo({top:scrollY+t.top-88,behavior:'smooth'});
+}
+function sxClose(clear){
+  if(!sbox)return;
+  sbox.classList.remove('sx');sbox.style.height='';
+  if(clear&&(qi.value||query)){qi.value='';query='';firstRender=true;render()}
+  if(document.activeElement===qi)qi.blur();
+}
+window.sxClose=sxClose;
+qi.addEventListener('focus',sxOpen);
+qi.addEventListener('blur',function(){if(!qi.value)sxClose(false)});
+qi.addEventListener('keydown',function(e){
+  if(e.key==='Escape')sxClose(true);
+  else if(e.key==='Enter'){e.preventDefault();qi.blur()}
+});
+['#qb','#qx'].forEach(function(id){$(id).addEventListener('mousedown',function(e){e.preventDefault()})});
+$('#qb').addEventListener('click',function(){sxClose(true)});
+$('#qx').addEventListener('click',function(){qi.value='';query='';firstRender=true;render();qi.focus()});
 addEventListener('resize',moveInd);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(moveInd);
 
@@ -569,6 +1049,7 @@ $('#dlg-yes').onclick=function(){
   });
 };
 function load(manual){
+  if(HOME)loadHome(false);
   var rf=$('#rf');if(manual){rf.classList.remove('spin');void rf.offsetWidth;rf.classList.add('spin')}
   return sb.from(T).select('*').order('created_at',{ascending:false}).then(function(r){
     if(r.error){if(manual||!data.length){ls.textContent='';var e=el('div','empty');e.append(el('strong','','Could not load inquiries'),el('span','',r.error.message||'Check your connection and try again.'));ls.appendChild(e)}return}
@@ -635,7 +1116,7 @@ function startLive(){
 /* ---------- gate: no session -> login (data is ALSO protected server-side by Supabase RLS) ---------- */
 sb.auth.getSession().then(function(r){
   if(!r.data.session){toLogin();return}
-  document.body.style.visibility='';document.body.classList.add('ready');moveInd();load().then(function(){startLive();greet()});
+  document.body.style.visibility='';document.body.classList.add('ready');moveInd();if(pushOK()&&Notification.permission==='granted')enablePush(false);paintPush();load().then(function(){startLive();greet()});
 });
 sb.auth.onAuthStateChange(function(ev){if(ev==='SIGNED_OUT'&&!leaving)toLogin()});
 
@@ -655,11 +1136,13 @@ setInterval(idleCheck,2000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)idleCheck()});
 
 /* ---------- bottom nav, bell, theme, greeting ---------- */
-document.querySelectorAll('.nav [data-f]').forEach(function(b){b.onclick=function(){setFilter(b.dataset.f);scrollTo({top:0,behavior:'smooth'})}});
+document.querySelectorAll('.nav [data-f]').forEach(function(b){b.onclick=function(){
+  if(HOME){if(b.dataset.f==='new'){var k=HD.site.n>HD.adflare.n?'site':HD.adflare.n?'adflare':folder;openFolder(k);setFilter('new')}else scrollTo({top:0,behavior:'smooth'});return}
+  setFilter(b.dataset.f);scrollTo({top:0,behavior:'smooth'})}});
 /* ---------- notifications panel (bell) ---------- */
 var np=$('#np'),npb=$('#npb');
 var npAll=false;
-function npOpen(o){np.hidden=!o;npb.hidden=!o;$('#bell').setAttribute('aria-expanded',o);if(o)renderNp()}
+function npOpen(o){if(o)paintPush();np.hidden=!o;npb.hidden=!o;$('#bell').setAttribute('aria-expanded',o);if(o)renderNp()}
 function npSync(){if(!np.hidden)renderNp()}
 function renderNp(){
   var list=data.filter(function(q){return q.status==='new'}),box=$('#np-l'),keep=box.scrollTop;box.textContent='';np.classList.remove('more');$('#np-all').hidden=!list.length;$('#np-n').textContent=list.length||'';var LIM=3,many=list.length>LIM,fb=$('#np-f');fb.hidden=!many;if(many){fb.classList.toggle('up',npAll);fb.textContent='';fb.append(el('span','',npAll?'Show less':'Show '+(list.length-LIM)+' more'),svg('M6 9l6 6 6-6'))}
@@ -680,7 +1163,6 @@ $('#np-all').onclick=function(){data.forEach(function(q){if(q.status==='new')set
 npb.onclick=function(){npOpen(false)};
 addEventListener('keydown',function(e){if(e.key==='Escape'&&!np.hidden)npOpen(false)});
 $('#bell').onclick=function(){var b=this;b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');npOpen(np.hidden)};
-$('#nsearch').onclick=function(){$('#q').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){$('#q').focus()},350)};
 $('#thm').onclick=function(){
   var btn=this,d=document.documentElement,dark=d.dataset.theme!=='dark';
   function apply(){d.dataset.theme=dark?'dark':'light';document.querySelector('meta[name=theme-color]').content=dark?'#09090a':'#f1f2f4';try{localStorage.setItem('adm_theme',dark?'dark':'light')}catch(e){}}
@@ -693,7 +1175,37 @@ $('#thm').onclick=function(){
   }else if(!calm){d.classList.add('theme-fade');apply();setTimeout(function(){d.classList.remove('theme-fade')},450)}
   else apply();
 };
-(function(){var h=new Date().getHours();$('#hello').textContent=(h<5?'Still up':h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', Master Robin!';$('#today').textContent=new Date().toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'})})();
+function paintName(){
+  var h=new Date().getHours(),hl=$('#hello'),w=$('#whoName'),r=$('#rl'),up=MYN.toUpperCase();
+  if(hl)hl.textContent=HOME?(h<5?'Still up':h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', '+up+'!':curF().n;/* dashboard = greeting, folder = folder name */
+  if(w)w.textContent=up;if(r)r.textContent=up.charAt(0);
+  if(typeof fitHello==='function')fitHello();
+}
+/* realtime name (set by voice): Rob, Binn, ... */
+function setMyName(n){MYN=n;try{localStorage.setItem('adm_name',n)}catch(e){}paintName();toast('Name updated','I\'ll call you '+n+' from now on.')}
+(function(){$('#today').textContent=new Date().toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'});paintName()})();
+/* the logo png has a black box: key the black out so it sits on any background */
+(function(){
+  var root=document.documentElement,src='/img/favicon/icon-192.png';
+  function ok(u){if(u){root.style.setProperty('--logo','url('+u+')');[].forEach.call(document.querySelectorAll('.me img'),function(i){i.src=u})}root.classList.add('logo-ok')}
+  var im=new Image();
+  im.onload=function(){
+    try{
+      var w=im.naturalWidth,h=im.naturalHeight,c=document.createElement('canvas');c.width=w;c.height=h;
+      var x=c.getContext('2d');x.drawImage(im,0,0);var d=x.getImageData(0,0,w,h),p=d.data;
+      for(var i=0;i<p.length;i+=4){var r=p[i],g=p[i+1],b=p[i+2],m=Math.max(r,g,b);if(!m){p[i+3]=0;continue}p[i]=r*255/m;p[i+1]=g*255/m;p[i+2]=b*255/m;p[i+3]=m*(p[i+3]/255)}
+      x.putImageData(d,0,0);ok(c.toDataURL('image/png'));
+    }catch(e){ok('')}
+  };
+  im.onerror=function(){ok('')};
+  im.src=src;
+})();
+/* logo = back to the dashboard */
+function logoHome(){if(!HOME)goHome();else scrollTo({top:0,behavior:'smooth'})}
+$('#slogo').onclick=logoHome;
+$('#ndash').onclick=logoHome;
+$('#nout').onclick=function(){$('#out').click()};
+$('#meBtn').addEventListener('click',function(){if(matchMedia('(min-width:1200px)').matches)return;logoHome()});
 function fitHello(){var h=$('#hello');h.style.fontSize='';h.style.whiteSpace='';var fs=parseFloat(getComputedStyle(h).fontSize);while(h.scrollWidth>h.clientWidth&&fs>14){fs-=.5;h.style.fontSize=fs+'px'}if(h.scrollWidth>h.clientWidth)h.style.whiteSpace='normal'}
 fitHello();addEventListener('resize',fitHello);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitHello);
 ['#rf'].forEach(function(s){$(s).addEventListener('click',function(){})});
@@ -793,8 +1305,8 @@ function greetLine(c){
   var h=c.h,G=h<5?'Still up':h<12?'Good morning':h<18?'Good afternoon':'Good evening',
       GT=h<5?'Gising ka pa':h<11?'Magandang umaga':h<14?'Magandang tanghali':h<18?'Magandang hapon':'Magandang gabi',
       s=c.n===1?'inquiry':'inquiries';
-  return{en:G+', Master Robin. Welcome back. '+(c.n?'You have '+c.n+' new '+s+' waiting for you.':'You have no new inquiries right now.'),
-         tl:GT+', Master Robin. Welcome back. '+(c.n?'May '+c.n+' bagong inquiry na naghihintay sa\'yo.':'Wala kang bagong inquiry ngayon.')};
+  return{en:G+', '+MYN+'. Welcome back. '+(c.n?'You have '+c.n+' new '+s+' waiting for you.':'You have no new inquiries right now.'),
+         tl:GT+', '+MYN+'. Welcome back. '+(c.n?'May '+c.n+' bagong inquiry na naghihintay sa\'yo.':'Wala kang bagong inquiry ngayon.')};
 }
 var LINES=[
   /* 0 greeting */ greetLine,
@@ -805,7 +1317,7 @@ var LINES=[
     else if(h>=14&&h<17){a='Maybe it\'s time for a snack and some water?';b='Merienda time na ba?'}
     else if(h>=17&&h<21){a='Have you had dinner yet?';b='Nakapag-dinner ka na ba?'}
     else{a='It\'s getting late. Aren\'t you going to rest soon?';b='Gabi na. Hindi ka pa ba magpapahinga?'}
-    return{en:'Master Robin, it\'s '+c.tEn+' right now. '+a,tl:'Master Robin, '+c.tTl+' na. '+b};
+    return{en:''+MYN+', it\'s '+c.tEn+' right now. '+a,tl:''+MYN+', '+c.tTl+' na. '+b};
   },
   /* 2 weather */ function(c){
     var w=c.wx;if(!w)return null;var d=wxDesc(w),en='It is '+d[0]+' outside right now, '+w.t+' degrees.',tl='Ngayon, '+d[1]+' sa labas, '+w.t+' degrees.';
@@ -815,7 +1327,7 @@ var LINES=[
   },
   /* 3 weather question */ function(c){
     var w=c.wx;if(!w)return null;
-    if(wxWet(w))return{en:'It\'s wet outside right now. Do you have an umbrella with you, Master Robin?',tl:'Basa ang panahon ngayon. May dala ka bang payong, Master Robin?'};
+    if(wxWet(w))return{en:'It\'s wet outside right now. Do you have an umbrella with you, '+MYN+'?',tl:'Basa ang panahon ngayon. May dala ka bang payong, '+MYN+'?'};
     if(w.ap>=35)return{en:'It feels like '+w.ap+' degrees out there. Have you had enough water today?',tl:'Ang init, pakiramdam ay '+w.ap+' degrees. Nakainom ka na ba ng tubig?'};
     if(w.t<=24)return{en:'It\'s a cool '+w.t+' degrees right now. How about a hot coffee?',tl:'Malamig-lamig ngayon, '+w.t+' degrees. Gusto mo ba ng mainit na kape?'};
     return{en:'The weather looks nice, '+w.t+' degrees. Are you going out later?',tl:'Maganda ang panahon, '+w.t+' degrees. Lalabas ka ba mamaya?'};
@@ -875,14 +1387,20 @@ var lastTry=0;
     function add(r,p){if(r&&r.width>0&&r.height>0)R.push({l:r.left-p,t:r.top-p,r:r.right+p,b:r.bottom+p})}
     try{if(typeof tour!=='undefined'&&tour.on&&tour.tgt&&tour.tgt.isConnected){var rs=tour.tgt.getClientRects();for(var i=0;i<rs.length;i++)add(rs[i],12)}}catch(e){}
     document.querySelectorAll('#mic,#np,#fm,.modal .box,.ios,#toasts .toast,.tour').forEach(function(n){add(n.getBoundingClientRect(),10)});
+    try{
+      if(document.body.classList.contains('pm-open')){var tr=document.querySelector('body>.tray');if(tr){add(tr.getBoundingClientRect(),10);var ts=document.getElementById('tsub');if(ts&&tr.classList.contains('sub-open'))add(ts.getBoundingClientRect(),10)}}
+      var rd=document.querySelector('.it.reading');if(rd)add(rd.getBoundingClientRect(),8);
+    }catch(e){}
     return R;
   }
   var userHome=null,dragging=false;
   function vwid(){return document.documentElement.clientWidth||innerWidth}
   function bounds(){
-    var w=ai.offsetWidth||88,h=ai.offsetHeight||126,vw=vwid(),vh=innerHeight,nav=document.querySelector('.nav'),
-        maxY=Math.max(8,(nav?nav.getBoundingClientRect().top:vh-100)-h-6);
-    return{w:w,h:h,vw:vw,vh:vh,minX:8,maxX:Math.max(8,vw-w-8),minY:8,maxY:maxY};
+    var w=ai.offsetWidth||88,h=ai.offsetHeight||126,vw=vwid(),vh=innerHeight,nav=document.querySelector('.nav'),r=nav?nav.getBoundingClientRect():null,
+        side=!!(r&&r.height>vh*.6&&r.left<=1&&r.width<400),          /* desktop: the nav is the left sidebar */
+        bar=!!(r&&r.height>0&&!side),                                 /* mobile/tablet: keep her above the bottom bar / button */
+        maxY=bar?Math.max(8,r.top-h-6):Math.max(8,vh-h-8);
+    return{w:w,h:h,vw:vw,vh:vh,minX:8,maxX:Math.max(8,vw-w-8),minY:8,maxY:maxY,sx:side?r.right:0};
   }
   function put(x,y){
     pos.x=x;pos.y=y;
@@ -895,12 +1413,12 @@ var lastTry=0;
     function cy_(y){return Math.min(B.maxY,Math.max(B.minY,y))}
     function ov(x,y){var a=0;for(var i=0;i<O.length;i++){var o=O[i],iw=Math.min(x+w,o.r)-Math.max(x,o.l),ih=Math.min(y+h,o.b)-Math.max(y,o.t);if(iw>0&&ih>0)a+=iw*ih}return a}
     /* her spot: where you last dropped her, otherwise the middle of the screen */
-    var home=userHome?[cx_(userHome[0]*B.vw),cy_(userHome[1]*B.vh)]:[cx_((B.vw-w)/2),cy_(B.vh*.36)],
+    var home=userHome?[cx_(userHome[0]*B.vw),cy_(userHome[1]*B.vh)]:[cx_(B.sx+(B.vw-B.sx-w)/2),cy_((B.vh-h)/2)],
         cx=pos.x==null?home[0]:cx_(pos.x),cy=pos.y==null?home[1]:cy_(pos.y),best;
     if(ov(home[0],home[1])===0)best=home;                /* nothing in the way: go to her spot */
     else if(ov(cx,cy)===0)best=[cx,cy];                   /* where she is is fine: stay, no jitter */
     else{
-      var C=[],xs=[home[0],B.maxX,B.minX,cx_((B.vw-w)/2)],n=10,bo=1e12,bd=1e12;
+      var C=[],xs=[home[0],B.maxX,Math.max(B.minX,B.sx+8),cx_(B.sx+(B.vw-B.sx-w)/2)],n=10,bo=1e12,bd=1e12;
       xs.forEach(function(x){for(var k=0;k<=n;k++)C.push([x,cy_(B.minY+(B.maxY-B.minY)*k/n)])});
       C.forEach(function(c){var o=ov(c[0],c[1]),d=Math.abs(c[0]-cx)*.6+Math.abs(c[1]-cy);if(o<bo||(o===bo&&d<bd)){bo=o;bd=d;best=c}});
     }
@@ -1038,16 +1556,62 @@ function curTick(){
   if(t&&t.isConnected){
     var r=t.getClientRects()[0]||t.getBoundingClientRect();
     var tx=Math.min(innerWidth-34,Math.max(8,r.left+Math.min(26,r.width/2))),ty=Math.min(innerHeight-190,Math.max(66,r.bottom-3));
+    if(tour.tap){tx=r.left+r.width/2-6;ty=Math.min(innerHeight-60,Math.max(14,r.top+r.height/2-4))}   /* a press: aim at the middle of the button */
     if(cur.x<0){cur.x=tx;cur.y=ty+70}
     cur.x+=(tx-cur.x)*.18;cur.y+=(ty-cur.y)*.18;
     el.style.transform='translate('+cur.x+'px,'+cur.y+'px)';el.style.opacity=1;
   }else el.style.opacity=0;
   cur.raf=requestAnimationFrame(curTick);
 }
+
+/* Madona taps for real: the cursor glides to a button, it presses in, then it is clicked */
+function visEl(sel){var n=document.querySelector(sel);return n&&n.getClientRects().length?n:null}
+function curTap(node,cb){
+  var run=tour.run;
+  if(!node||!node.getClientRects().length){cb&&cb();return}
+  clearTgt();tour.tgt=node;tour.tap=true;node.classList.add('ftgt');
+  setTimeout(function(){
+    if(!tour.on||tour.run!==run)return;
+    node.classList.add('tapfx');
+    setTimeout(function(){
+      node.classList.remove('tapfx');
+      if(!tour.on||tour.run!==run)return;
+      clearTgt();tour.tgt=null;tour.tap=false;
+      node.click();
+      setTimeout(function(){if(tour.on&&tour.run===run&&cb)cb()},550);
+    },260);
+  },1100);
+}
+function navSay(en,tl){
+  if(!HAS_TTS)return;
+  try{var v=pickVoice();speechSynthesis.cancel();speechSynthesis.speak(utter(isTL(v)?tl:en,v))}catch(e){}
+}
+/* tap the Back button (scrolls to the top first so it is on screen) */
+function navBack(cb){
+  var run=tour.run;
+  if(HOME){cb();return}
+  scrollTo({top:0,behavior:'smooth'});
+  setTimeout(function(){
+    if(!tour.on||tour.run!==run)return;
+    curTap(visEl('#hback')||visEl('#fhome'),function(){
+      if(!HOME)showHome();                       /* safety net if the click did not go through */
+      setTimeout(function(){if(tour.on&&tour.run===run)cb()},400);
+    });
+  },HOME?0:700);
+}
+/* go to a folder like a person would: Back to the dashboard, then tap that folder's card */
+function navTo(k,cb){
+  var run=tour.run;
+  if(!HOME&&folder===k){cb();return}
+  navBack(function(){
+    if(!tour.on||tour.run!==run)return;
+    curTap(document.querySelector('.fc[data-k="'+k+'"]'),function(){if(HOME)openFolder(k);cb()});
+  });
+}
 function tourPlay(i){
   var n=tour.list.length;
   if(i<0)i=0;
-  if(i>=n){tourStop(true);return}
+  if(i>=n){if(tour.after){tourClose(tour.list[tour.i]);var af=tour.after;tour.after=null;af()}else tourStop(true);return}
   var prev=tour.list[tour.i];if(tour.on&&prev&&prev.id!==tour.list[i].id)tourClose(prev);
   tour.i=i;tour.gen++;tour.hl=null;var g=tour.gen,q=tour.list[i];
   tourHL();
@@ -1059,7 +1623,7 @@ function tourPlay(i){
   segs.forEach(function(sg){if(sg.k==='mark'||sg.t.length<=180)parts.push(sg);else chunks(sg.t).forEach(function(c){parts.push({t:c,k:sg.k})})});
   function next(){
     if(g!==tour.gen)return;
-    if(k>=parts.length){tour.hl=null;tourMark();tour.tgt=null;clearTgt();if(q.status==='new')setStatus(q,'read',true);setTimeout(function(){if(g===tour.gen)tourPlay(i+1)},800);return}
+    if(k>=parts.length){tour.hl=null;tourMark();tour.tgt=null;clearTgt();if(q.status==='new'&&!tour.noMark)setStatus(q,'read',true);setTimeout(function(){if(g===tour.gen)tourPlay(i+1)},800);return}
     var sg=parts[k++];tour.hl=sg.hl||null;tourMark();tourFocus(q,sg);
     var u=utter(sg.t,v,next);
     u.onerror=function(e){if(g===tour.gen&&e.error!=='interrupted'&&e.error!=='canceled')setTimeout(next,200)};
@@ -1069,72 +1633,138 @@ function tourPlay(i){
 }
 function readStart(){
   if(!HAS_TTS){toast('Voice not supported','This browser cannot read aloud.',null,true);return}
-  if(!data.length){toast('Nothing to read','No inquiries yet.');return}
-  var nw=data.filter(function(q){return q.status==='new'});
   if(mic.on)micStop();
-  tour.mode='read';tour.list=nw.length?nw.slice():data.slice();tour.on=true;pendingSay=null;curShow();
-  $('#tourbtn').classList.add('on');
-  tourPlay(0);
+  tour.mode='read';tour.after=null;tour.noMark=false;tour.run=(tour.run||0)+1;tour.on=true;pendingSay=null;
+  tour.order=[folder].concat(FOLDERS.map(function(f){return f.k}).filter(function(k){return k!==folder}));tour.readAny=false;
+  curShow();$('#tourbtn').classList.add('on');
+  readFolder(0,tour.run);
+}
+function readFolder(oi,tok){
+  if(!tour.on||tour.run!==tok)return;
+  if(oi>=tour.order.length){
+    if(tour.readAny)tourStop(true);else{tourStop();toast('Nothing to read','No inquiries yet.')}
+    return;
+  }
+  var k=tour.order[oi],nameOf=FOLDERS.filter(function(f){return f.k===k})[0].n;
+  function read(){
+    waitList(function(){
+      if(!tour.on||tour.run!==tok)return;
+      var nw=data.filter(function(q){return q.status==='new'}),list=nw.length?nw:data;
+      if(!list.length){readFolder(oi+1,tok);return}
+      tour.readAny=true;
+      tour.list=list.slice();tour.noMark=false;
+      tour.after=function(){tour.list=[];setTimeout(function(){readFolder(oi+1,tok)},500)};
+      tourPlay(0);
+    });
+  }
+  if(oi===0){
+    if(HOME)navTo(k,read);else{curShow();read()}          /* already inside a folder: just read it */
+  }else{
+    navSay('Next, the '+nameOf+' folder.','Susunod, ang '+nameOf+' folder.');
+    navTo(k,read);
+  }
 }
 /* ---------- Tour = a quick walkthrough of every feature on this page ---------- */
+function waitList(cb){
+  var t0=Date.now();
+  (function poll(){
+    if(!tour.on)return;
+    if(!ls.querySelector('.sk')||Date.now()-t0>5000){setTimeout(cb,400);return}
+    setTimeout(poll,150);
+  })();
+}
 function ftSteps(){
+  var N=function(k){return FOLDERS.filter(function(f){return f.k===k})[0].n};
+  function cnt(){return{t:data.length,n:data.filter(function(q){return q.status==='new'}).length}}
+  /* one folder: open it, explain it, then open + read every inquiry inside */
+  function fold(k,first){
+    var S=[{pre:function(cb){navTo(k,function(){waitList(cb)})},sel:'#hello',
+      en:function(){var c=cnt();return c.t?'Opening the '+N(k)+' folder. It has '+nI(c.t)+(c.n?', '+c.n+' new':'')+'.':'This is the '+N(k)+' folder. There are no inquiries in it yet.'},
+      tl:function(){var c=cnt();return c.t?'Binubuksan ko ang '+N(k)+' folder. May '+c.t+' inquiry dito'+(c.n?', at '+c.n+' ang bago':'')+'.':'Ito ang '+N(k)+' folder. Wala pa itong laman na inquiry.'}}];
+    if(first){
+      S.push({sel:'.search',en:'Search by name, email or project.',tl:'Mag-search gamit ang pangalan, email o project.'});
+      S.push({sel:'#tabs',en:'Filter the list: All, New or Read.',tl:'I-filter ang listahan: All, New o Read.'});
+      S.push({sel:'#ls .it',en:'Tap an inquiry to open it. You can reply by email, mark it as read or new, or delete it.',tl:'I-tap ang inquiry para buksan. Puwede kang mag-reply sa email, i-mark na read o new, o i-delete.'});
+    }
+    S.push({sel:'#ls',read:true,skip:function(){return !data.length},
+      en:'Now I’ll open each inquiry and read the message out loud.',
+      tl:'Ngayon, bubuksan ko ang bawat inquiry at babasahin nang malakas ang mensahe.'});
+    return S;
+  }
   var S=[
-    {sel:'#hello',en:'Hi Master Robin! Here\'s a quick tour of this admin page.',tl:'Kumusta Master Robin! Heto ang mabilis na tour ng admin page na ito.'},
-    {sel:'#micbtn',en:'This is the mic. Tap it to talk to me. Ask about your inquiries, the weather or the time.',tl:'Ito ang mic. I-tap mo para makipag-usap sa akin. Magtanong tungkol sa mga inquiry, weather o oras.'},
+    {sel:'#hello',en:'Hi '+MYN+'! I’ll walk you through this whole admin page. Then I’ll open each folder and read the messages inside.',tl:'Kumusta '+MYN+'! I-totour kita sa buong admin page na ito. Pagkatapos, bubuksan ko ang bawat folder at babasahin ang mga mensahe sa loob.'},
+    {sel:'#micbtn',en:'This is the mic. Tap it, or just say Madona, to talk to me. Ask about your inquiries, the weather, the time, or anything else.',tl:'Ito ang mic. I-tap mo, o sabihin mo lang ang Madona, para makipag-usap sa akin. Magtanong tungkol sa mga inquiry, weather, oras, o kahit ano.'},
     {sel:'#bell',en:'The bell shows your notifications. A red dot means there are new inquiries.',tl:'Ang bell ay para sa mga notification. Ang pulang tuldok ay ibig sabihing may bagong inquiry.'},
     {sel:'#s-total',en:'This is the total number of inquiries you received.',tl:'Ito ang kabuuang bilang ng mga inquiry na natanggap mo.'},
-    {sel:'#snd',en:'Alerts turns my voice and the notification sounds on or off.',tl:'Ang Alerts ay pang-on o off ng boses ko at ng tunog ng notification.'},
-    {sel:'#tourbtn',en:'Tour plays this walkthrough again anytime.',tl:'Ang Tour ay para ulitin ang walkthrough na ito kahit kailan.'},
-    {sel:'#thm',en:'Theme switches between light and dark mode.',tl:'Ang Theme ay pampalit ng light at dark mode.'},
-    {sel:'#out',en:'Log out signs you out safely. You are also logged out automatically when idle.',tl:'Ang Log out ay para ligtas na mag-sign out. Awtomatiko ka ring malolog out kapag matagal kang walang ginagawa.'},
     {sel:'.pf',en:'This card shows how many inquiries are still waiting for your reply.',tl:'Ipinapakita ng card na ito kung ilang inquiry ang naghihintay pa ng sagot mo.'},
-    {sel:'.two',en:'These show this week\'s inquiries, and how many you already handled.',tl:'Ipinapakita rito ang mga inquiry ngayong linggo, at kung ilan na ang na-handle mo.'},
-    {sel:'.search',en:'Search by name, email or project.',tl:'Mag-search gamit ang pangalan, email o project.'},
-    {sel:'#tabs',en:'Filter the list: All, New or Read.',tl:'I-filter ang listahan: All, New o Read.'},
-    {sel:'#ls .it',en:'Tap an inquiry to open it. You can reply by email, mark it as read or new, or delete it.',tl:'I-tap ang inquiry para buksan. Puwede kang mag-reply sa email, i-mark na read o new, o i-delete.'},
-    {sel:'.nav',fix:1,en:'The bottom bar jumps to your Inbox, New, Read, or Search.',tl:'Ang bottom bar ay mabilis na lipat sa Inbox, New, Read, o Search.'},
-    {sel:'#rf',fix:1,en:'The center button opens Refresh, Time and Weather.',tl:'Ang center button ay para sa Refresh, Time at Weather.'},
-    {sel:null,en:'That\'s the quick tour! Tap the mic and say, read my inquiries, and I\'ll read them out. Double tap me anytime to stop.',tl:'Yan ang mabilis na tour! I-tap ang mic at sabihin, basahin ang mga inquiry, at babasahin ko ang mga ito. I-double tap mo ako kapag gusto mong huminto.'}
+    {sel:'.two',en:'These show this week’s inquiries, and how many you already handled.',tl:'Ipinapakita rito ang mga inquiry ngayong linggo, at kung ilan na ang na-handle mo.'},
+    {sel:'#snd',menu:1,en:'Alerts turns my voice and the notification sounds on or off.',tl:'Ang Alerts ay pang-on o off ng boses ko at ng tunog ng notification.'},
+    {sel:'#tourbtn',menu:1,en:'Tour plays this walkthrough again anytime.',tl:'Ang Tour ay para ulitin ang walkthrough na ito kahit kailan.'},
+    {sel:'#thm',menu:1,en:'Theme switches between light and dark mode.',tl:'Ang Theme ay pampalit ng light at dark mode.'},
+    {sel:'#out',menu:1,en:'Log out signs you out safely. You are also logged out automatically when idle.',tl:'Ang Log out ay para ligtas na mag-sign out. Awtomatiko ka ring malolog out kapag matagal kang walang ginagawa.'},
+    {sel:'.hm',en:'These are your folders, '+N('site')+' and '+N('adflare')+'. Each card shows how many inquiries it has and how many are new. Let’s open them one by one.',tl:'Ito ang mga folder mo, ang '+N('site')+' at '+N('adflare')+'. Ipinapakita ng bawat card kung ilang inquiry ang laman at kung ilan ang bago. Buksan natin isa-isa.'}
   ];
+  S=S.concat(fold('site',true),fold('adflare',false));
+  S.push({pre:function(cb){navBack(function(){setTimeout(cb,300)})},sel:'#hello',en:'That’s both folders. We’re back on the dashboard.',tl:'Yan ang dalawang folder. Balik na tayo sa dashboard.'});
+  S.push({sel:'#ndash',fix:1,en:'The Dashboard button always brings you back here.',tl:'Ang Dashboard button ay laging magbabalik sa iyo dito.'});
+  S.push({sel:'#nout',fix:1,en:'Logout signs you out safely.',tl:'Ang Logout ay para ligtas na mag-sign out.'});
+  S.push({sel:null,en:'That’s the full tour! Tap the mic and ask me about the weather or the time, or say, read my inquiries. Double tap me anytime to stop.',tl:'Yan ang buong tour! I-tap ang mic at itanong sa akin ang weather o oras, o sabihin ang, basahin ang mga inquiry. I-double tap mo ako kapag gusto mong huminto.'});
   return S;
+}
+/* after the message-reading of a folder is done, carry on with the next tour step */
+function ftRead(i,tok){
+  if(!tour.on||tour.run!==tok)return;
+  if(!data.length){ftPlay(i+1);return}
+  clearTgt();tour.tgt=null;
+  tour.list=data.slice();tour.noMark=true;       /* a tour must not mark your inquiries as read */
+  tour.after=function(){tour.list=[];setTimeout(function(){if(tour.on&&tour.run===tok)ftPlay(i+1)},500)};
+  tourPlay(0);
 }
 function ftPlay(i){
   var S=tour.steps||[];if(i<0)i=0;
   if(i>=S.length){tourStop();return}
-  var st=S[i],node=st.sel?document.querySelector(st.sel):null;
-  if(st.sel&&(!node||!node.getClientRects().length)){ftPlay(i+1);return}
-  tour.i=i;tour.gen++;var g=tour.gen,v=pickVoice(),tl=isTL(v);
-  clearTgt();tour.tgt=node||null;
-  if(node){
-    node.classList.add('ftgt');
-    if(!st.fix){var r=node.getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-190)node.scrollIntoView({behavior:'smooth',block:'center'})}
+  var st=S[i],tok=tour.run;
+  function go(){
+    if(!tour.on||tour.run!==tok)return;
+    if(st.skip&&st.skip()){ftPlay(i+1);return}
+    var node=st.sel?document.querySelector(st.sel):null;
+    if(st.sel&&(!node||!node.getClientRects().length)){ftPlay(i+1);return}
+    tour.i=i;tour.gen++;var g=tour.gen,v=pickVoice(),tl=isTL(v);
+    document.body.classList.toggle('ft-menu',!!st.menu);   /* desktop: profile menu is shown only while the tour explains it */
+    clearTgt();tour.tgt=node||null;
+    if(node){
+      node.classList.add('ftgt');
+      if(!st.fix){var r=node.getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-190)node.scrollIntoView({behavior:'smooth',block:'center'})}
+    }
+    try{speechSynthesis.cancel()}catch(e){}
+    var raw=tl?st.tl:st.en,parts=chunks(typeof raw==='function'?raw():raw),k=0;
+    function next(){
+      if(g!==tour.gen)return;
+      if(k>=parts.length){setTimeout(function(){if(g!==tour.gen)return;if(st.read)ftRead(i,tok);else ftPlay(i+1)},700);return}
+      var u=utter(parts[k++],v,next);
+      u.onerror=function(e){if(g===tour.gen&&e.error!=='interrupted'&&e.error!=='canceled')setTimeout(next,200)};
+      try{speechSynthesis.speak(u)}catch(e){}
+    }
+    setTimeout(function(){if(g===tour.gen)next()},i?350:150);
   }
-  try{speechSynthesis.cancel()}catch(e){}
-  var parts=chunks(tl?st.tl:st.en),k=0;
-  function next(){
-    if(g!==tour.gen)return;
-    if(k>=parts.length){setTimeout(function(){if(g===tour.gen)ftPlay(i+1)},700);return}
-    var u=utter(parts[k++],v,next);
-    u.onerror=function(e){if(g===tour.gen&&e.error!=='interrupted'&&e.error!=='canceled')setTimeout(next,200)};
-    try{speechSynthesis.speak(u)}catch(e){}
-  }
-  setTimeout(function(){if(g===tour.gen)next()},i?350:150);
+  if(st.pre){tour.gen++;try{speechSynthesis.cancel()}catch(e){}clearTgt();tour.tgt=null;st.pre(go)}else go();
 }
 function tourStart(){
   if(!HAS_TTS){toast('Voice not supported','This browser cannot read aloud.',null,true);return}
   if(mic.on)micStop();
+  if(!HOME)showHome();                /* the tour begins on the dashboard, then opens each folder */
   scrollTo({top:0,behavior:'smooth'});
-  tour.mode='feat';tour.list=[];tour.steps=ftSteps();tour.on=true;pendingSay=null;curShow();
+  tour.mode='feat';tour.list=[];tour.after=null;tour.noMark=false;tour.steps=ftSteps();tour.run=(tour.run||0)+1;tour.on=true;pendingSay=null;curShow();
   $('#tourbtn').classList.add('on');
   ftPlay(0);
 }
 function tourStop(finished){
   tour.hl=null;try{tourMark()}catch(e){}
-  tour.on=false;tour.gen++;tour.tgt=null;clearTgt();
+  document.body.classList.remove('ft-menu');tour.on=false;tour.tap=false;tour.gen++;tour.run=(tour.run||0)+1;tour.after=null;tour.noMark=false;tour.tgt=null;clearTgt();
   try{speechSynthesis.cancel()}catch(e){}
   $('#tourbtn').classList.remove('on');
   document.querySelectorAll('.it.reading').forEach(function(n){n.classList.remove('reading')});
-  if(finished&&tour.mode==='read'&&HAS_TTS){var v=pickVoice();try{speechSynthesis.speak(utter(isTL(v)?'Yan lang ang mga mensahe, Master Robin.':'That\'s all the messages, Master Robin.',v))}catch(e){}}
+  if(finished&&tour.mode==='read'&&HAS_TTS){var v=pickVoice();try{speechSynthesis.speak(utter(isTL(v)?'Yan lang ang mga mensahe, '+MYN+'.':'That\'s all the messages, '+MYN+'.',v))}catch(e){}}
   if(window.aiHideSoon)aiHideSoon();
 }
 $('#tourbtn').onclick=function(){tour.on?tourStop():tourStart()};
@@ -1152,7 +1782,7 @@ function aiStop(){
 var REC=window.SpeechRecognition||window.webkitSpeechRecognition,mic={on:false,busy:false,idle:0,gen:0,rec:null,lang:'fil-PH'};
 try{mic.lang=localStorage.getItem('adm_mlang')||'fil-PH'}catch(e){}
 function norm(s){return String(s||'').toLowerCase().replace(/[^\p{L}\p{N}\s']/gu,' ').replace(/\s+/g,' ').trim()}
-function L(en,tl){return{en:en,tl:tl||en}}
+function L(en,tl,pref){return{en:en,tl:tl||en,pref:pref}}
 function nI(n){return n+(n===1?' inquiry':' inquiries')}
 function inqLine(q){
   var a=agoW(q.created_at),co=nm(q.company);
@@ -1166,15 +1796,108 @@ function summaryLine(c){
   if(c.wx){var d=wxDesc(c.wx);en+=' Outside it is '+d[0]+', '+c.wx.t+' degrees.';tl+=' Sa labas, '+d[1]+', '+c.wx.t+' degrees.'}
   return L(en,tl);
 }
+
+/* say "call me Rob / Binn" and the name changes right away */
+function pickName(w){
+  w=String(w||'').replace(/[^\p{L}]/gu,'');
+  if(/^(rob|robb|rop|rub|rab)$/.test(w))return'Rob';
+  if(/^(binn?|been|ben|bean|bing|bim|bein)$/.test(w))return'Binn';
+  if(/^(robin|robbin|robyn|robbyn)$/.test(w))return'Robin';
+  if(w.length<2||w.length>16)return'';
+  return w.charAt(0).toUpperCase()+w.slice(1);
+}
+function parseMyName(t){
+  var m=t.match(/\b(?:just call me|call me|address me as|my name is|my name's|change my name to|set my name to|set name to|change name to|rename me to|rename me)\s+(?:to\s+|as\s+)?([\p{L}']+)/u)
+     ||t.match(/(?:tawagin mo akong|tawagin mo ako ng|tawagin mo ako na|tawagin mo ako sa pangalang|tawagin mo ako|ang pangalan ko ay si|ang pangalan ko ay|pangalan ko ay si|pangalan ko ay|name ko ay si|name ko ay|ako si|palitan mo ang pangalan ko ng|palitan mo ang name ko ng|palitan mo pangalan ko ng|palitan mo name ko ng|i set mo ang pangalan ko sa|i set mo ang name ko sa|i set mo ang pangalan ko ng|i set mo ang name ko ng|gawin mong)\s+(?:si\s+)?([\p{L}']+)/u)
+     ||t.match(/\b(rob|binn?|been|ben)\b\s+(?:na lang|nalang)/u);
+  return m?pickName(m[1]):'';
+}
+
+/* ----- general helpers for Madona: math, places, forecast, Wikipedia, jokes ----- */
+var JOKES=[
+ ['Why do programmers prefer dark mode? Because light attracts bugs.','Bakit mas gusto ng mga programmer ang dark mode? Kasi ang liwanag ay umaakit ng bugs.'],
+ ['Why did the developer go broke? Because he used up all his cache.','Bakit nabankrupt ang developer? Naubos na kasi ang cache niya.'],
+ ['I told my computer I needed a break, and now it won\'t stop sending me Kit Kat ads.','Sabi ko sa computer ko na kailangan ko ng break, ngayon puro Kit Kat ads na ang pinapakita niya.'],
+ ['Why was the website so calm? It had great browser relations.','Bakit kalmado ang website? Maganda kasi ang relasyon niya sa browser.'],
+ ['A SQL query walks into a bar, walks up to two tables and asks: can I join you?','May SQL query na pumasok sa bar, lumapit sa dalawang table at nagtanong: puwede ba akong sumali sa inyo?'],
+ ['Why did the inquiry cross the inbox? To get to the other reply.','Bakit tumawid ang inquiry sa inbox? Para makarating sa kabilang reply.']
+];
+function fj(url,ms){
+  var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){if(ctl)ctl.abort()},ms||5000);
+  return fetch(url,ctl?{signal:ctl.signal}:{}).then(function(r){clearTimeout(tm);return r.json()});
+}
+function geo(name){
+  return fj('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name='+encodeURIComponent(name)).then(function(j){
+    var g=j&&j.results&&j.results[0];return g?{lat:g.latitude,lon:g.longitude,tz:g.timezone||'UTC',name:g.name+(g.country&&g.admin1!==g.name?', '+g.country:'')}:null;
+  }).catch(function(){return null});
+}
+function wxFor(g,tomorrow){
+  return fj('https://api.open-meteo.com/v1/forecast?latitude='+g.lat+'&longitude='+g.lon+'&current=temperature_2m,apparent_temperature,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=2&timezone=auto').then(function(j){
+    var at=g.name?' in '+g.name:'',atT=g.name?' sa '+g.name:'';
+    if(tomorrow&&j.daily){
+      var d=wxDesc({code:j.daily.weather_code[1],day:true}),hi=Math.round(j.daily.temperature_2m_max[1]),lo=Math.round(j.daily.temperature_2m_min[1]),pr=j.daily.precipitation_probability_max[1];
+      var en='Tomorrow'+at+' it will be '+d[0]+', between '+lo+' and '+hi+' degrees, with a '+pr+' percent chance of rain.',tl='Bukas'+atT+', '+d[1]+', '+lo+' hanggang '+hi+' degrees, at '+pr+' porsyento ang tsansa ng ulan.';
+      if(pr>=50){en+=' Bring an umbrella.';tl+=' Magdala ng payong.'}
+      return{r:L(en,tl)};
+    }
+    var c=j.current,w={t:Math.round(c.temperature_2m),ap:Math.round(c.apparent_temperature),code:c.weather_code,day:c.is_day===1},d2=wxDesc(w);
+    var en2='Right now'+at+' it is '+d2[0]+', '+w.t+' degrees, feels like '+w.ap+'.',tl2='Ngayon'+atT+', '+d2[1]+', '+w.t+' degrees, pakiramdam ay '+w.ap+'.';
+    if(wxWet(w)){en2+=' Bring an umbrella.';tl2+=' Magdala ng payong.'}
+    return{r:L(en2,tl2)};
+  }).catch(function(){return{r:L('Sorry, I can\'t check the weather right now.','Pasensya na, hindi ko ma-check ang weather ngayon.')}});
+}
+/* tiny safe calculator (no eval) */
+function calcExpr(str){
+  var i=0,s=str.replace(/\s+/g,'');
+  function num(){var m=s.slice(i).match(/^\d+(?:\.\d+)?/);if(!m)throw 0;i+=m[0].length;return parseFloat(m[0])}
+  function fac(){if(s[i]==='-'){i++;return-fac()}if(s[i]==='('){i++;var v=ex();if(s[i]!==')')throw 0;i++;return v}return num()}
+  function tm(){var v=fac();while(s[i]==='*'||s[i]==='/'){var o=s[i++],r=fac();if(o==='/'&&r===0)throw 'div';v=o==='*'?v*r:v/r}return v}
+  function ex(){var v=tm();while(s[i]==='+'||s[i]==='-'){var o=s[i++],r=tm();v=o==='+'?v+r:v-r}return v}
+  var v=ex();if(i!==s.length)throw 0;return v;
+}
+function fmtN(v){return String(Math.round(v*1e6)/1e6)}
+function calc(raw){
+  var s=String(raw||'').toLowerCase().replace(/(\d),(?=\d{3}\b)/g,'$1'),m;
+  if((m=s.match(/(\d+(?:\.\d+)?)\s*(?:%|percent|porsyento|porsiyento)\s*(?:of|ng)\s*(\d+(?:\.\d+)?)/))){var pv=fmtN(+m[1]/100*+m[2]);return L('That is '+pv+'.','Ang sagot ay '+pv+'.')}
+  if((m=s.match(/(?:square root|sqrt|ugat)\s*(?:of|ng)?\s*(\d+(?:\.\d+)?)/))){var rv=fmtN(Math.sqrt(+m[1]));return L('The square root of '+m[1]+' is '+rv+'.','Ang square root ng '+m[1]+' ay '+rv+'.')}
+  s=s.replace(/(\d)\s*[x×]\s*(?=\d)/g,'$1*').replace(/÷/g,'/')
+     .replace(/\b(plus|add|dagdag|idagdag)\b/g,'+').replace(/\b(minus|subtract|bawas|ibawas)\b/g,'-')
+     .replace(/\b(times|multiplied by|multiply by|multiply|kali|ikali)\b/g,'*').replace(/\b(divided by|divide by|over|hati|ihati)\b/g,'/');
+  var e=s.match(/\(?\s*-?\d[\d.\s+\-*\/()]*\d\s*\)?/);
+  if(!e||!/\d\s*[+\-*\/]\s*\(?-?\d/.test(e[0]))return null;
+  /* a bare "2026-11-15" style date or phone-like text is not math */
+  if(/\d{4}\s*-\s*\d{1,2}\s*-\s*\d{1,2}/.test(e[0]))return null;
+  try{var v=calcExpr(e[0]),out=fmtN(v);if(!isFinite(v))throw 'div';return L('The answer is '+out+'.','Ang sagot ay '+out+'.')}
+  catch(x){return x==='div'?L('I can\'t divide by zero.','Hindi puwedeng hatiin sa zero.'):null}
+}
+/* Wikipedia: short spoken answer for general questions */
+function kbQuery(t){
+  return t.replace(/^(?:(?:hey|hi|please|madona)\s+)+/,'')
+    .replace(/^(?:what is|what'?s|what are|what was|what does|who is|who was|who are|who'?s|tell me about|tell me|define|explain|look up|search for|search|google|meaning of|sino si|sino ang|sino sina|ano ang ibig sabihin ng|ano ang|ano si|ano ba ang|ano ba|ano|kilala mo ba si|kilala mo si|alam mo ba si)\s+/,'')
+    .replace(/\b(mean|ibig sabihin|po|please)\b/g,' ').replace(/^(?:a|an|the|ang|si|ni)\s+/,'').replace(/\s+/g,' ').trim();
+}
+function wiki(q){
+  var none=L('Sorry, I couldn\'t find an answer to that.','Pasensya na, wala akong nahanap na sagot dito.');
+  if(!q||q.length<2)return Promise.resolve({r:none});
+  return fj('https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=1&prop=extracts&exintro=1&explaintext=1&exsentences=2&redirects=1&format=json&origin=*',6000).then(function(j){
+    var pg=j&&j.query&&j.query.pages,p=pg&&pg[Object.keys(pg)[0]],x=p&&p.extract;
+    if(!x)return{r:none};
+    x=x.replace(/\s*\([^)]*\)/g,'').replace(/\s+/g,' ').trim();if(x.length>420)x=x.slice(0,420).replace(/[^.!?]*$/,'')||x.slice(0,420);
+    return{r:L(x,x,'en')};
+  }).catch(function(){return{r:L('Sorry, I need the internet to answer that.','Pasensya na, kailangan ko ng internet para masagot iyan.')}});
+}
 /* returns a Promise of {r:{en,tl}, stop?:true, act?:fn} */
 function answer(raw){
-  var t=norm(raw),c=ctx(),inq=/\b(inquir\w*|messages?|mensahe|customers?|clients?|leads?|nag-?message|nagtanong)\b/.test(t),res=function(r,x){x=x||{};x.r=r;return Promise.resolve(x)};
-  if(!t)return res(L('I did not catch that, Master Robin.','Hindi ko narinig, Master Robin.'));
-  if(/\b(stop|tama na|tigil|huminto|tumahimik|exit|bye|paalam|sige na)\b/.test(t))return res(L('Okay, Master Robin. Call me anytime.','Sige, Master Robin. Tawagin mo lang ako anytime.'),{stop:true});
+  var t=norm(raw),c=ctx(),inq=/\b(inquir\w*|enquir\w*|inkwir\w*|messages?|mensahe|customers?|clients?|leads?|nag-?message|nagtanong)\b/.test(t),res=function(r,x){x=x||{};x.r=r;return Promise.resolve(x)};
+  if(!t)return res(L('I did not catch that, '+MYN+'.','Hindi ko narinig, '+MYN+'.'));
+  var newName=parseMyName(t);
+  if(newName)return res(L('Okay, I will call you '+newName+' from now on.','Sige, tatawagin kitang '+newName+' simula ngayon.'),{act:function(){setMyName(newName)}});
+  if(/(what.?s my name|what is my name|anong (pangalan|name) ko|sino ako|who am i)/.test(t))return res(L('I call you '+MYN+'. Say call me Rob, or call me Binn, to change it.','Tinatawag kitang '+MYN+'. Sabihin mong call me Rob, o call me Binn, para palitan.'));
+  if(/\b(stop|tama na|tigil|huminto|tumahimik|exit|bye|paalam|sige na)\b/.test(t))return res(L('Okay, '+MYN+'. Call me anytime.','Sige, '+MYN+'. Tawagin mo lang ako anytime.'),{stop:true});
   if(/\bmark\b.*\bread\b|lahat.*(read|nabasa)|i-?mark.*(read|nabasa)/.test(t)){
     var k=c.n;return res(L(k?'Done. I marked '+nI(k)+' as read.':'Everything is already read.',k?'Tapos na. Namarkahan kong read ang '+k+' inquiry.':'Nabasa mo na lahat.'),{act:function(){$('#np-all').click()}});
   }
-  if(/\b(thank|thanks|salamat)\b/.test(t))return res(L('You\'re welcome, Master Robin!','Walang anuman, Master Robin!'));
+  if(/\b(thank|thanks|salamat)\b/.test(t))return res(L('You\'re welcome, '+MYN+'!','Walang anuman, '+MYN+'!'));
   if(/(your name|who are you|sino ka|pangalan mo|name mo)/.test(t))return res(L('My name is Madona. I\'m your admin assistant. Ask me about your inquiries, the weather or the time.','Ako si Madona, ang admin assistant mo. Tanungin mo ako tungkol sa mga inquiry, weather o oras.'));
   if(/\b(refresh|reload)\b/.test(t))return res(L('Refreshing now.','Nire-refresh ko na.'),{act:function(){load(true)}});
   if(/(dark mode|light mode|theme|madilim|maliwanag)/.test(t))return res(L('Switching the theme.','Pinapalitan ko ang theme.'),{act:function(){$('#thm').click()}});
@@ -1182,14 +1905,47 @@ function answer(raw){
   /* a person's name -> what they wrote */
   var latestRead=/(read|basahin|sabihin|ano).*(latest|last|newest|pinakabago|pinakahuli)/.test(t);
   if(latestRead&&c.last)return res(inqLine(c.last),{act:function(){focusInq(c.last)}});
-  var hit=data.find(function(q){return String(q.name).toLowerCase().split(/\s+/).some(function(w){w=w.replace(/[^a-z0-9ñ]/g,'');return w.length>=4&&new RegExp('\\b'+w+'\\b').test(t)})});
+  /* general-knowledge question ("who is...", "what is...", "sino si...")? then a name only counts when the full name is said */
+  var kb=/^(?:hey |hi |please |madona )*(what is|what'?s|what are|what was|what does|who is|who was|who are|who'?s|tell me about|tell me|define|explain|look up|search for|search|google|meaning of|sino si|sino ang|sino sina|ano ang|ano si|ano ba|kilala mo|alam mo ba)\b/.test(t)
+    &&!inq&&!/(latest|newest|oldest|unread|nabasa|pinakabago|pinakahuli|this week|ngayong linggo|inbox|admin|dashboard|happening|nangyayari|status|summary|help|kaya mo|tulong|pending)/.test(t);
+  var hit=data.find(function(q){var nmL=String(q.name).toLowerCase().replace(/[^a-z0-9ñ ]/g,' ').replace(/\s+/g,' ').trim();
+    if(kb)return nmL.split(' ').length>=2&&t.indexOf(nmL)>=0;
+    return nmL.split(' ').some(function(w){return w.length>=4&&new RegExp('\\b'+w+'\\b').test(t)})});
   if(hit)return res(inqLine(hit),{act:function(){focusInq(hit)}});
+  /* "inquiries" / "read inquiries" / "basahin ang inquiries" -> Madona reads them out */
+  var readVerb=/\b(read|basahin|basa|pakinggan|pakibasa|ibasa|sabihin)\b/.test(t)&&!/(already|nabasa|replied)/.test(t),
+      bareInq=inq&&t.split(' ').length<=3&&!/(how many|ilan|new|bago|unread|latest|newest|week|linggo|total|who|sino|oldest|show|open|buksan|ipakita|pending|nabasa|already)/.test(t);
+  if(inq&&(readVerb||bareInq)){
+    if(!data.length)return res(L('You have no inquiries yet.','Wala ka pang inquiry.'));
+    var rn=c.n||c.total;
+    return res(L('Okay, '+MYN+'. I\'ll read your '+(c.n?rn+' new '+(rn===1?'inquiry':'inquiries'):nI(rn))+' one by one.','Sige, '+MYN+'. Babasahin ko isa-isa ang '+rn+(c.n?' bagong':'')+' inquiry mo.'),{after:function(){if(!tour.on)readStart()}});
+  }
+  /* math: "what is 15 times 12", "calculate 20 percent of 450", "square root of 144" */
+  var mth=calc(raw);
+  if(mth!==null)return res(mth);
+  /* time / weather somewhere else, or tomorrow's weather */
+  var tt=t.replace(/\b(right now|ngayon|ngayong araw|today|now|tonight|mamaya|tomorrow|bukas|please|po|kasi|ba)\b/g,' ').replace(/\s+/g,' ').trim(),
+      pm=tt.match(/\b(?:in|sa|at|dito sa)\s+([\p{L}][\p{L} .'-]{1,28})$/u),place=pm?pm[1].trim():'',
+      wantTime=/(what time|time is it|the time|current time|anong oras|ano oras|ano ang oras|\boras\b|\btime\b)/.test(t),
+      wantWx=/(weather|forecast|panahon|umuulan|maulan|maaraw|bagyo|\bulan\b|rain|umbrella|payong|sunny|cloudy|\binit\b|mainit|lamig|malamig|temperature|\btemp\b)/.test(t),
+      tmr=/\b(tomorrow|bukas)\b/.test(t);
+  if(place&&/^(the |my |this |that |admin|dashboard|inbox|portfolio|adflare|here|dito|inquir)/.test(place))place='';
+  if(place&&(wantTime||wantWx)&&!inq)return geo(place).then(function(g){
+    if(!g)return{r:L('Sorry, I couldn\'t find '+place+'.','Pasensya na, hindi ko mahanap ang '+place+'.')};
+    if(wantWx)return wxFor(g,tmr);
+    var tm=new Date().toLocaleTimeString('en-US',{timeZone:g.tz,hour:'numeric',minute:'2-digit'});
+    return{r:L('It\'s '+tm+' in '+g.name+'.','Ngayon ay '+tm+' sa '+g.name+'.')};
+  });
+  if(wantWx&&tmr)return where().then(function(p){return wxFor({lat:p.lat,lon:p.lon,name:''},true)});
+  if(/\b(joke|jokes|biro|patawa|magpatawa|funny)\b/.test(t)){var j=JOKES[Math.floor(Math.random()*JOKES.length)];return res(L(j[0],j[1]))}
+  /* general knowledge */
+  if(kb)return wiki(kbQuery(t));
   if(/\b(basahin|pakinggan)\b|read (them|all|out|my|the)/.test(t))return res(L('Okay, I\'ll read your inquiries one by one.','Sige, babasahin ko isa-isa ang mga inquiry mo.'),{after:function(){if(!tour.on)readStart()}});
   if(/\b(tour|features?|walkthrough|guide)\b|ipakita mo|paano gamitin/.test(t))return res(L('Sure, here\'s a quick tour.','Sige, heto ang mabilis na tour.'),{after:function(){if(!tour.on)tourStart()}});
-  if(t.split(' ').length<=3&&/\b(hi|hello|hey|kumusta|musta|magandang \w+|good (morning|afternoon|evening))\b/.test(t))return res(L('Hello, Master Robin! How can I help you?','Hello, Master Robin! Ano ang maitutulong ko?'));
-  if(!inq&&/(what time|time is it|anong oras|oras na|time now|\boras\b)/.test(t))return res(L('It\'s '+c.tEn+', Master Robin.','Ngayon ay '+c.tTl+', Master Robin.'));
+  if(t.split(' ').length<=3&&/\b(hi|hello|hey|kumusta|musta|magandang \w+|good (morning|afternoon|evening))\b/.test(t))return res(L('Hello, '+MYN+'! How can I help you?','Hello, '+MYN+'! Ano ang maitutulong ko?'));
+  if(!inq&&/(what time|time is it|what.?s the time|what is the time|tell me the time|current time|time now|time please|anong oras|ano ang oras|ano oras|oras na|\boras\b)/.test(t))return res(L('It\'s '+c.tEn+', '+MYN+'.','Ngayon ay '+c.tTl+', '+MYN+'.'));
   if(!inq&&/(\bdate\b|what day|anong araw|petsa)/.test(t)){var ds=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});return res(L('Today is '+ds+'.','Ngayon ay '+ds+'.'))}
-  if(/(weather|panahon|umuulan|\bulan\b|rain|\binit\b|mainit|lamig|malamig|temperature|\btemp\b)/.test(t))
+  if(/(weather|forecast|panahon|umuulan|maulan|maaraw|bagyo|\bulan\b|rain|umbrella|payong|sunny|cloudy|\binit\b|mainit|lamig|malamig|temperature|\btemp\b)/.test(t))
     return getWx().then(function(){var w=wx;if(!w)return{r:L('Sorry, I can\'t check the weather right now.','Pasensya na, hindi ko ma-check ang weather ngayon.')};
       var d=wxDesc(w),en='It is '+d[0]+' outside, '+w.t+' degrees, feels like '+w.ap+'.',tl='Ngayon, '+d[1]+' sa labas, '+w.t+' degrees, pakiramdam ay '+w.ap+'.';
       if(wxWet(w)){en+=' Bring an umbrella.';tl+=' Magdala ka ng payong.'}
@@ -1199,13 +1955,14 @@ function answer(raw){
   if(/(week|linggo)/.test(t))return res(L('This week you received '+nI(c.wk)+'.','Ngayong linggo, '+c.wk+' inquiry ang dumating.'));
   if(/(total|overall|in all|\blahat\b)/.test(t))return res(L('You have '+nI(c.total)+' in total.','May '+c.total+' inquiry ka lahat-lahat.'));
   if(/(oldest|pinakamatagal|matagal)/.test(t)){if(!c.old)return res(L('No unread inquiries.','Walang hindi pa nababasa.'));var o=agoW(c.old.created_at);return res(L('The oldest unread is from '+nm(c.old.name)+', '+o[0]+'.','Ang pinakamatagal na hindi pa nababasa ay kay '+nm(c.old.name)+', '+o[1]+'.'),{act:function(){focusInq(c.old)}})}
-  if(/\b(who|sino)\b/.test(t)){var nw=data.filter(function(q){return q.status==='new'}).slice(0,4).map(function(q){return nm(q.name)});
+  if(/\b(who|sino)\b/.test(t)&&!kb){var nw=data.filter(function(q){return q.status==='new'}).slice(0,4).map(function(q){return nm(q.name)});
     return res(nw.length?L('New inquiries are from '+nw.join(', ')+'.','Ang mga bagong inquiry ay galing kay '+nw.join(', ')+'.'):L('There are no new inquiries.','Walang bagong inquiry.'),{act:function(){setFilter('new');toTop()}})}
   if(/(nabasa na|already read|replied)/.test(t))return res(L('You have read '+(c.total-c.n)+' of '+c.total+'.','Nabasa mo na ang '+(c.total-c.n)+' sa '+c.total+'.'));
   if(/(what.?s happening|what is happening|nangyayari|balita|update|status|summary|admin|dashboard|ano na)/.test(t))
     return getWx().then(function(){return{r:summaryLine(ctx()),act:toTop}});
   if(inq||unread||/(ilan|how many|pending)/.test(t))return res(L(c.n?'You have '+nI(c.n)+' unread.':'You have no new inquiries.',c.n?'May '+c.n+' kang hindi pa nababasa.':'Wala kang bagong inquiry.'),{act:function(){setFilter('new');toTop()}});
-  if(/(help|what can you do|kaya mo|tulong)/.test(t))return res(L('You can ask me: how many new inquiries, who sent the latest, what did Maria say, what\'s the weather, what time is it, or say read my inquiries.','Puwede mong itanong: ilan ang bagong inquiry, sino ang pinakabago, ano ang sinabi ni Maria, ano ang weather, anong oras na, o sabihin mong basahin ang mga inquiry.'));
+  if(/(help|what can you do|kaya mo|tulong)/.test(t))return res(L('You can say Madona anytime to call me. Ask me: how many new inquiries, who sent the latest, what did Maria say, what\'s the weather, weather in Cebu, what time is it in Tokyo, what is 15 times 12, tell me a joke, who is Jose Rizal, or say read inquiries. You can also say call me Rob, or call me Binn.','Sabihin mo lang ang Madona para tawagin ako. Puwede mong itanong: ilan ang bagong inquiry, sino ang pinakabago, ano ang sinabi ni Maria, ano ang weather, weather sa Cebu, anong oras sa Tokyo, magkano ang 15 times 12, magkuwento ng joke, sino si Jose Rizal, o sabihin mong read inquiries. Puwede mo ring sabihin: call me Rob, o call me Binn.'));
+  if(t.split(' ').length>=3)return wiki(kbQuery(t));
   return res(L('Sorry, I didn\'t get that. Try: how many new inquiries, or what\'s happening in the admin.','Pasensya na, hindi ko naintindihan. Subukan mo: ilan ang bagong inquiry, o ano ang nangyayari sa admin.'));
 }
 
@@ -1217,7 +1974,7 @@ function focusInq(q){
 function toTop(){scrollTo({top:0,behavior:'smooth'})}
 function micUI(st,you,bot){if(st!=null)$('#mic-st').textContent=st;if(you!=null)$('#mic-y').textContent=you;if(bot!=null)$('#mic-b').textContent=bot}
 function micSpeak(line,done){
-  var v=pickVoice(),tl=isTL(v),parts=chunks(tl?line.tl:line.en),k=0,g=++mic.gen;
+  var v=pickVoice(line.pref),tl=isTL(v),parts=chunks(tl?line.tl:line.en),k=0,g=++mic.gen;
   micUI('Speaking…',null,tl?line.tl:line.en);
   (function nx(){
     if(g!==mic.gen)return;
@@ -1225,6 +1982,14 @@ function micSpeak(line,done){
     var u=utter(parts[k++],v,nx);u.onerror=function(e){if(g===mic.gen&&e.error!=='interrupted'&&e.error!=='canceled')setTimeout(nx,150)};
     try{speechSynthesis.speak(u)}catch(e){done&&done()}
   })();
+}
+function handle(text){
+  var g=mic.gen;micUI('Thinking…',null,null);
+  answer(text).catch(function(){return{r:L('Sorry, something went wrong.','Pasensya na, may nagkamali.')}}).then(function(o){
+    if(!mic.on||g!==mic.gen)return;
+    if(o.act)try{o.act()}catch(e){}
+    micSpeak(o.r,function(){if(o.stop){micStop();return}if(o.after){micStop();o.after();return}setTimeout(listen,250)});
+  });
 }
 function listen(){
   if(!mic.on)return;
@@ -1237,21 +2002,19 @@ function listen(){
     $('#micbtn').classList.remove('hear');
     if(!final){mic.idle++;if(mic.idle>=2){micUI('Tap the mic to talk again');micStop();return}return listen()}
     mic.idle=0;
-    answer(final).then(function(o){
-      if(!mic.on)return;
-      if(o.act)try{o.act()}catch(e){}
-      micSpeak(o.r,function(){if(o.stop){micStop();return}if(o.after){micStop();o.after();return}setTimeout(listen,250)});
-    });
+    handle(final);
   };
   try{r.start()}catch(e){}
 }
-function micStart(){
+function micStart(first){
   if(!REC){toast('Mic not supported','Use Chrome, Edge or Safari for voice chat.',null,true);return}
   if(tour.on)tourStop();
   try{speechSynthesis.cancel()}catch(e){}
   mic.on=true;mic.idle=0;mic.gen++;pendingSay=null;
   $('#mic').hidden=false;$('#micbtn').classList.add('on');micUI('Hi!','','');
-  micSpeak(L('How can I help you, Master Robin?','Ano ang maitutulong ko, Master Robin?'),function(){listen()});
+  wakeStop();wake.blocked=false;
+  if(first&&first.length>=4){micUI('Thinking…','“'+first+'”','');handle(first);return}
+  micSpeak(L('How can I help you, '+MYN+'?','Ano ang maitutulong ko, '+MYN+'?'),function(){listen()});
 }
 function micStop(keepPanel){
   mic.on=false;mic.gen++;
@@ -1267,6 +2030,51 @@ $('#micbtn').onclick=function(){mic.on?micStop():micStart()};
 $('#mic-x').onclick=function(){micStop()};
 
 
+/* ---------- "Madona": say her name any time and she pops up, says "How can I help you?" and starts listening.
+   Hands-free wake word: a quiet background listener that pauses whenever she talks, the mic chat is open, the tour runs, or the tab is hidden. ---------- */
+var wake={on:true,rec:null,quiet:0,blocked:false,next:0,fail:0,t:null,fired:false,latest:null,warned:false};
+var WAKE_RE=/\b(?:(?:hey|hi|hello|okay|ok|oy|hoy|uy)\s+)?(ma\s?don+a|madonya|matona|medona|mardona)\b/;
+function wakeCan(){return wake.on&&!wake.blocked&&!!REC&&HAS_TTS&&!mic.on&&!tour.on&&!document.hidden&&!speechSynthesis.speaking&&!speechSynthesis.pending}
+function wakeStop(){
+  clearTimeout(wake.t);var r=wake.rec;wake.rec=null;
+  if(r){r.onend=null;r.onresult=null;r.onerror=null;try{r.abort()}catch(e){}}
+}
+function wakeFire(){
+  if(wake.fired||!wake.latest)return;wake.fired=true;
+  var t=wake.latest.t,m=t.match(WAKE_RE),rest=m?t.slice(m.index+m[0].length).replace(/^\s+/,''):'';
+  wakeStop();micStart(rest);
+}
+function wakeStart(){
+  if(wake.rec||!wakeCan())return;
+  var r=new REC();wake.rec=r;wake.fired=false;wake.latest=null;
+  r.lang=mic.lang;r.continuous=true;r.interimResults=true;r.maxAlternatives=3;
+  r.onresult=function(e){
+    wake.fail=0;
+    var s='',alt=false,last=e.results[e.results.length-1];
+    for(var i=0;i<e.results.length;i++)s+=' '+e.results[i][0].transcript;
+    var t=norm(s);
+    for(var j=0;j<last.length;j++)if(WAKE_RE.test(norm(last[j].transcript)))alt=true;
+    if(WAKE_RE.test(t)||alt){
+      wake.latest={t:t};clearTimeout(wake.t);
+      /* wait a moment so "Madona, read inquiries" in one breath is heard in full */
+      wake.t=setTimeout(wakeFire,last.isFinal?150:900);
+    }
+  };
+  r.onerror=function(e){
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
+      wake.blocked=true;
+      if(!wake.warned){wake.warned=true;toast('Madona can\'t hear you yet','Allow the microphone, then tap the mic button.',null,true)}
+    }else if(e.error==='network'||e.error==='audio-capture'){wake.fail++;wake.next=Date.now()+Math.min(30000,2000*wake.fail)}
+  };
+  r.onend=function(){if(wake.rec===r)wake.rec=null};
+  try{r.start()}catch(e){wake.rec=null;wake.fail++;wake.next=Date.now()+3000}
+}
+setInterval(function(){
+  if(wakeCan()){wake.quiet++;if(wake.quiet>=2&&!wake.rec&&Date.now()>=wake.next)wakeStart()}
+  else{wake.quiet=0;if(wake.rec)wakeStop()}
+},600);
+
+
 /* ---------- install as an app (desktop / Android / iOS) ---------- */
 var dp=null,inst=$('#install');
 addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;inst.hidden=false});
@@ -1278,6 +2086,25 @@ addEventListener('appinstalled',function(){inst.hidden=true;$('#ios').hidden=tru
   var dismissed=false;try{dismissed=localStorage.getItem('adm_ios')==='1'}catch(e){}
   if(ios&&!standalone&&!dismissed)$('#ios').hidden=false;
   $('#ios-x').onclick=function(){$('#ios').hidden=true;try{localStorage.setItem('adm_ios','1')}catch(e){}};
+})();
+
+/* desktop profile menu (Mazi style): tools live under the avatar */
+(function(){
+  var dm=matchMedia('(min-width:1200px)'),tray=document.querySelector('.tray'),sub=document.getElementById('tsub'),thm=document.getElementById('thm'),d=document.documentElement;
+  /* on desktop the menu lives on <body> so no card can clip it; on mobile it goes back into the hero */
+  function place(){var hero=document.querySelector('.hero');(dm.matches?document.body:hero).appendChild(tray);if(!dm.matches)shut()}
+  function mode(){try{return localStorage.getItem('adm_theme')||'light'}catch(e){return'light'}}
+  function paint(){var m=mode();[].forEach.call(sub.querySelectorAll('button'),function(b){b.classList.toggle('on',b.dataset.t===m)})}
+  function shut(){document.body.classList.remove('pm-open');tray.classList.remove('sub-open')}
+  function toggle(){if(!dm.matches)return;var o=document.body.classList.toggle('pm-open');if(!o)tray.classList.remove('sub-open')}
+  place();dm.addEventListener?dm.addEventListener('change',place):dm.addListener(place);
+  [].forEach.call(document.querySelectorAll('.me'),function(e){e.addEventListener('click',toggle)});/* name (ROBIN / Admin) is not clickable */
+  thm.addEventListener('click',function(e){if(!dm.matches||!e.isTrusted)return;e.stopImmediatePropagation();paint();tray.classList.toggle('sub-open')},true);
+  sub.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var m=b.dataset.t,dark=m==='dark'||(m==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);
+    d.dataset.theme=dark?'dark':'light';document.querySelector('meta[name=theme-color]').content=dark?'#09090a':'#f1f2f4';try{localStorage.setItem('adm_theme',m)}catch(x){}paint()});
+  tray.addEventListener('click',function(e){var b=e.target.closest('.tb');if(b&&b!==thm&&dm.matches)setTimeout(shut,120)});
+  document.addEventListener('click',function(e){if(!document.body.classList.contains('pm-open'))return;if(tray.contains(e.target)||e.target.closest('.me,.who'))return;shut()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')shut()});
 })();
 </script>
 </body>

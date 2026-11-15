@@ -27,14 +27,15 @@
     :root,.pf-t,.fold button,.rings .o{transition:background-color .35s,border-color .35s,color .35s,stroke .35s}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
-    body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font:400 15px/1.5 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background .4s,opacity .45s,transform .45s var(--ease)}
+    html{background:var(--bg);-webkit-text-size-adjust:100%}
+    body{margin:0;min-height:100vh;min-height:100dvh;background:var(--bg);color:var(--tx);font:400 15px/1.5 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background .4s,opacity .45s,transform .45s var(--ease)}
     body.leaving{opacity:0;transform:scale(.98)}
     [hidden]{display:none!important}
     button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     svg{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
     .rv{opacity:0}.ready .rv{animation:rise .7s var(--ease) both;animation-delay:var(--d,0s)}
 
-    .app{max-width:640px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 130px max(16px,env(safe-area-inset-left))}
+    .app{max-width:640px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) calc(130px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
 
     /* header */
     .hd{display:flex;align-items:center;gap:8px;margin-bottom:18px}.hd .rnd{width:40px;height:40px;flex:none}.hd .rnd.has::after{top:9px;right:10px}.hd .me{flex:none}
@@ -616,6 +617,11 @@
   
     /* ---- nav = Dashboard + Time + Weather only ---- */
     .nav{grid-template-columns:1fr}
+    /* mobile: inside a folder the bottom nav slides down (1.5s); back to dashboard slides it up */
+    @media(max-width:1023px){
+      .nav{transition:translate 1.5s var(--ease)}
+      body:not(.home) .nav{translate:0 125%;pointer-events:none}
+    }
     @media(max-width:1023px),(min-width:1200px){.nav .fab{display:none!important}}
     body.home .nav #ndash{color:var(--tx);font-weight:600}
     body.home .nav #ndash::before{transform:translateX(-50%) scaleX(1)}
@@ -845,7 +851,42 @@ function toast(title,sub,cb,err,ico){
   if(ico)i.innerHTML=ico.h;else i.appendChild(svg(err?'M12 8v5M12 16.5v.5M10.3 4.3L2.7 18a2 2 0 001.7 3h15.2a2 2 0 001.7-3L13.7 4.3a2 2 0 00-3.4 0z':P.bell));
   var p=el('p');p.append(el('b','',title),el('span','',sub||''));t.append(i,p);$('#toasts').appendChild(t);
   function bye(){if(t.classList.contains('bye'))return;t.classList.add('bye');setTimeout(function(){t.remove()},350)}
-  t.onclick=function(){bye();cb&&cb()};setTimeout(bye,err?5000:ico?7500:6500);
+  t.onclick=function(){if(t._m)return;bye();cb&&cb()};setTimeout(bye,err?5000:ico?7500:6500);
+  swipeAway(t);
+}
+/* drag / swipe a notification sideways or down to dismiss it */
+function swipeAway(t){
+  var x0=0,y0=0,dx=0,dy=0,on=false,mv=false;
+  t.style.touchAction='none';
+  t.addEventListener('pointerdown',function(e){
+    if(t.classList.contains('bye'))return;
+    on=true;mv=false;dx=dy=0;x0=e.clientX;y0=e.clientY;
+    try{t.setPointerCapture(e.pointerId)}catch(_){}
+  });
+  t.addEventListener('pointermove',function(e){
+    if(!on)return;
+    dx=e.clientX-x0;dy=e.clientY-y0;
+    if(!mv){if(Math.abs(dx)<6&&Math.abs(dy)<6)return;mv=true;t.style.animation='none';t.style.transition='none'}
+    var y=dy>0?dy:dy*.15;
+    t.style.transform='translate('+dx+'px,'+y+'px)';
+    t.style.opacity=Math.max(.15,1-Math.max(Math.abs(dx)/220,dy/140));
+  });
+  function end(){
+    if(!on)return;on=false;
+    if(!mv)return;
+    t._m=true;setTimeout(function(){t._m=false},60);
+    var gone=Math.abs(dx)>70||dy>45;
+    t.style.transition='transform .28s cubic-bezier(.2,.8,.2,1),opacity .28s';
+    if(gone){
+      t.classList.add('bye');t.style.animation='none';
+      var ox=Math.abs(dx)>=dy?(dx<0?-1:1)*window.innerWidth:0,oy=Math.abs(dx)>=dy?0:160;
+      t.style.transform='translate('+ox+'px,'+oy+'px)';t.style.opacity=0;
+      setTimeout(function(){t.remove()},300);
+    }else{
+      t.style.transform='none';t.style.opacity=1;
+    }
+  }
+  t.addEventListener('pointerup',end);t.addEventListener('pointercancel',end);
 }
 /* ---------- animated icons for Time + Weather (static trusted markup) ---------- */
 var CLOUD='M13 36a7 7 0 01-.7-13.97A10 10 0 0132 19.5 8.5 8.5 0 0134 36z';
@@ -1996,7 +2037,7 @@ function listen(){
   var r=new REC(),final='',g=mic.gen;mic.rec=r;r.lang=mic.lang;r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
   micUI('Listening…',null,null);$('#micbtn').classList.add('hear');
   r.onresult=function(e){var s='';for(var i=e.resultIndex;i<e.results.length;i++){s+=e.results[i][0].transcript;if(e.results[i].isFinal)final=s}micUI(null,'“'+s+'”');if(!final&&e.results[e.results.length-1].isFinal)final=s};
-  r.onerror=function(e){if(e.error==='not-allowed'||e.error==='service-not-allowed'){toast('Mic is blocked','Allow microphone access for this site.',null,true);micStop(true)}else if(e.error==='network'){toast('Voice needs internet','Speech recognition could not connect.',null,true);micStop(true)}};
+  r.onerror=function(e){if(e.error==='not-allowed'||e.error==='service-not-allowed'){toast('Mic is blocked',micHelp(),null,true);micStop(true)}else if(e.error==='network'){toast('Voice needs internet','Speech recognition could not connect.',null,true);micStop(true)}};
   r.onend=function(){
     if(!mic.on||g!==mic.gen)return;
     $('#micbtn').classList.remove('hear');
@@ -2026,7 +2067,25 @@ function micStop(keepPanel){
 function paintLang(){$('#mic-lang').textContent=mic.lang==='fil-PH'?'TL':'EN';$('#mic-lang').title=mic.lang==='fil-PH'?'Listening in Filipino. Tap for English':'Listening in English. Tap for Filipino'}
 paintLang();
 $('#mic-lang').onclick=function(){mic.lang=mic.lang==='fil-PH'?'en-US':'fil-PH';try{localStorage.setItem('adm_mlang',mic.lang)}catch(e){}paintLang();if(mic.on&&!mic.busy){try{mic.rec&&(mic.rec.onend=null,mic.rec.abort())}catch(e){}mic.gen++;listen()}};
-$('#micbtn').onclick=function(){mic.on?micStop():micStart()};
+var IS_IOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),
+    STANDALONE=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
+function micHelp(){
+  return IS_IOS&&STANDALONE?'Voice may not work in the Home Screen app. Open the site in Safari.'
+    :IS_IOS?'Allow Microphone for this site (aA > Website Settings) and turn on Dictation in Settings > General > Keyboard.'
+    :'Allow microphone access for this site (lock icon by the address bar).';
+}
+/* ask the browser for mic permission first so the Allow prompt always shows */
+function micPermit(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return Promise.resolve(true);
+  return navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){st.getTracks().forEach(function(t){t.stop()});return true}).catch(function(){
+    toast('Mic is blocked',micHelp(),null,true);return false;
+  });
+}
+$('#micbtn').onclick=function(){
+  if(mic.on){micStop();return}
+  try{speechSynthesis.speak(new SpeechSynthesisUtterance(''))}catch(e){}   /* unlock voice inside the tap (iOS) */
+  micPermit().then(function(ok){if(ok)micStart()});
+};
 $('#mic-x').onclick=function(){micStop()};
 
 

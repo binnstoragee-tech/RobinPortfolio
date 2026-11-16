@@ -4,14 +4,22 @@
 Supabase > SQL Editor > paste `push-setup.sql` > Run.
 
 ## 2. Function secrets
-Install the Supabase CLI, then in your project folder:
+Generate your own VAPID keys (never commit real keys to this repo):
 
 ```
-supabase secrets set VAPID_PUBLIC_KEY="BHMtxIXk4lU8-AYxPojlrF568kSrfgBxxs4JwpOjRnljSB5V3FefVQfJfwQO9eADOKxICvVKMviteMiyzG4gBh0"
-supabase secrets set VAPID_PRIVATE_KEY="Rf5Hn5eqiYJ3zhNa23omOxC5Q6Yt6_cHuB0iasaKQe0"
+npx web-push generate-vapid-keys
+```
+
+Then set them as secrets (Supabase Dashboard > Edge Functions > Secrets, or the CLI):
+
+```
+supabase secrets set VAPID_PUBLIC_KEY="<your public key>"
+supabase secrets set VAPID_PRIVATE_KEY="<your private key>"
 supabase secrets set VAPID_SUBJECT="mailto:binnfrancisco@gmail.com"
 supabase secrets set WEBHOOK_SECRET="<make up a long random string>"
 ```
+
+Put the same **public** key in `supabase-config.js` (`pushKey`). The private key lives only in the Supabase secrets.
 
 ## 3. Deploy the function
 Put `supabase/functions/notify-inquiry/index.ts` in your project, then:

@@ -3,5 +3,5 @@ window.SUPABASE_CONFIG = {
   url: 'https://fejzgbyhcwlfhdezovmv.supabase.co',
   anonKey: 'sb_publishable_7Wbai0Ek6gddbw026uk4tg_6FhOwgLa',
   /* Web Push PUBLIC key (safe to expose). The private key lives only in the Supabase function secrets. */
-  pushKey: 'BHMtxIXk4lU8-AYxPojlrF568kSrfgBxxs4JwpOjRnljSB5V3FefVQfJfwQO9eADOKxICvVKMviteMiyzG4gBh0'
+  pushKey: 'BH2vlPez_hF_SgMMHwY_emyqvR0iX_Z8EOpg4xRJgcECveLr2UpsdKSckFDyuodFillSwHbIlgRQuvurbtN5Eb4'
 };
